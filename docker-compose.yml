@@ -1,5 +1,14 @@
 version: '2.1'
 services:
+
+  camerata:
+    image: '${REGISTRY_HOST}${REGISTRY_URI}:${TAG}'
+    env_file:
+      - .env
+      - .env.development
+    build:
+      context: .
+
   blacklight:
     image: yalelibraryit/dc-blacklight:${BLACKLIGHT_TAG}
     command: /bin/sh -c "cd /home/app/webapp && sleep 10 && rake yale:load_voyager_sample_data && /sbin/my_init"
