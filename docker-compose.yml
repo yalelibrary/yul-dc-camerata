@@ -2,6 +2,7 @@ version: '2.1'
 services:
   blacklight:
     image: yalelibraryit/dc-blacklight:${BLACKLIGHT_TAG}
+    command: /bin/sh -c "cd /home/app/webapp && sleep 10 && rake yale:load_voyager_sample_data && /sbin/my_init"
     env_file:
       - .env
       - .env.development
