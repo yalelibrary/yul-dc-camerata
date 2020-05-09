@@ -16,8 +16,22 @@ services:
     depends_on:
       - solr
       - db
-      # - iiif_image
-      # - iiif_manifest
+      - iiif_image
+      - iiif_manifest
+
+  iiif_image:
+    image: yalelibraryit/dc-iiif-cantaloupe:${CANTALOUPE_TAG}
+    env_file:
+      - .env
+    ports:
+      - '8182:8182'
+
+  iiif_manifest:
+    image: yalelibraryit/dc-iiif-manifest:${MANIFEST_TAG}
+    env_file:
+      - .env
+    ports:
+      - '80:80'
 
   db:
     image: postgres
