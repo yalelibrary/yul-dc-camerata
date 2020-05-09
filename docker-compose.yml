@@ -2,7 +2,7 @@ version: '2.1'
 services:
 
   camerata:
-    image: '${REGISTRY_HOST}${REGISTRY_URI}:${TAG}'
+    image: '${REGISTRY_HOST}${REGISTRY_URI}:${CAMERATA_TAG}'
     env_file:
       - .env
       - .env.development

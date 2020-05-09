@@ -1,1 +1,1 @@
-FROM yalelibraryit/dc-blacklight:${BLACKLIGHT_TAG}
+FROM yalelibraryit/dc-blacklight:latest

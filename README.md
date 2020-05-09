@@ -9,7 +9,7 @@ Coordinate services for YUL-DC project
 - Push to the git repository
 - Set the environment variable for the tag to the git commit
   ```bash
-  export TAG=$(git rev-parse --short HEAD)
+  export CAMERATA_TAG=$(git rev-parse --short HEAD)
   ```
 & build your image based on the docker-compose file
   ``` bash
