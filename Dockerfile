@@ -1,1 +1,1 @@
-FROM yalelibraryit/dc-solr:${SOLR_TAG}
+FROM yalelibraryit/dc-blacklight:${BLACKLIGHT_TAG}

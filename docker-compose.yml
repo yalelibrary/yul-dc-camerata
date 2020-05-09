@@ -1,5 +1,22 @@
 version: '2.1'
 services:
+  blacklight:
+    image: yalelibraryit/dc-blacklight:${BLACKLIGHT_TAG}
+    env_file:
+      - .env
+      - .env.development
+    ports:
+      - '3000:3000'
+    # Keep the stdin open, so we can attach to our app container's process
+    # and do things such as byebug, etc:
+    stdin_open: true
+    # Enable sending signals (CTRL+C, CTRL+P + CTRL+Q) into the container:
+    tty: true
+    depends_on:
+      - solr
+      - db
+      # - iiif_image
+      # - iiif_manifest
 
   db:
     image: postgres
