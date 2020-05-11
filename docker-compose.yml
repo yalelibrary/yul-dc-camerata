@@ -1,27 +1,13 @@
 version: '2.1'
 services:
 
-  camerata:
-    image: '${REGISTRY_HOST}${REGISTRY_URI}:${CAMERATA_TAG}'
-    env_file:
-      - .env
-      - .env.development
-    build:
-      context: .
-
   blacklight:
     image: yalelibraryit/dc-blacklight:${BLACKLIGHT_TAG}
     command: /bin/sh -c "cd /home/app/webapp && sleep 10 && rake yale:load_voyager_sample_data && /sbin/my_init"
     env_file:
       - .env
-      - .env.development
     ports:
       - '3000:3000'
-    # Keep the stdin open, so we can attach to our app container's process
-    # and do things such as byebug, etc:
-    stdin_open: true
-    # Enable sending signals (CTRL+C, CTRL+P + CTRL+Q) into the container:
-    tty: true
     depends_on:
       - solr
       - db
@@ -59,7 +45,7 @@ services:
       - solr:/var/solr/data
     env_file:
       - .env
-    command: bash -c 'precreate-core blacklight-development /opt/config; precreate-core blacklight-test /opt/config; exec solr -f'
+    command: bash -c 'precreate-core ${SOLR_CORE} /opt/config; precreate-core ${SOLR_TEST_CORE} /opt/config; exec solr -f'
 
 volumes:
   postgres:
