@@ -53,7 +53,8 @@ Assuming we use a base custer name `panicle`, we use the following naming conven
 | `panicle-project`  | ECS service name |
 | `panicle-project`  | ECS task definition name - included all container definitions |
 | `amazon-ecs-cli-setup-panicle`  | CloudFormation stack name  |
-| `panicle-config`   | ecs-cli cluster configuration name (stored in your local ~/.ecs/config) |
+| `panicle-config`   | [local] ecs-cli cluster configuration name (stored in your local ~/.ecs/config) |
+| `panicle-ecs-params.yml` | [local] [ECS parameters](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/cmd-ecs-cli-compose-ecsparams.html) that are not native to Docker |
 
 For the tools to run, you need the AWS CLI and ECS CLI tools installed.
 
@@ -68,3 +69,10 @@ This command encapsulates [ecs-cli compose service ps](https://docs.aws.amazon.c
 and implements the above naming conventions.
 The command has one required parameter which is the name of the target cluster.
 
+### Get ECS Parameter for a Cluster
+```
+bin/get-params.sh
+```
+This command fetches the subnets and security group for an existing cluster and builds the 
+`ecs-params.yml` required by the ECS CLI tool to deploy a new compose file. The cluster-specific
+params file will be prefixed with the cluster name - e.g. `panicle-ecs-params.yml`.
