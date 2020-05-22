@@ -91,3 +91,15 @@ This command deploys the full Yale stack to the named cluster.  You must have a 
 file obatined by running `bin/get-params` against your cluster first.  You must also create a `.secrets`
 file with valid S3 credentials; see `secrets-template` for the correct format.
 
+### Build a new cluster
+```
+bin/build-cluster.sh
+```
+This command builds a new, empty cluster with the supplied cluster name.  Once you build the cluster, 
+you can use `get-params.sh` to read the configuration data and one of the deploy variants to deploy to it.
+
+EXAMPLE
+```
+bin/build-cluster.sh panicle
+bin/deploy-simple.sh panicle
+```
