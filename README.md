@@ -40,3 +40,31 @@ POSTGRES_HOST=db
 - Access the solr instance at `http://localhost:8983`
 - **NOTE: In Progress** Access the image instance at `http://localhost:8182`
 - **NOTE: In Progress** Access the manifests instance at `http://localhost`
+
+## ECS Tools
+This repo contains prototype tooling to streamline ECS cluster management.
+
+### Conventions
+Assuming we use a base custer name `panicle`, we use the following naming conventions for ECS services:  
+
+| name               | function             |
+|--------------------|----------------------|
+| `panicle`          | ECS cluster name     |
+| `panicle-project`  | ECS service name |
+| `panicle-project`  | ECS task definition name - included all container definitions |
+| `amazon-ecs-cli-setup-panicle`  | CloudFormation stack name  |
+| `panicle-config`   | ecs-cli cluster configuration name (stored in your local ~/.ecs/config) |
+
+For the tools to run, you need the AWS CLI and ECS CLI tools installed.
+
+For the tools to run, you need to set the `AWS_PROFILE` and `AWS_DEFAULT_REGION` environment variables.
+The tools will ask you to set the appropriate environment variables if they are missing.
+
+### List Running Containers
+```
+bin/cluster-ps.sh $CLUSTER_NAME
+``` 
+This command encapsulates [ecs-cli compose service ps](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/cmd-ecs-cli-compose-service-ps.html) 
+and implements the above naming conventions.
+The command has one required parameter which is the name of the target cluster.
+
