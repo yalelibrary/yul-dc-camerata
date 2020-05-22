@@ -1,52 +1,75 @@
-version: '2.1'
+version: '3'
 services:
-
-  blacklight:
-    image: yalelibraryit/dc-blacklight:${BLACKLIGHT_TAG}
-    command: /bin/sh -c "cd /home/app/webapp && sleep 10 && rake yale:load_voyager_sample_data && /sbin/my_init"
-    env_file:
-      - .env
-    ports:
-      - '3000:3000'
-    depends_on:
-      - solr
-      - db
-      - iiif_image
-      - iiif_manifest
-
-  iiif_image:
-    image: yalelibraryit/dc-iiif-cantaloupe:${CANTALOUPE_TAG}
-    env_file:
-      - .env
-    ports:
-      - '8182:8182'
-
   iiif_manifest:
-    image: yalelibraryit/dc-iiif-manifest:${MANIFEST_TAG}
-    env_file:
-      - .env
+    image: yalelibraryit/dc-iiif-manifest:97181
     ports:
       - '80:80'
+    logging:
+      driver: awslogs
+      options:
+        awslogs-group: ${CLUSTER_NAME}
+        awslogs-region: ${AWS_DEFAULT_REGION}
+        awslogs-stream-prefix: iiif_manifest
+  
+  solr:
+    image: yalelibraryit/dc-solr:cd09be6
+    ports:
+      - "8983:8983"
+    logging:
+      driver: awslogs
+      options:
+        awslogs-group: ${CLUSTER_NAME}
+        awslogs-region: ${AWS_DEFAULT_REGION}
+        awslogs-stream-prefix: solr
+    env_file:
+      - .env.ecs
+    command: bash -c 'precreate-core $${SOLR_CORE} /opt/config; exec solr -f'
 
+  iiif_image:
+    image: yalelibraryit/dc-iiif-cantaloupe:db0232c
+    env_file:
+      - .env.ecs
+      - .secrets
+    ports:
+      - "8182:8182"
+    logging:
+      driver: awslogs
+      options:
+        awslogs-group: ${CLUSTER_NAME}
+        awslogs-region: ${AWS_DEFAULT_REGION}
+        awslogs-stream-prefix: iiif_image
+  
   db:
     image: postgres
     env_file:
-      - .env
+      - .env.ecs
+    logging:
+      driver: awslogs
+      options:
+        awslogs-group: ${CLUSTER_NAME}
+        awslogs-region: ${AWS_DEFAULT_REGION}
+        awslogs-stream-prefix: db
     ports:
-      - '5432:5432'
+      - "5432:5432"
     volumes:
-      - 'postgres:/var/lib/postgresql/data'
-
-  solr:
-    image: yalelibraryit/dc-solr:${SOLR_TAG}
-    ports:
-      - '8983:8983'
-    volumes:
-      - solr:/var/solr/data
+      - "db:/var/lib/postgresql/data"
+      
+  blacklight:
+    image: yalelibraryit/dc-blacklight:c568309
+    command: /bin/sh -c "cd /home/app/webapp && sleep 10 && rake yale:load_voyager_sample_data && /sbin/my_init"
+    logging:
+      driver: awslogs
+      options:
+        awslogs-group: ${CLUSTER_NAME}
+        awslogs-region: ${AWS_DEFAULT_REGION}
+        awslogs-stream-prefix: web
     env_file:
-      - .env
-    command: bash -c 'precreate-core ${SOLR_CORE} /opt/config; precreate-core ${SOLR_TEST_CORE} /opt/config; exec solr -f'
-
+      - .env.ecs
+    ports:
+      - "3000:3000"
+    volumes:
+      - blacklight:/home/app/webapp
+      
 volumes:
-  postgres:
-  solr:
+  blacklight:
+  db:

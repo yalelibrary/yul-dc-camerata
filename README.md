@@ -53,7 +53,6 @@ Assuming we use a base custer name `panicle`, we use the following naming conven
 | `panicle-project`  | ECS service name |
 | `panicle-project`  | ECS task definition name - included all container definitions |
 | `amazon-ecs-cli-setup-panicle`  | CloudFormation stack name  |
-| `panicle-config`   | [local] ecs-cli cluster configuration name (stored in your local ~/.ecs/config) |
 | `panicle-ecs-params.yml` | [local] [ECS parameters](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/cmd-ecs-cli-compose-ecsparams.html) that are not native to Docker |
 
 For the tools to run, you need the AWS CLI and ECS CLI tools installed.
@@ -83,3 +82,12 @@ bin/deploy-simple.sh
 ```
 This command deploys a single container PHP application to the named cluster.  You must have a valid params 
 file obatined by running `bin/get-params` against your cluster first.  
+
+### Deploy the Yale stack
+```
+bin/deploy-full.sh
+```
+This command deploys the full Yale stack to the named cluster.  You must have a valid params 
+file obatined by running `bin/get-params` against your cluster first.  You must also create a `.secrets`
+file with valid S3 credentials; see `secrets-template` for the correct format.
+
