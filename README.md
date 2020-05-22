@@ -76,3 +76,10 @@ bin/get-params.sh
 This command fetches the subnets and security group for an existing cluster and builds the 
 `ecs-params.yml` required by the ECS CLI tool to deploy a new compose file. The cluster-specific
 params file will be prefixed with the cluster name - e.g. `panicle-ecs-params.yml`.
+
+### Deploy a reference container
+```
+bin/deploy-simple.sh
+```
+This command deploys a single container PHP application to the named cluster.  You must have a valid params 
+file obatined by running `bin/get-params` against your cluster first.  
