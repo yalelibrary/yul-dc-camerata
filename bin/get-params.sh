@@ -31,12 +31,11 @@ then
   export SUBNET1=`aws ecs describe-services --cluster $1 --services ${1}-project \
     --query 'services[0].deployments[0].networkConfiguration.awsvpcConfiguration.subnets[1]' \
       | sed -e 's/^"//' -e 's/"$//' `
-  export SG_ID=`aws ecs describe-services --cluster $1 --services ${1}-project \
-    --query 'services[0].deployments[0].networkConfiguration.awsvpcConfiguration.securityGroups[0]' \
-      | sed -e 's/^"//' -e 's/"$//' `
   export VPC_ID=`aws ec2 describe-subnets --subnet-ids $SUBNET0 \
     --query 'Subnets[0].VpcId' \
       | sed -e 's/^"//' -e 's/"$//' `
+  export SG_ID=`aws ec2 describe-security-groups --filters \
+    Name=vpc-id,Values=$VPC_ID --region=$AWS_DEFAULT_REGION | grep -Eo -m 1 'sg-\w+'`
   
   echo $SUBNET0
   echo $SUBNET1
