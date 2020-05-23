@@ -1,7 +1,8 @@
 version: '3'
+  
 services:
   iiif_manifest:
-    image: yalelibraryit/dc-iiif-manifest:97181
+    image: yalelibraryit/dc-iiif-manifest:${IIIF_MANIFEST_VERSION}
     ports:
       - '80:80'
     logging:
@@ -12,7 +13,7 @@ services:
         awslogs-stream-prefix: iiif_manifest
   
   solr:
-    image: yalelibraryit/dc-solr:cd09be6
+    image: yalelibraryit/dc-solr:${SOLR_VERSION}
     ports:
       - "8983:8983"
     logging:
@@ -26,7 +27,7 @@ services:
     command: bash -c 'precreate-core $${SOLR_CORE} /opt/config; exec solr -f'
 
   iiif_image:
-    image: yalelibraryit/dc-iiif-cantaloupe:db0232c
+    image: yalelibraryit/dc-iiif-cantaloupe:${IIIF_IMAGE_VERSION}
     env_file:
       - .env.ecs
       - .secrets
@@ -40,7 +41,7 @@ services:
         awslogs-stream-prefix: iiif_image
   
   db:
-    image: postgres
+    image: postgres:${POSTGRES_VERSION}
     env_file:
       - .env.ecs
     logging:
@@ -55,7 +56,7 @@ services:
       - "db:/var/lib/postgresql/data"
       
   blacklight:
-    image: yalelibraryit/dc-blacklight:c568309
+    image: yalelibraryit/dc-blacklight:${BLACKLIGHT_VERSION}
     command: /bin/sh -c "cd /home/app/webapp && sleep 10 && rake yale:load_voyager_sample_data && /sbin/my_init"
     logging:
       driver: awslogs
