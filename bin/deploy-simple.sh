@@ -7,7 +7,7 @@ else
   then
     cluster='ok'
   else
-    echo "ERROR: Missing params file, please run \"bin/get-params.sh\" first"
+    echo "ERROR: Missing params file, please run \"bin/get-params.sh ${1}\" first"
   fi
 fi
 
