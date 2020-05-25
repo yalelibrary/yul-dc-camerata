@@ -24,24 +24,25 @@ if [[ -n ${cluster} ]] && [[ -n ${profile} ]] && [[ -n ${region} ]]
 then
   echo "Using AWS_PROFILE=${AWS_PROFILE}"
   echo "      AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION} \n"
-  
-  export SUBNET0=`aws ecs describe-services --cluster $1 --services ${1}-project \
-    --query 'services[0].deployments[0].networkConfiguration.awsvpcConfiguration.subnets[0]' \
-      | sed -e 's/^"//' -e 's/"$//' `
-  export SUBNET1=`aws ecs describe-services --cluster $1 --services ${1}-project \
-    --query 'services[0].deployments[0].networkConfiguration.awsvpcConfiguration.subnets[1]' \
-      | sed -e 's/^"//' -e 's/"$//' `
-  export VPC_ID=`aws ec2 describe-subnets --subnet-ids $SUBNET0 \
-    --query 'Subnets[0].VpcId' \
-      | sed -e 's/^"//' -e 's/"$//' `
-  export SG_ID=`aws ec2 describe-security-groups --filters \
-    Name=vpc-id,Values=$VPC_ID --region=$AWS_DEFAULT_REGION | grep -Eo -m 1 'sg-\w+'`
-  
+
+  SUBNET0=`aws cloudformation list-stack-resources \
+    --stack-name amazon-ecs-cli-setup-${1} \
+      --query "(StackResourceSummaries[?LogicalResourceId=='PubSubnetAz1'].PhysicalResourceId)[0]"`
+  SUBNET1=`aws cloudformation list-stack-resources \
+    --stack-name amazon-ecs-cli-setup-${1} \
+      --query "(StackResourceSummaries[?LogicalResourceId=='PubSubnetAz2'].PhysicalResourceId)[0]"`
+  VPC_ID=`aws cloudformation list-stack-resources \
+    --stack-name amazon-ecs-cli-setup-${1} \
+        --query "(StackResourceSummaries[?LogicalResourceId=='Vpc'].PhysicalResourceId)[0]"`
+  SG_ID=`aws ec2 describe-security-groups \
+    --filters Name=vpc-id,Values=$VPC_ID \
+      --query "(SecurityGroups[?GroupName=='default'])[0].GroupId" `
+
   echo $SUBNET0
   echo $SUBNET1
   echo $SG_ID
   echo $VPC_ID
-  
+
   cat <<ECS_PARAMS > ${1}-ecs-params.yml
 version: 1
 task_definition:
