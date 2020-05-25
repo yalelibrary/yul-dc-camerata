@@ -43,7 +43,7 @@ then
         --query "(StackResourceSummaries[?LogicalResourceId=='Vpc'].PhysicalResourceId)[0]" \
         | sed -e 's/^"//' -e 's/"$//' `
   DEFAULT_VPC_SG=`aws ec2 describe-security-groups \
-    --filters Name=vpc-id,Values=vpc-0452fa0d5b84e2926 \
+    --filters Name=vpc-id,Values=$VPC_ID \
       --query "(SecurityGroups[?GroupName=='default'])[0].GroupId" \
         | grep -Eo -m 1 'sg-\w+'`
 
