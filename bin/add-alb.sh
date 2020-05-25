@@ -26,7 +26,7 @@ then
   echo "Using AWS_PROFILE=${AWS_PROFILE}"
   echo "      AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}"
   echo
-  
+
   # TODO: check that the cluster name is valid and configured before running all the other commands
 
   # Get the basic VPC and networking config for our cluster
@@ -87,30 +87,35 @@ then
     --subnets $SUBNET0 $SUBNET1 \
     --security-groups $INGRESS_SG \
       | grep -Eo -m 1 'arn:aws:elasticloadbalancing[^\"]*'`
-  
+
   # Create a target group to associate the BLACKLIGHT listener to clusters
   BL_TG_ARN=`aws elbv2 create-target-group \
     --name tg-${1}-blacklight \
+    --target-type ip \
     --protocol HTTP \
     --port 3000 \
     --vpc-id $VPC_ID \
-      | grep -Eo -m 1 'arn:aws:elasticloadbalancing[^\"]*'` 
+    --health-check-interval-seconds 90 \
+    --health-check-timeout-seconds 75 \
+      | grep -Eo -m 1 'arn:aws:elasticloadbalancing[^\"]*'`
 
-  # Create a target group to associate the IMAGE listener to clusters  
+  # Create a target group to associate the IMAGE listener to clusters
   IMG_TG_ARN=`aws elbv2 create-target-group \
     --name tg-${1}-images \
+    --target-type ip \
     --protocol HTTP \
     --port 8182 \
     --vpc-id $VPC_ID \
-      | grep -Eo -m 1 'arn:aws:elasticloadbalancing[^\"]*'` 
+      | grep -Eo -m 1 'arn:aws:elasticloadbalancing[^\"]*'`
 
   # Create a target group to associate the MANIFEST listener to clusters
   MFST_TG_ARN=`aws elbv2 create-target-group \
     --name tg-${1}-manifests \
+    --target-type ip \
     --protocol HTTP \
     --port 80 \
     --vpc-id $VPC_ID \
-      | grep -Eo -m 1 'arn:aws:elasticloadbalancing[^\"]*'` 
+      | grep -Eo -m 1 'arn:aws:elasticloadbalancing[^\"]*'`
 
   # Create an HTTP listener on port 80that redirects all traffice to HTTPS (port 443)
   HTTP_LISTENER_ARN=`aws elbv2 create-listener \
@@ -118,14 +123,14 @@ then
       --protocol HTTP \
       --port 80 \
       --default-actions "Type=redirect,RedirectConfig={Protocol=HTTPS,Port=443,Host='#{host}',Query='#{query}',Path='/#{path}',StatusCode=HTTP_301}"  \
-        | grep -Eo -m 1 'arn:aws:elasticloadbalancing[^\"]*'`  
-  
+        | grep -Eo -m 1 'arn:aws:elasticloadbalancing[^\"]*'`
+
   # Look up the ARN for the curationexperts.com wildcard and save it for later reference
   CERT_ARN=`aws acm list-certificates \
     --query "CertificateSummaryList[?DomainName=='*.curationexperts.com']" \
       | grep -Eo -m 1 'arn:aws:acm[^\"]*'`
 
-  # Create a HTTPS listener on port 443 that defaults traffic to the BLACKLIGHT target group, 
+  # Create a HTTPS listener on port 443 that defaults traffic to the BLACKLIGHT target group,
   # Capture the ARN so we can add additional rules to route specific traffic to other listeners
   HTTPS_LISTENER_ARN=`aws elbv2 create-listener \
       --load-balancer-arn $ALB_ARN \
@@ -134,22 +139,22 @@ then
       --certificates CertificateArn=$CERT_ARN \
       --ssl-policy ELBSecurityPolicy-2016-08 \
       --default-actions "Type=forward,TargetGroupArn=${BL_TG_ARN}" \
-        | grep -Eo -m 1 'arn:aws:elasticloadbalancing[^\"]*'`  
- 
-  # Add a rule to the HTTPS listener to route requests to the /iiif/ path to the IMAGE target 
+        | grep -Eo -m 1 'arn:aws:elasticloadbalancing[^\"]*'`
+
+  # Add a rule to the HTTPS listener to route requests to the /iiif/ path to the IMAGE target
   aws elbv2 create-rule \
       --listener-arn $HTTPS_LISTENER_ARN \
       --priority 10 \
       --conditions "Field=path-pattern,PathPatternConfig={Values=['/iiif/*']}" \
       --actions Type=forward,TargetGroupArn=$IMG_TG_ARN > /dev/null
 
-  # Add a rule to the HTTPS listener to route requests to the /manifest/ path to the MANIFEST target 
+  # Add a rule to the HTTPS listener to route requests to the /manifest/ path to the MANIFEST target
   aws elbv2 create-rule \
       --listener-arn $HTTPS_LISTENER_ARN \
       --priority 20 \
       --conditions "Field=path-pattern,PathPatternConfig={Values=['/manifests/*']}" \
       --actions Type=forward,TargetGroupArn=$MFST_TG_ARN > /dev/null
-  
+
   echo "Newly created resources:"
   echo "  Load Balancer:     $ALB_ARN"
   echo "  Blacklight Target: $BL_TG_ARN"
@@ -159,6 +164,6 @@ then
   echo "  HTTP Listener:     $HTTP_LISTENER_ARN"
   echo "  HTTPS Listener:    $HTTPS_LISTENER_ARN"
   echo
-  
+
 fi
 
