@@ -38,5 +38,5 @@ then
   export CLUSTER_NAME=${1}
   echo "Using AWS_PROFILE=${AWS_PROFILE}";
   echo "      AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}";
-  ecs-cli compose --project-name ${1}-project --file docker-compose.yml --ecs-params ${1}-ecs-params.yml service up --create-log-groups --cluster ${1}
+  ecs-cli compose  --region $AWS_DEFAULT_REGION --project-name ${1}-project --file docker-compose.yml --ecs-params ${1}-ecs-params.yml service up --create-log-groups --cluster ${1}
 fi

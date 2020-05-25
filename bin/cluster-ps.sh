@@ -25,6 +25,6 @@ then
   echo "Target cluster: ${1}"
   echo "Using AWS_PROFILE=${AWS_PROFILE}";
   echo "      AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}";
-  ecs-cli compose --project-name ${1}-project service ps --cluster ${1}
+  ecs-cli compose --region $AWS_DEFAULT_REGION --project-name ${1}-project service ps --cluster ${1}
 fi
 
