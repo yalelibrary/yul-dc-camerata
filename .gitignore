@@ -1,1 +1,5 @@
 git/
+ecs-params.yml
+*-ecs-params.yml
+.secrets
+cluster-ids.txt
