@@ -5,12 +5,12 @@ services:
     image: yalelibraryit/dc-iiif-manifest:${IIIF_MANIFEST_VERSION}
     ports:
       - '80:80'
-    # logging:
-    #   driver: awslogs
-    #   options:
-    #     awslogs-group: ${CLUSTER_NAME}
-    #     awslogs-region: ${AWS_DEFAULT_REGION}
-    #     awslogs-stream-prefix: iiif_manifest
+    logging:
+      driver: awslogs
+      options:
+        awslogs-group: ${CLUSTER_NAME}
+        awslogs-region: ${AWS_DEFAULT_REGION}
+        awslogs-stream-prefix: iiif_manifest
 
   solr:
     image: yalelibraryit/dc-solr:${SOLR_VERSION}
@@ -18,12 +18,12 @@ services:
       SOLR_CORE: blacklight-core
     ports:
       - "8983:8983"
-    # logging:
-    #   driver: awslogs
-    #   options:
-    #     awslogs-group: ${CLUSTER_NAME}
-    #     awslogs-region: ${AWS_DEFAULT_REGION}
-    #     awslogs-stream-prefix: solr
+    logging:
+      driver: awslogs
+      options:
+        awslogs-group: ${CLUSTER_NAME}
+        awslogs-region: ${AWS_DEFAULT_REGION}
+        awslogs-stream-prefix: solr
     env_file:
       - .env.ecs
     command: bash -c 'precreate-core $${SOLR_CORE} /opt/config; exec solr -f'
@@ -35,12 +35,12 @@ services:
       - .secrets
     ports:
       - "8182:8182"
-    # logging:
-    #   driver: awslogs
-    #   options:
-    #     awslogs-group: ${CLUSTER_NAME}
-    #     awslogs-region: ${AWS_DEFAULT_REGION}
-    #     awslogs-stream-prefix: iiif_image
+    logging:
+      driver: awslogs
+      options:
+        awslogs-group: ${CLUSTER_NAME}
+        awslogs-region: ${AWS_DEFAULT_REGION}
+        awslogs-stream-prefix: iiif_image
 
   db_blacklight:
     image: postgres:${POSTGRES_VERSION}
@@ -49,12 +49,12 @@ services:
     environment:
       POSTGRES_DB: blacklight_yul_development
       POSTGRES_HOST: db_blacklight
-    # logging:
-    #   driver: awslogs
-    #   options:
-    #     awslogs-group: ${CLUSTER_NAME}
-    #     awslogs-region: ${AWS_DEFAULT_REGION}
-    #     awslogs-stream-prefix: db
+    logging:
+      driver: awslogs
+      options:
+        awslogs-group: ${CLUSTER_NAME}
+        awslogs-region: ${AWS_DEFAULT_REGION}
+        awslogs-stream-prefix: db_blacklight
     ports:
       - "5432:5432"
     volumes:
@@ -67,12 +67,12 @@ services:
     environment:
       POSTGRES_DB: yul_dc_management_development
       POSTGRES_HOST: db_management
-    # logging:
-    #   driver: awslogs
-    #   options:
-    #     awslogs-group: ${CLUSTER_NAME}
-    #     awslogs-region: ${AWS_DEFAULT_REGION}
-    #     awslogs-stream-prefix: db
+    logging:
+      driver: awslogs
+      options:
+        awslogs-group: ${CLUSTER_NAME}
+        awslogs-region: ${AWS_DEFAULT_REGION}
+        awslogs-stream-prefix: db_management
     ports:
       - "5434:5432"
     volumes:
@@ -81,12 +81,12 @@ services:
   blacklight:
     image: yalelibraryit/dc-blacklight:${BLACKLIGHT_VERSION}
     command: /bin/sh -c "cd /home/app/webapp && sleep 10 && rake yale:load_voyager_sample_data && /sbin/my_init"
-    # logging:
-    #   driver: awslogs
-    #   options:
-    #     awslogs-group: ${CLUSTER_NAME}
-    #     awslogs-region: ${AWS_DEFAULT_REGION}
-    #     awslogs-stream-prefix: web
+    logging:
+      driver: awslogs
+      options:
+        awslogs-group: ${CLUSTER_NAME}
+        awslogs-region: ${AWS_DEFAULT_REGION}
+        awslogs-stream-prefix: web
     env_file:
       - .env
     environment:
