@@ -145,14 +145,14 @@ then
   aws elbv2 create-rule \
       --listener-arn $HTTPS_LISTENER_ARN \
       --priority 10 \
-      --conditions "Field=path-pattern,PathPatternConfig={Values=['/iiif/*']}" \
+      --conditions "Field=path-pattern,PathPatternConfig={Values=['/iiif*']}" \
       --actions Type=forward,TargetGroupArn=$IMG_TG_ARN > /dev/null
 
   # Add a rule to the HTTPS listener to route requests to the /manifest/ path to the MANIFEST target
   aws elbv2 create-rule \
       --listener-arn $HTTPS_LISTENER_ARN \
       --priority 20 \
-      --conditions "Field=path-pattern,PathPatternConfig={Values=['/manifests/*']}" \
+      --conditions "Field=path-pattern,PathPatternConfig={Values=['/manifests*']}" \
       --actions Type=forward,TargetGroupArn=$MFST_TG_ARN > /dev/null
 
   echo "Newly created resources:"
