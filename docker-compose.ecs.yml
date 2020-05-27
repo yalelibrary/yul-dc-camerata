@@ -50,7 +50,7 @@ services:
         awslogs-stream-prefix: blacklight
     environment:
       SOLR_URL: http://localhost:8983/solr/blacklight-core
-
+      POSTGRES_HOST: localhost
   # management:
   #   logging:
   #     driver: awslogs

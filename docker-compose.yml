@@ -105,6 +105,7 @@ services:
       SOLR_URL: http://solr:8983/solr/blacklight-core
       IIIF_MANIFESTS_BASE_URL: /manifests/
       PASSENGER_APP_ENV: development
+      BLACKLIGHT_VERSION: 
     ports:
       - "3000:3000"
     volumes:
