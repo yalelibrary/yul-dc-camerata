@@ -48,16 +48,8 @@ services:
         awslogs-group: ${CLUSTER_NAME}
         awslogs-region: ${AWS_DEFAULT_REGION}
         awslogs-stream-prefix: blacklight
-   environment:
-     POSTGRES_DB: blacklight_yul_development
-     POSTGRES_HOST: db_blacklight
-     POSTGRES_USER: postgres
-     POSTGRES_PASSWORD: password
-     SOLR_URL: http://localhost:8983/solr/blacklight-core
-     IIIF_MANIFESTS_BASE_URL: /manifests/
-     PASSENGER_APP_ENV: development
-     BLACKLIGHT_VERSION:
-
+    environment:
+      SOLR_URL: http://localhost:8983/solr/blacklight-core
 
   # management:
   #   logging:
