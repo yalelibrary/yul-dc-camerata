@@ -26,6 +26,27 @@ POSTGRES_HOST=db
 - Access the image instance at `http://localhost:8182`
 - Access the manifests instance at `http://localhost`
 
+## Local Development vs. ECS Deployment
+The files here are designed to follow the principles of the [12-factor application](https://12factor.net) as closely
+as possible.  In particular, we are making an effort to maintain a high degree of [dev-prod-parity](https://12factor.net/dev-prod-parity).
+
+To achieve this we use a common set of docker base files with overrides for any values that are required to differ for
+local vs. deployment environments.  The file naming convention assumed here is:
+
+| file                           | contents |
+|--------------------------------|----------|
+| `docker-compose.yml`           | compose definitions that are shared between all environments |
+| `docker-compose.override.yml`  | compose definitions required exclusively in a local docker environment |
+| `docker-compose.ecs.yml`       | compose definitions required for deployment to AWS ECS |
+| `.env`                         | environment variables injectected into the compose file, but not automatically visible in containers |
+| `.env.development`             | environment varialbes unique to local development environments |
+| `.env.ecs`                     | environment variables required in deployment environments |
+
+For more detail on multiple compose files see https://docs.docker.com/compose/extends/#multiple-compose-files.
+
+There are multiple methods to inject configuration into the compose file and container environments; for more detail on
+multiple environment files see https://docs.docker.com/compose/env-file/ and https://docs.docker.com/compose/environment-variables/
+
 ## ECS Tools
 This repo contains prototype tooling to streamline ECS cluster management.
 
@@ -41,6 +62,8 @@ Assuming we use a base cluster name `panicle`, we use the following naming conve
 | `panicle-ecs-params.yml` | [local] [ECS parameters](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/cmd-ecs-cli-compose-ecsparams.html) that are not native to Docker |
 
 For the tools to run, you need the AWS CLI and ECS CLI tools installed.
+
+You'll also need to install `yq` [a lightweight and portable command-line Yaml processor](https://mikefarah.gitbook.io/yq/)
 
 For the tools to run, you need to set the `AWS_PROFILE` and `AWS_DEFAULT_REGION` environment variables.
 The tools will ask you to set the appropriate environment variables if they are missing.

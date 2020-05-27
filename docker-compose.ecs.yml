@@ -1,0 +1,58 @@
+services:
+  iiif_manifest:
+    logging:
+      driver: awslogs
+      options:
+        awslogs-group: ${CLUSTER_NAME}
+        awslogs-region: ${AWS_DEFAULT_REGION}
+        awslogs-stream-prefix: iiif_manifest
+
+  solr:
+    logging:
+      driver: awslogs
+      options:
+        awslogs-group: ${CLUSTER_NAME}
+        awslogs-region: ${AWS_DEFAULT_REGION}
+        awslogs-stream-prefix: solr
+
+  iiif_image:
+    logging:
+      driver: awslogs
+      options:
+        awslogs-group: ${CLUSTER_NAME}
+        awslogs-region: ${AWS_DEFAULT_REGION}
+        awslogs-stream-prefix: iiif_image
+
+  db_blacklight:
+    logging:
+      driver: awslogs
+      options:
+        awslogs-group: ${CLUSTER_NAME}
+        awslogs-region: ${AWS_DEFAULT_REGION}
+        awslogs-stream-prefix: db_blacklight
+
+  # db_management:
+  #   ports:
+  #     - "5434:5434"
+  #   logging:
+  #     driver: awslogs
+  #     options:
+  #       awslogs-group: ${CLUSTER_NAME}
+  #       awslogs-region: ${AWS_DEFAULT_REGION}
+  #       awslogs-stream-prefix: db_management
+
+  blacklight:
+    logging:
+      driver: awslogs
+      options:
+        awslogs-group: ${CLUSTER_NAME}
+        awslogs-region: ${AWS_DEFAULT_REGION}
+        awslogs-stream-prefix: blacklight
+
+  # management:
+  #   logging:
+  #     driver: awslogs
+  #     options:
+  #       awslogs-group: ${CLUSTER_NAME}
+  #       awslogs-region: ${AWS_DEFAULT_REGION}
+  #       awslogs-stream-prefix: management
