@@ -24,14 +24,16 @@ services:
     #     awslogs-group: ${CLUSTER_NAME}
     #     awslogs-region: ${AWS_DEFAULT_REGION}
     #     awslogs-stream-prefix: solr
-    env_file:
-      - .env.ecs
+    # env_file:
+    #   - .env.ecs
     command: bash -c 'precreate-core $${SOLR_CORE} /opt/config; exec solr -f'
 
   iiif_image:
     image: yalelibraryit/dc-iiif-cantaloupe:${IIIF_IMAGE_VERSION}
+    environment:
+      S3CACHE_BUCKET_NAME: yale-image-samples/cantaloupe/cache #NO TRAILING SLASH!
+      S3_SOURCE_BUCKET_NAME: yale-image-samples
     env_file:
-      - .env.ecs
       - .secrets
     ports:
       - "8182:8182"
@@ -44,11 +46,13 @@ services:
 
   db_blacklight:
     image: postgres:${POSTGRES_VERSION}
-    env_file:
-      - .env
+    # env_file:
+    #   - .env
     environment:
       POSTGRES_DB: blacklight_yul_development
       POSTGRES_HOST: db_blacklight
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
     # logging:
     #   driver: awslogs
     #   options:
@@ -62,11 +66,13 @@ services:
 
   db_management:
     image: postgres:${POSTGRES_VERSION}
-    env_file:
-      - .env
+    # env_file:
+    #   - .env
     environment:
       POSTGRES_DB: yul_dc_management_development
       POSTGRES_HOST: db_management
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
     # logging:
     #   driver: awslogs
     #   options:
@@ -80,19 +86,23 @@ services:
 
   blacklight:
     image: yalelibraryit/dc-blacklight:${BLACKLIGHT_VERSION}
-    command: /bin/sh -c "cd /home/app/webapp && sleep 10 && rake yale:load_voyager_sample_data && /sbin/my_init"
+    command: /bin/sh -c "cd /home/app/webapp && sleep 20 && rake yale:load_voyager_sample_data && /sbin/my_init"
     # logging:
     #   driver: awslogs
     #   options:
     #     awslogs-group: ${CLUSTER_NAME}
     #     awslogs-region: ${AWS_DEFAULT_REGION}
     #     awslogs-stream-prefix: web
-    env_file:
-      - .env
+    # env_file:
+    #   - .env
     environment:
       POSTGRES_DB: blacklight_yul_development
       POSTGRES_HOST: db_blacklight
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
       SOLR_URL: http://solr:8983/solr/blacklight-core
+      IIIF_MANIFESTS_BASE_URL: /manifests/
+      PASSENGER_APP_ENV: development
     ports:
       - "3000:3000"
     volumes:
@@ -105,13 +115,16 @@ services:
   management:
     image: yalelibraryit/dc-management:${MANAGEMENT_VERSION}
     env_file:
-      - .env
+      # - .env
       - .secrets
     environment:
       POSTGRES_DB: yul_dc_management_development
       POSTGRES_HOST: db_management
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
       SOLR_URL: http://solr:8983/solr
       SOLR_CORE: blacklight-core
+      PASSENGER_APP_ENV: development
     ports:
       - "3001:3001"
     depends_on:
