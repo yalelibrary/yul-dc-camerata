@@ -16,6 +16,7 @@ services:
     image: yalelibraryit/dc-solr:${SOLR_VERSION}
     environment:
       SOLR_CORE: blacklight-core
+      SOLR_VERSION:
     ports:
       - "8983:8983"
     # logging:
@@ -33,6 +34,7 @@ services:
     environment:
       S3CACHE_BUCKET_NAME: yale-image-samples/cantaloupe/cache #NO TRAILING SLASH!
       S3_SOURCE_BUCKET_NAME: yale-image-samples
+      IIIF_IMAGE_VERSION:
     env_file:
       - .secrets
     ports:
@@ -103,7 +105,7 @@ services:
       SOLR_URL: http://solr:8983/solr/blacklight-core
       IIIF_MANIFESTS_BASE_URL: /manifests/
       PASSENGER_APP_ENV: development
-      BLACKLIGHT_VERSION
+      BLACKLIGHT_VERSION:
     ports:
       - "3000:3000"
     volumes:
