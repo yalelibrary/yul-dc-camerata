@@ -61,11 +61,17 @@ then
       | grep -Eo "arn:aws:[^\"]+"`
   echo $MFST_TG_ARN
 
+  # Merge the docker-compose.yml and docker-compose-ecs.yml files
+  # Mimics docker-compose support for multiple compsose files since
+  # ecs-cli doesn't implement this functionality directly
+  # see https://docs.docker.com/compose/extends/#adding-and-overriding-configuration
+  yq m -x docker-compose.yml docker-compose.ecs.yml > docker-compose-merged.yml
+
   # Launch the service and register containers with the loadbalancer
   ecs-cli compose  \
     --region $AWS_DEFAULT_REGION \
     --project-name ${1}-project \
-    --file docker-compose.yml \
+    --file docker-compose-merged.yml \
     --ecs-params ${1}-ecs-params.yml \
     service up \
     --create-log-groups \

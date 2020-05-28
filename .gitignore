@@ -3,3 +3,4 @@ ecs-params.yml
 *-ecs-params.yml
 .secrets
 cluster-ids.txt
+docker-compose-merged.yml

@@ -16,6 +16,7 @@ services:
     image: yalelibraryit/dc-solr:${SOLR_VERSION}
     environment:
       SOLR_CORE: blacklight-core
+      SOLR_VERSION:
     ports:
       - "8983:8983"
     # logging:
@@ -33,6 +34,7 @@ services:
     environment:
       S3CACHE_BUCKET_NAME: yale-image-samples/cantaloupe/cache #NO TRAILING SLASH!
       S3_SOURCE_BUCKET_NAME: yale-image-samples
+      IIIF_IMAGE_VERSION:
     env_file:
       - .secrets
     ports:
@@ -64,25 +66,25 @@ services:
     volumes:
       - "db_blacklight:/var/lib/postgresql/data"
 
-  db_management:
-    image: postgres:${POSTGRES_VERSION}
-    # env_file:
-    #   - .env
-    environment:
-      POSTGRES_DB: yul_dc_management_development
-      POSTGRES_HOST: db_management
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-    # logging:
-    #   driver: awslogs
-    #   options:
-    #     awslogs-group: ${CLUSTER_NAME}
-    #     awslogs-region: ${AWS_DEFAULT_REGION}
-    #     awslogs-stream-prefix: db
-    ports:
-      - "5434:5432"
-    volumes:
-      - "db_management:/var/lib/postgresql/data"
+  # db_management:
+  #   image: postgres:${POSTGRES_VERSION}
+  #   # env_file:
+  #   #   - .env
+  #   environment:
+  #     POSTGRES_DB: yul_dc_management_development
+  #     POSTGRES_HOST: db_management
+  #     POSTGRES_USER: postgres
+  #     POSTGRES_PASSWORD: password
+  #   # logging:
+  #   #   driver: awslogs
+  #   #   options:
+  #   #     awslogs-group: ${CLUSTER_NAME}
+  #   #     awslogs-region: ${AWS_DEFAULT_REGION}
+  #   #     awslogs-stream-prefix: db
+  #   ports:
+  #     - "5434:5432"
+  #   volumes:
+  #     - "db_management:/var/lib/postgresql/data"
 
   blacklight:
     image: yalelibraryit/dc-blacklight:${BLACKLIGHT_VERSION}
@@ -103,6 +105,7 @@ services:
       SOLR_URL: http://solr:8983/solr/blacklight-core
       IIIF_MANIFESTS_BASE_URL: /manifests/
       PASSENGER_APP_ENV: development
+      BLACKLIGHT_VERSION: 
     ports:
       - "3000:3000"
     volumes:
@@ -112,27 +115,26 @@ services:
       - solr
       - iiif_manifest
 
-  management:
-    image: yalelibraryit/dc-management:${MANAGEMENT_VERSION}
-    env_file:
-      # - .env
-      - .secrets
-    environment:
-      POSTGRES_DB: yul_dc_management_development
-      POSTGRES_HOST: db_management
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-      SOLR_URL: http://solr:8983/solr
-      SOLR_CORE: blacklight-core
-      PASSENGER_APP_ENV: development
-    ports:
-      - "3001:3001"
-    depends_on:
-      - db_management
-      - solr
-
+  # management:
+  #   image: yalelibraryit/dc-management:${MANAGEMENT_VERSION}
+  #   env_file:
+  #     # - .env
+  #     - .secrets
+  #   environment:
+  #     POSTGRES_DB: yul_dc_management_development
+  #     POSTGRES_HOST: db_management
+  #     POSTGRES_USER: postgres
+  #     POSTGRES_PASSWORD: password
+  #     SOLR_URL: http://solr:8983/solr
+  #     SOLR_CORE: blacklight-core
+  #     PASSENGER_APP_ENV: development
+  #   ports:
+  #     - "3001:3001"
+  #   depends_on:
+  #     - db_management
+  #     - solr
 
 volumes:
   blacklight:
   db_blacklight:
-  db_management:
+  # db_management:
