@@ -30,6 +30,7 @@ services:
     image: postgres:${POSTGRES_VERSION}
     environment:
       POSTGRES_MULTIPLE_DATABASES: blacklight_yul_development,yul_dc_management_development
+      POSTGRES_DB: blacklight_yul_development
       POSTGRES_HOST: db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
@@ -37,7 +38,6 @@ services:
       - "5432:5432"
     volumes:
       - "db:/var/lib/postgresql/data"
-      - ./pg-init-scripts:/docker-entrypoint-initdb.d
 
   blacklight:
     image: yalelibraryit/dc-blacklight:${BLACKLIGHT_VERSION}
@@ -59,24 +59,6 @@ services:
       - solr
       - iiif_manifest
       - management
-
-  management:
-    image: yalelibraryit/dc-management:${MANAGEMENT_VERSION}
-    command: /bin/sh -c "cd /home/app/webapp && sleep 20 && SOLR_CORE=blacklight-core bundle exec rake yale:index_fixture_data && /sbin/my_init"
-    env_file:
-      - .secrets
-    environment:
-      POSTGRES_DB: yul_dc_management_development
-      POSTGRES_HOST: db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-      SOLR_URL: http://solr:8983/solr
-      SOLR_CORE: blacklight-core
-      PASSENGER_APP_ENV: development
-    ports:
-      - "3001:3001"
-    depends_on:
-      - db
 
 volumes:
   blacklight:

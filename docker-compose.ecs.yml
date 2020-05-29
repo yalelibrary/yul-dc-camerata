@@ -44,10 +44,13 @@ services:
       SOLR_URL: http://localhost:8983/solr/blacklight-core
       POSTGRES_HOST: localhost
 
-  management:
-    logging:
-      driver: awslogs
-      options:
-        awslogs-group: ${CLUSTER_NAME}
-        awslogs-region: ${AWS_DEFAULT_REGION}
-        awslogs-stream-prefix: management
+  # management:
+  #   logging:
+  #     driver: awslogs
+  #     options:
+  #       awslogs-group: ${CLUSTER_NAME}
+  #       awslogs-region: ${AWS_DEFAULT_REGION}
+  #       awslogs-stream-prefix: management
+  # environment:
+  #   SOLR_URL: http://localhost:8983/solr
+  #   POSTGRES_HOST: localhost

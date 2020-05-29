@@ -1,0 +1,27 @@
+# Place configuration unique to running in local docker here
+version: '3'
+
+services:
+
+  db:
+    volumes:
+      - "db:/var/lib/postgresql/data"
+      - ./pg-init-scripts:/docker-entrypoint-initdb.d
+
+  management:
+    image: yalelibraryit/dc-management:${MANAGEMENT_VERSION}
+    command: /bin/sh -c "cd /home/app/webapp && sleep 20 && SOLR_CORE=blacklight-core bundle exec rake yale:index_fixture_data && /sbin/my_init"
+    env_file:
+      - .secrets
+    environment:
+      POSTGRES_DB: yul_dc_management_development
+      POSTGRES_HOST: db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      SOLR_URL: http://solr:8983/solr
+      SOLR_CORE: blacklight-core
+      PASSENGER_APP_ENV: development
+    ports:
+      - "3001:3001"
+    depends_on:
+      - db
