@@ -66,7 +66,7 @@ then
     --throughput-mode bursting \
     --region $AWS_DEFAULT_REGION \
     --tags Key=Name,Value="${1}-solr" \
-      | grep -Eo -m 1 'fs-\w+'`
+      | grep -Eo -m 1 '\"fs-\w+' | sed s/\"//`
 
 
   cat <<ECS_PARAMS > ${1}-ecs-params.yml
@@ -95,4 +95,3 @@ run_params:
 ECS_PARAMS
 
 fi
-
