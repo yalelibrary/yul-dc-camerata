@@ -1,3 +1,4 @@
+# Place configuration unique to running on ECS here
 services:
   iiif_manifest:
     logging:
@@ -22,8 +23,6 @@ services:
         awslogs-group: ${CLUSTER_NAME}
         awslogs-region: ${AWS_DEFAULT_REGION}
         awslogs-stream-prefix: iiif_image
-    environment:
-      IIIF_MANIFESTS_BASE_URL: /manifests/
 
   db:
     logging:
@@ -32,6 +31,8 @@ services:
         awslogs-group: ${CLUSTER_NAME}
         awslogs-region: ${AWS_DEFAULT_REGION}
         awslogs-stream-prefix: db_blacklight
+    environment:
+      POSTGRES_DB: blacklight_yul_development
 
   blacklight:
     logging:
@@ -43,6 +44,7 @@ services:
     environment:
       SOLR_URL: http://localhost:8983/solr/blacklight-core
       POSTGRES_HOST: localhost
+      IIIF_MANIFESTS_BASE_URL: /manifests/
 
   # management:
   #   logging:
