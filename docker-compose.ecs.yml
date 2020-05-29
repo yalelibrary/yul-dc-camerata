@@ -22,24 +22,16 @@ services:
         awslogs-group: ${CLUSTER_NAME}
         awslogs-region: ${AWS_DEFAULT_REGION}
         awslogs-stream-prefix: iiif_image
+    environment:
+      IIIF_MANIFESTS_BASE_URL: /manifests/
 
-  db_blacklight:
+  db:
     logging:
       driver: awslogs
       options:
         awslogs-group: ${CLUSTER_NAME}
         awslogs-region: ${AWS_DEFAULT_REGION}
         awslogs-stream-prefix: db_blacklight
-
-  # db_management:
-  #   ports:
-  #     - "5434:5434"
-  #   logging:
-  #     driver: awslogs
-  #     options:
-  #       awslogs-group: ${CLUSTER_NAME}
-  #       awslogs-region: ${AWS_DEFAULT_REGION}
-  #       awslogs-stream-prefix: db_management
 
   blacklight:
     logging:
@@ -51,6 +43,7 @@ services:
     environment:
       SOLR_URL: http://localhost:8983/solr/blacklight-core
       POSTGRES_HOST: localhost
+
   # management:
   #   logging:
   #     driver: awslogs
@@ -58,3 +51,6 @@ services:
   #       awslogs-group: ${CLUSTER_NAME}
   #       awslogs-region: ${AWS_DEFAULT_REGION}
   #       awslogs-stream-prefix: management
+  # environment:
+  #   SOLR_URL: http://localhost:8983/solr
+  #   POSTGRES_HOST: localhost

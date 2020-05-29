@@ -71,8 +71,8 @@ The tools will ask you to set the appropriate environment variables if they are 
 ### List Running Containers
 ```
 bin/cluster-ps.sh $CLUSTER_NAME
-``` 
-This command encapsulates [ecs-cli compose service ps](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/cmd-ecs-cli-compose-service-ps.html) 
+```
+This command encapsulates [ecs-cli compose service ps](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/cmd-ecs-cli-compose-service-ps.html)
 and implements the above naming conventions.
 The command has one required parameter which is the name of the target cluster.
 
@@ -80,7 +80,7 @@ The command has one required parameter which is the name of the target cluster.
 ```
 bin/get-params.sh $CLUSTER_NAME
 ```
-This command fetches the subnets and security group for an existing cluster and builds the 
+This command fetches the subnets and security group for an existing cluster and builds the
 `ecs-params.yml` required by the ECS CLI tool to deploy a new compose file. The cluster-specific
 params file will be prefixed with the cluster name - e.g. `panicle-ecs-params.yml`.
 
@@ -88,22 +88,22 @@ params file will be prefixed with the cluster name - e.g. `panicle-ecs-params.ym
 ```
 bin/deploy-simple.sh $CLUSTER_NAME
 ```
-This command deploys a single container PHP application to the named cluster.  You must have a valid params 
+This command deploys a single container PHP application to the named cluster.  You must have a valid params
 file obatined by running `bin/get-params` against your cluster first.  
 
 ### Deploy the Yale stack
 ```
 bin/deploy-full.sh $CLUSTER_NAME
 ```
-This command deploys the full Yale stack to the named cluster.  You must have a valid params 
-file obatined by running `bin/get-params` against your cluster first.  You must also create a `.secrets`
+This command deploys the full Yale stack to the named cluster.  You must have a valid params
+file obtained by running `bin/get-params` against your cluster first.  You must also create a `.secrets`
 file with valid S3 credentials; see `secrets-template` for the correct format.
 
 ### Build a new cluster
 ```
 bin/build-cluster.sh $CLUSTER_NAME
 ```
-This command builds a new, empty cluster with the supplied cluster name.  Once you build the cluster, 
+This command builds a new, empty cluster with the supplied cluster name.  Once you build the cluster,
 you can use `get-params.sh` to read the configuration data and one of the deploy variants to deploy to it.
 
 EXAMPLE
