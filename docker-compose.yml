@@ -49,7 +49,10 @@ services:
       SOLR_URL: http://solr:8983/solr/blacklight-core
       IIIF_MANIFESTS_BASE_URL: http://localhost/manifests/
       PASSENGER_APP_ENV: development
+      HTTP_PASSWORD_PROTECT: 'true'
       BLACKLIGHT_VERSION:
+    env_file:
+      - .secrets
     ports:
       - "3000:3000"
     volumes:

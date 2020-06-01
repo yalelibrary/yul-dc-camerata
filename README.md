@@ -97,7 +97,7 @@ bin/deploy-full.sh $CLUSTER_NAME
 ```
 This command deploys the full Yale stack to the named cluster.  You must have a valid params
 file obtained by running `bin/get-params` against your cluster first.  You must also create a `.secrets`
-file with valid S3 credentials; see `secrets-template` for the correct format.
+file with valid S3 credentials and basic auth credentials; see `secrets-template` for the correct format.
 
 ### Build a new cluster
 ```
