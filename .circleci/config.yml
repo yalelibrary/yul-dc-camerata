@@ -1,0 +1,44 @@
+version: 2.1
+jobs:
+  build-and-push:
+    executor: docker/docker
+    steps:
+      - setup_remote_docker
+      - checkout
+  run-tests:
+    docker:
+      # Image pulled from registry
+      - image: yalelibraryit/dc-management:master
+        environment:
+          POSTGRES_HOST: localhost
+          POSTGRES_DB: yul_dc_management_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+          SOLR_CORE: blacklight-test
+          SOLR_URL: http://localhost:8983/solr
+      - image: yalelibraryit/dc-solr:79a71ec
+        command: bash -c 'precreate-core blacklight-test /opt/config; exec solr -f'
+      - image: circleci/postgres:9.5-alpine-ram
+        environment:
+          POSTGRES_DB: yul_dc_management_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+    executor: docker/docker
+    steps:
+      - setup_remote_docker
+      - checkout
+      - run:
+          name: Rubocop
+          command: bundle exec rubocop --parallel
+      - run:
+          name: rspec
+          # Excludes tests that require Yale VPN access
+          command:  |
+            bundle exec rspec --tag ~vpn_only:true
+orbs:
+  docker: circleci/docker@1.0.1
+workflows:
+  commit:
+    jobs:
+      - run-tests:
+          context: yul-dc
