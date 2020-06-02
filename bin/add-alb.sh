@@ -95,6 +95,7 @@ then
     --protocol HTTP \
     --port 3000 \
     --vpc-id $VPC_ID \
+    --matcher '{"HttpCode": "200,401"}' \
     --health-check-interval-seconds 90 \
     --health-check-timeout-seconds 75 \
       | grep -Eo -m 1 'arn:aws:elasticloadbalancing[^\"]*'`
@@ -166,4 +167,3 @@ then
   echo
 
 fi
-
