@@ -27,7 +27,7 @@ services:
       - "8182:8182"
 
   db:
-    image: curationexperts/dc-postgres:master
+    image: postgres:${POSTGRES_VERSION}
     environment:
       POSTGRES_MULTIPLE_DATABASES: blacklight_yul_development,yul_dc_management_development
       POSTGRES_HOST: db
