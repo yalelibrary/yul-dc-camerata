@@ -40,26 +40,33 @@ then
   echo "Using AWS_PROFILE=${AWS_PROFILE}";
   echo "      AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}";
 
-  # Get blacklight target group ARN so we can connect the new cluster to the existing load balancer
+  # Get BLACKLIGHT target group ARN so we can connect the new cluster to the existing load balancer
   BL_TG_ARN=`aws elbv2 describe-target-groups \
     --names tg-${1}-blacklight \
     --query "(TargetGroups[?TargetGroupName=='tg-${1}-blacklight'])[0].TargetGroupArn" \
       | grep -Eo "arn:aws:[^\"]+"`
   echo $BL_TG_ARN
 
-  # Get blacklight target group ARN so we can connect the new cluster to the existing load balancer
+  # Get IMAGE target group ARN so we can connect the new cluster to the existing load balancer
   IMG_TG_ARN=`aws elbv2 describe-target-groups \
     --names tg-${1}-images \
     --query "(TargetGroups[?TargetGroupName=='tg-${1}-images'])[0].TargetGroupArn" \
       | grep -Eo "arn:aws:[^\"]+"`
   echo $IMG_TG_ARN
 
-  # Get blacklight target group ARN so we can connect the new cluster to the existing load balancer
+  # Get MANIFEST target group ARN so we can connect the new cluster to the existing load balancer
   MFST_TG_ARN=`aws elbv2 describe-target-groups \
     --names tg-${1}-manifests \
     --query "(TargetGroups[?TargetGroupName=='tg-${1}-manifests'])[0].TargetGroupArn" \
       | grep -Eo "arn:aws:[^\"]+"`
   echo $MFST_TG_ARN
+
+  # Get MANAGEMENT target group ARN so we can connect the new cluster to the existing load balancer
+  MGMT_TG_ARN=`aws elbv2 describe-target-groups \
+    --names tg-${1}-management \
+    --query "(TargetGroups[?TargetGroupName=='tg-${1}-blacklight'])[0].TargetGroupArn" \
+      | grep -Eo "arn:aws:[^\"]+"`
+  echo $MGMT_TG_ARN
 
   # Merge the docker-compose.yml and docker-compose-ecs.yml files
   # Mimics docker-compose support for multiple compsose files since
@@ -78,5 +85,6 @@ then
     --cluster ${1} \
     --target-groups targetGroupArn=$BL_TG_ARN,containerName=blacklight,containerPort=3000 \
     --target-groups targetGroupArn=$IMG_TG_ARN,containerName=iiif_image,containerPort=8182 \
-    --target-groups targetGroupArn=$MFST_TG_ARN,containerName=iiif_manifest,containerPort=80
+    --target-groups targetGroupArn=$MFST_TG_ARN,containerName=iiif_manifest,containerPort=80 \
+    --target-groups targetGroupArn=$MGMT_TG_ARN,containerName=management,containerPort=3001
 fi

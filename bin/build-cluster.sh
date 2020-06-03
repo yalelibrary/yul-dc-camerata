@@ -27,7 +27,7 @@ then
   echo "      AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}";
 #  ecs-cli compose --project-name ${1}-project --file docker-compose-simple.yml --ecs-params ${1}-ecs-params.yml service up --cluster ${1}
   ecs-cli up --cluster ${1} --launch-type FARGATE --region $AWS_DEFAULT_REGION | tee cluster-ids.txt
-  
+
   echo "Extracting vpc & subnet IDs"
   VPC_ID=`sed -n 's/VPC created: \(.*\)/\1/p' < cluster-ids.txt`
   SUBNET0=`grep -Eo "subnet-\w+$" cluster-ids.txt | sed -n '1p'`
@@ -35,7 +35,7 @@ then
   echo "  $VPC_ID"
   echo "  $SUBNET0"
   echo "  $SUBNET1"
-  
+
   echo "Setup ingress security group"
   SG_ID=`aws ec2 describe-security-groups --filters \
     Name=vpc-id,Values=$VPC_ID --region=$AWS_DEFAULT_REGION | grep -Eo -m 1 'sg-\w+'`
@@ -56,7 +56,11 @@ then
     --protocol tcp --port 8182 \
     --cidr 0.0.0.0/0 \
     --region=$AWS_DEFAULT_REGION
-  
+  aws ec2 authorize-security-group-ingress --group-id $SG_ID \
+    --protocol tcp --port 3001 \
+    --cidr 0.0.0.0/0 \
+    --region=$AWS_DEFAULT_REGION
+
   cat <<ECS_PARAMS > ${1}-ecs-params.yml
 version: 1
 task_definition:
@@ -75,6 +79,5 @@ run_params:
         - $SG_ID
       assign_public_ip: ENABLED
 ECS_PARAMS
-  
-fi
 
+fi

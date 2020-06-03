@@ -64,7 +64,7 @@ services:
       - management
 
   management:
-    image: yalelibraryit/dc-management:port_test
+    image: yalelibraryit/dc-management:${MANAGEMENT_VERSION}
     command: /bin/sh -c "cd /home/app/webapp && sleep 30 && SOLR_CORE=blacklight-core bundle exec rake yale:index_fixture_data && /sbin/my_init"
     env_file:
       - .secrets
