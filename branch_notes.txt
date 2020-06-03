@@ -11,6 +11,12 @@ Notes:
   rest. This only has to be done once. Verify things happened by noting the
   platform version displayed in the task section of the cluster screen.
 
+  speaking of pre-release ecs-ci, you need to use something from the 1.19.x
+  stream. I built mine from scratch  (set up a $GOPATH, 'go get
+  github.com/aws/amazon-ecs-cli', figure out where in the gopath that got
+  checked out to, and run the included build script, copy the fresh binary
+  into your path)
+
   2. you have to set up efs client access policy, a sample is included,
   and should be applied to the efs resource (there's a tiny "manage client
   access" link on its details page in the efs management console).  This will
