@@ -64,7 +64,7 @@ then
   # Get MANAGEMENT target group ARN so we can connect the new cluster to the existing load balancer
   MGMT_TG_ARN=`aws elbv2 describe-target-groups \
     --names tg-${1}-management \
-    --query "(TargetGroups[?TargetGroupName=='tg-${1}-blacklight'])[0].TargetGroupArn" \
+    --query "(TargetGroups[?TargetGroupName=='tg-${1}-management'])[0].TargetGroupArn" \
       | grep -Eo "arn:aws:[^\"]+"`
   echo $MGMT_TG_ARN
 
