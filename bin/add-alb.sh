@@ -118,6 +118,15 @@ then
     --vpc-id $VPC_ID \
       | grep -Eo -m 1 'arn:aws:elasticloadbalancing[^\"]*'`
 
+  # Create a target group to associate the MANAGEMENT listener to clusters
+  MGMT_TG_ARN=`aws elbv2 create-target-group \
+    --name tg-${1}-management \
+    --target-type ip \
+    --protocol HTTP \
+    --port 3001 \
+    --vpc-id $VPC_ID \
+      | grep -Eo -m 1 'arn:aws:elasticloadbalancing[^\"]*'`
+
   # Create an HTTP listener on port 80that redirects all traffice to HTTPS (port 443)
   HTTP_LISTENER_ARN=`aws elbv2 create-listener \
       --load-balancer-arn $ALB_ARN \
@@ -156,11 +165,19 @@ then
       --conditions "Field=path-pattern,PathPatternConfig={Values=['/manifests*']}" \
       --actions Type=forward,TargetGroupArn=$MFST_TG_ARN > /dev/null
 
+  # Add a rule to the HTTPS listener to route requests to the /management/ path to the MANAGEMENT target
+  aws elbv2 create-rule \
+      --listener-arn $HTTPS_LISTENER_ARN \
+      --priority 21 \
+      --conditions "Field=path-pattern,PathPatternConfig={Values=['/management*']}" \
+      --actions Type=forward,TargetGroupArn=$MGMT_TG_ARN > /dev/null
+
   echo "Newly created resources:"
   echo "  Load Balancer:     $ALB_ARN"
   echo "  Blacklight Target: $BL_TG_ARN"
   echo "  Image Target:      $IMG_TG_ARN"
   echo "  Manifest Target:   $MFST_TG_ARN"
+  echo "  Management Target:   $MGMT_TG_ARN"
   # echo "  Certificate:       $CERT_ARN"
   echo "  HTTP Listener:     $HTTP_LISTENER_ARN"
   echo "  HTTPS Listener:    $HTTPS_LISTENER_ARN"
