@@ -1,0 +1,26 @@
+Notes:
+
+  1. you must use platform version 1.4.0, the default and (ironically) 
+  LATEST version referred to in the documentation is 1.3.5, this won't work.
+  At some point LATEST will point to 1.4.0, and this won't be an issue.
+
+  The pre-release version of ecs-ci that we use has a known issue in their
+  tracker that it specifies the wrong platform version when efs volumes are
+  detected.  For now, the workaround is to upgrade in the aws console (goto
+  cluster->update cluster, select platform version 1.4.0 and click through the
+  rest. This only has to be done once. Verify things happened by noting the
+  platform version displayed in the task section of the cluster screen.
+
+  2. you have to set up efs client access policy, a sample is included,
+  and should be applied to the efs resource (there's a tiny "manage client
+  access" link on its details page in the efs management console).  This will
+  fix "server access denied" errors.  In the future, we should be using efs
+  access points, but i haven't been able to get them working correctly yet.
+  the access policy allows access from any aws principal, which should probably 
+  be trimmed down, but i'm not a wizard.
+
+
+
+
+
+

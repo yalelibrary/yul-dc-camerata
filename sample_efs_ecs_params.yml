@@ -1,0 +1,21 @@
+version: 1
+task_definition:
+  platform_version: 1.4.0
+  task_execution_role: ecsTaskExecutionRole
+  ecs_network_mode: awsvpc
+  task_size:
+    mem_limit: 4GB
+    cpu_limit: 512
+  efs_volumes:
+      - name: "solr_efs"
+        filesystem_id: fs-55dd5cd6
+        iam: DISABLED
+run_params:
+  network_configuration:
+    awsvpc_configuration:
+      subnets:
+        - "subnet-0324ad706a6ea8390"
+        - "subnet-0d882c98e1c61710b"
+      security_groups:
+        - "sg-0c535f8bf005d8c7a"
+      assign_public_ip: ENABLED
