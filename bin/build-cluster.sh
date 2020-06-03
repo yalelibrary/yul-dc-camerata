@@ -59,6 +59,10 @@ then
     --cidr 0.0.0.0/0 \
     --region=$AWS_DEFAULT_REGION
 
+  aws ec2 authorize-security-group-ingress --group-id $SG_ID \
+    --protocol tcp --port 3001 \
+    --cidr 0.0.0.0/0 \
+    --region=$AWS_DEFAULT_REGION
 
   SOLR_FS_ID=`aws efs create-file-system \
     --creation-token ${1}-solr-efs \
