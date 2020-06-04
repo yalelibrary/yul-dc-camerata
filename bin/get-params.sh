@@ -6,6 +6,20 @@ else
   cluster='ok'
 fi
 
+if [[ -z $2 ]]
+then
+  memory='4GB'
+else
+  memory=$2
+fi
+
+if [[ -z $3 ]]
+then
+  cpu='512'
+else
+  cpu=$3
+fi
+
 if [[ -z ${AWS_PROFILE} ]]
 then
   echo "ERROR: Please set an aws profile using \"export AWS_PROFILE=your_profile_name\"\n"
@@ -24,6 +38,8 @@ if [[ -n ${cluster} ]] && [[ -n ${profile} ]] && [[ -n ${region} ]]
 then
   echo "Using AWS_PROFILE=${AWS_PROFILE}"
   echo "      AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION} \n"
+  echo "      mem_limit=${memory}"
+  echo "      cpu_limit=${cpu}"
 
   SUBNET0=`aws cloudformation list-stack-resources \
     --stack-name amazon-ecs-cli-setup-${1} \
@@ -49,8 +65,8 @@ task_definition:
   task_execution_role: ecsTaskExecutionRole
   ecs_network_mode: awsvpc
   task_size:
-    mem_limit: 4GB
-    cpu_limit: 512
+    mem_limit: $memory
+    cpu_limit: $cpu
 run_params:
   network_configuration:
     awsvpc_configuration:
@@ -62,4 +78,3 @@ run_params:
       assign_public_ip: ENABLED
 ECS_PARAMS
 fi
-
