@@ -78,11 +78,17 @@ The command has one required parameter which is the name of the target cluster.
 
 ### Get ECS Parameter for a Cluster
 ```
-bin/get-params.sh $CLUSTER_NAME
+bin/get-params.sh $CLUSTER_NAME [Memory] [CPU]
 ```
 This command fetches the subnets and security group for an existing cluster and builds the
-`ecs-params.yml` required by the ECS CLI tool to deploy a new compose file. The cluster-specific
-params file will be prefixed with the cluster name - e.g. `panicle-ecs-params.yml`.
+`ecs-params.yml` required by the ECS CLI tool to deploy a new compose file. The
+cluster-specific params file will be prefixed with the cluster name - e.g.
+`panicle-ecs-params.yml`. Second and third parameters, if present, set the
+memory and cpu size for the task (defaults to 4GB and 512) -- increased CPU example
+```
+bin/get-params.sh $CLUSTER_NAME 4GB 2048
+```
+Valid combinations of memory and cpu documented here: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/AWS_Fargate.html#fargate-tasks-size
 
 ### Deploy a reference container
 ```
