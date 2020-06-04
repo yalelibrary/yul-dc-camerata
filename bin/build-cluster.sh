@@ -1,4 +1,6 @@
 #!/bin/sh
+set -ex
+
 if [[ -z $1 ]]
 then
   echo "ERROR: Please supply a cluster name"
@@ -56,10 +58,20 @@ then
     --protocol tcp --port 8182 \
     --cidr 0.0.0.0/0 \
     --region=$AWS_DEFAULT_REGION
+
   aws ec2 authorize-security-group-ingress --group-id $SG_ID \
     --protocol tcp --port 3001 \
     --cidr 0.0.0.0/0 \
     --region=$AWS_DEFAULT_REGION
+
+  SOLR_FS_ID=`aws efs create-file-system \
+    --creation-token ${1}-solr-efs \
+    --performance-mode generalPurpose \
+    --throughput-mode bursting \
+    --region $AWS_DEFAULT_REGION \
+    --tags Key=Name,Value="${1}-solr" \
+      | grep -Eo -m 1 '\"fs-\w+' | sed s/\"//`
+
 
   cat <<ECS_PARAMS > ${1}-ecs-params.yml
 version: 1
@@ -67,8 +79,14 @@ task_definition:
   task_execution_role: ecsTaskExecutionRole
   ecs_network_mode: awsvpc
   task_size:
-    mem_limit: 4GB
-    cpu_limit: 512
+    mem_limit: 8GB
+    cpu_limit: 2048
+  efs_volumes:
+      - name: "solr_efs"
+        filesystem_id: $SOLR_FS_ID
+        root_directory: /
+        transit_encryption: DISABLED
+        iam: DISABLE
 run_params:
   network_configuration:
     awsvpc_configuration:

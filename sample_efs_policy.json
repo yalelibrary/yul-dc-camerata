@@ -1,0 +1,17 @@
+{
+    "Version": "2012-10-17",
+    "Id": "allorw",
+    "Statement": [
+        {
+            "Sid": "AllowRW",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "*"
+            },
+            "Action": [
+                "elasticfilesystem:ClientMount",
+                "elasticfilesystem:ClientWrite"
+            ]
+        }
+    ]
+}
