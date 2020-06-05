@@ -1,34 +1,19 @@
-#!/bin/sh
+#!/bin/bash
 set -ex
+. ./funs.sh
 
-if [[ -z $1 ]]
-then
-  echo "ERROR: Please supply a cluster name"
-else
-  cluster='ok'
-fi
 
-if [[ -z ${AWS_PROFILE} ]]
-then
-  echo "ERROR: Please set an aws profile using \"export AWS_PROFILE=your_profile_name\"\n"
-else
-  profile='ok'
-fi
+CLUSTER_NAME=$1
 
-if [[ -z ${AWS_DEFAULT_REGION} ]]
-then
-  echo "ERROR: Please set an aws region using \"export AWS_DEFAULT_REGION=your_region\"\n"
-else
-  region='ok'
-fi
 
-if [[ -n ${cluster} ]] && [[ -n ${profile} ]] && [[ -n ${region} ]]
+if check_name ${CLUSTER_NAME} && \ 
+   check_vars AWS_PROFILE AWS_DEFAULT_REGION  && \
+  check_exec 'jq' 
 then
-  echo "Target cluster: ${1}"
+  echo "Target cluster: ${CLUSTER_NAME}"
   echo "Using AWS_PROFILE=${AWS_PROFILE}";
   echo "      AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}";
-#  ecs-cli compose --project-name ${1}-project --file docker-compose-simple.yml --ecs-params ${1}-ecs-params.yml service up --cluster ${1}
-  ecs-cli up --cluster ${1} --launch-type FARGATE --region $AWS_DEFAULT_REGION | tee cluster-ids.txt
+  ecs-cli up --cluster ${CLUSTER_NAME} --launch-type FARGATE --region $AWS_DEFAULT_REGION | tee cluster-ids.txt
 
   echo "Extracting vpc & subnet IDs"
   VPC_ID=`sed -n 's/VPC created: \(.*\)/\1/p' < cluster-ids.txt`
@@ -42,6 +27,7 @@ then
   SG_ID=`aws ec2 describe-security-groups --filters \
     Name=vpc-id,Values=$VPC_ID --region=$AWS_DEFAULT_REGION | grep -Eo -m 1 'sg-\w+'`
   echo "  $SG_ID"
+  exit 1
   aws ec2 authorize-security-group-ingress --group-id $SG_ID \
     --protocol tcp --port 80 \
     --cidr 0.0.0.0/0 \
@@ -64,16 +50,32 @@ then
     --cidr 0.0.0.0/0 \
     --region=$AWS_DEFAULT_REGION
 
-  SOLR_FS_ID=`aws efs create-file-system \
-    --creation-token ${1}-solr-efs \
+  EFS_FS_ID=`aws efs create-file-system \
+    --creation-token ${CLUSTER_NAME}-solr-efs \
     --performance-mode generalPurpose \
     --throughput-mode bursting \
     --region $AWS_DEFAULT_REGION \
-    --tags Key=Name,Value="${1}-solr" \
+    --tags Key=Name,Value="${CLUSTER_NAME}-solr" \
       | grep -Eo -m 1 '\"fs-\w+' | sed s/\"//`
 
+ACCESS_POINT_ID_SOLR=`aws efs create-access-point \
+  --file-system-id ${EFS_FS_ID} \
+  --client-token ap-solr-1 \
+  --tags Key=Name,Value="${CLUSTER_NAME}-ap-solr" \
+  --root-directory Path=/efs-ap-${CLUSTER_NAME}-solr,CreationInfo=\{OwnerUid=8389,OwnerGid=8389,Permissions=755\} \
+  --posix-user Uid=8389,Gid=8389 | jq .AccessPointId`
 
-  cat <<ECS_PARAMS > ${1}-ecs-params.yml
+ACCESS_POINT_ID_PSQL=`aws efs create-access-point \
+  --file-system-id ${EFS_FS_ID} \
+  --client-token ap-psql-1 \
+  --tags Key=Name,Value="${CLUSTER_NAME}-ap-solr" \
+  --root-directory Path=/efs-ap-${CLUSTER_NAME}-psql,CreationInfo=\{OwnerUid=8389,OwnerGid=8389,Permissions=755\} \
+  --posix-user Uid=999,Gid=999 | jq .AccessPointId`
+
+
+
+
+  cat <<ECS_PARAMS > ${CLUSTER_NAME}-ecs-params.yml
 version: 1
 task_definition:
   task_execution_role: ecsTaskExecutionRole
@@ -83,10 +85,17 @@ task_definition:
     cpu_limit: 2048
   efs_volumes:
       - name: "solr_efs"
-        filesystem_id: $SOLR_FS_ID
-        root_directory: /
-        transit_encryption: DISABLED
-        iam: DISABLE
+        filesystem_id: $EFS_FS_ID
+        access_point: $ACCESS_POINT_ID_SOLR
+        transit_encryption: ENABLED
+        transit_encryption_port: 4182
+        iam: DISABLED
+      - name: "psql_efs"
+        filesystem_id: $EFS_FS_ID
+        access_point: $ACCESS_POINT_ID_PSQL
+        transit_encryption: ENABLED
+        transit_encryption_port: 4182
+        iam: DISABLED
 run_params:
   network_configuration:
     awsvpc_configuration:

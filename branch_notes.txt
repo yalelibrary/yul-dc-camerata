@@ -24,7 +24,28 @@ Notes:
   access points, but i haven't been able to get them working correctly yet.
   the access policy allows access from any aws principal, which should probably 
   be trimmed down, but i'm not a wizard.
+  https://docs.aws.amazon.com/efs/latest/ug/create-file-system-policy.html
 
+
+  3. now access points are working.  You will need 2, and they should be named
+  $cluster-solr and $cluster-psql, so to integrate, we will need to create
+  those and extract the resource id (this should only need to be done once,
+  so, maybe in the create script.  This will allow us to segment a single efs
+  filesystem into as many pieces as we want. Now that i'm writing this down,
+  it occurrs to me that each cluster has its own vpc, the efs filesystem lives
+  there... 
+
+  To configure an access point, you need the numeric user ids of the users
+  accessing the filesystem. the solr user is 8983, and postgres is 999. The
+  path setting should be $clustername-psql and $clustername-solr.  This will
+  "alias" the root for clients (the client can't tell they are using a
+  subdirectory, and not the root when mounting). This allows us to segment the
+  filesystems that various containers need (for instance, we could have
+  multiple dbs, without having to fiddle with the $DATA filesystem).
+
+  filesystem creation reference:
+  https://docs.aws.amazon.com/efs/latest/ug/creating-using-create-fs.html
+  https://docs.aws.amazon.com/efs/latest/ug/create-access-point.html
 
 
 
