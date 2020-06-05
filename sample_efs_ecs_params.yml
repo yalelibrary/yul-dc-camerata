@@ -9,6 +9,15 @@ task_definition:
   efs_volumes:
       - name: "solr_efs"
         filesystem_id: fs-55dd5cd6
+        access_point: fsap-0fc79ca057e252f73
+        transit_encryption: ENABLED
+        transit_encryption_port: 4181
+        iam: DISABLED
+      - name: "psql_efs"
+        filesystem_id: fs-55dd5cd6
+        access_point: fsap-01cb7750b3db51d6f
+        transit_encryption: ENABLED
+        transit_encryption_port: 4182
         iam: DISABLED
 run_params:
   network_configuration:

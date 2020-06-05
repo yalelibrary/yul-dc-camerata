@@ -5,4 +5,4 @@ services:
 
   db:
     volumes:
-      - "db:/var/lib/postgresql/data"
+      - psql_efs:/var/lib/postgresql/data

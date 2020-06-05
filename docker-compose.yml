@@ -15,7 +15,7 @@ services:
       - "8983:8983"
     command: bash -c 'precreate-core $${SOLR_CORE} /opt/config; exec solr -f'
     volumes:
-      - solr_efs:/var/solr/data/$${SOLR_CORE}
+      - solr_efs:/var/solr/data/${SOLR_CORE}
 
   iiif_image:
     image: yalelibraryit/dc-iiif-cantaloupe:${IIIF_IMAGE_VERSION}
@@ -38,7 +38,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - "db:/var/lib/postgresql/data"
+      - "psql_efs:/var/lib/postgresql/data"
 
   blacklight:
     image: yalelibraryit/dc-blacklight:${BLACKLIGHT_VERSION}
@@ -88,5 +88,5 @@ services:
 
 volumes:
   blacklight:
-  db:
   solr_efs:
+  psql_efs:
