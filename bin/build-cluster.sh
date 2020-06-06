@@ -1,5 +1,4 @@
-#!/bin/sh
-set -ex
+#!/bin/bash -e
 
 if [[ -z $1 ]]
 then
