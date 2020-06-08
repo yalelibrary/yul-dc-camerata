@@ -15,7 +15,7 @@ services:
       - "8983:8983"
     command: bash -c 'precreate-core $${SOLR_CORE} /opt/config; exec solr -f'
     volumes:
-      - solr_efs:/var/solr/data/${SOLR_CORE}
+      - "solr_efs:/var/solr/data/blacklight-core"
 
   iiif_image:
     image: yalelibraryit/dc-iiif-cantaloupe:${IIIF_IMAGE_VERSION}
@@ -68,7 +68,7 @@ services:
       POSTGRES_HOST: db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
-      SOLR_URL: http://solr:8983/solr
+      SOLR_URL: http://localhost:8983/solr
       # Hacky work-around for not having manaement running in ECS yet - point to the cluster solr
       # SOLR_URL: http://54.221.58.209:8983/solr
       SOLR_CORE: blacklight-core
@@ -77,6 +77,5 @@ services:
       - "3001:3001"
 
 volumes:
-  blacklight:
   solr_efs:
   psql_efs:

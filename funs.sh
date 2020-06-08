@@ -1,17 +1,17 @@
-#refactored from other scripts, complete with gross hack to support scripts taht don't care about .secrets
-#args: 
-#$1 is cluster name
-#$2, optional is a filename to check for the presence of
+#refactored from other scripts
+# arg: list of files
 
 check_files() {
   for var in "$@"; do
-    if [[ ! -f ${var} ]]; then
+    if [[ -f "${var}" ]]; then
+      code=0
+    else
       echo "The file '$var' is required to exist."
       code=1
       break
     fi
   done
-  return $code || 0
+  return $code 
 }
 
 check_name () {

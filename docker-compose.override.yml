@@ -20,7 +20,6 @@ services:
     depends_on:
       - db
       - solr
-
-  volumes:
-    db:
-    blacklight:
+volumes:
+  db:
+  blacklight:

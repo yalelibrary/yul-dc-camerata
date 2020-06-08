@@ -4,10 +4,7 @@
 
 CLUSTER_NAME=$1
 
-
-if check_name ${CLUSTER_NAME} && \ 
-   check_vars AWS_PROFILE AWS_DEFAULT_REGION  && \
-  check_exec 'jq' 
+if check_name "${CLUSTER_NAME}" &&  check_vars "AWS_PROFILE" "AWS_DEFAULT_REGION"  &&  check_exec 'jq' 
 then
   echo "Target cluster: ${CLUSTER_NAME}"
   echo "Using AWS_PROFILE=${AWS_PROFILE}";
@@ -23,10 +20,9 @@ then
   echo "  $SUBNET1"
 
   echo "Setup ingress security group"
-  SG_ID=`aws ec2 describe-security-groups --filters \
-    Name=vpc-id,Values=$VPC_ID --region=$AWS_DEFAULT_REGION | grep -Eo -m 1 'sg-\w+'`
+  SG_ID=`aws ec2 describe-security-groups --filters Name=vpc-id,Values=$VPC_ID --region=$AWS_DEFAULT_REGION | grep -Eo -m 1 'sg-\w+'`
   echo "  $SG_ID"
-  exit 1
+
   aws ec2 authorize-security-group-ingress --group-id $SG_ID \
     --protocol tcp --port 80 \
     --cidr 0.0.0.0/0 \
@@ -57,22 +53,31 @@ then
     --tags Key=Name,Value="${CLUSTER_NAME}-solr" \
       | grep -Eo -m 1 '\"fs-\w+' | sed s/\"//`
 
+  sleep 30 #allow time for the filesystem to come online
+
+
 ACCESS_POINT_ID_SOLR=`aws efs create-access-point \
   --file-system-id ${EFS_FS_ID} \
-  --client-token ap-solr-1 \
+  --client-token ${CLUSTER_NAME}-ap-solr-1 \
   --tags Key=Name,Value="${CLUSTER_NAME}-ap-solr" \
   --root-directory Path=/efs-ap-${CLUSTER_NAME}-solr,CreationInfo=\{OwnerUid=8389,OwnerGid=8389,Permissions=755\} \
   --posix-user Uid=8389,Gid=8389 | jq .AccessPointId`
 
 ACCESS_POINT_ID_PSQL=`aws efs create-access-point \
   --file-system-id ${EFS_FS_ID} \
-  --client-token ap-psql-1 \
-  --tags Key=Name,Value="${CLUSTER_NAME}-ap-solr" \
-  --root-directory Path=/efs-ap-${CLUSTER_NAME}-psql,CreationInfo=\{OwnerUid=8389,OwnerGid=8389,Permissions=755\} \
+  --client-token ${CLUSTER_NAME}-ap-psql-1 \
+  --tags Key=Name,Value="${CLUSTER_NAME}-ap-psql" \
+  --root-directory Path=/efs-ap-${CLUSTER_NAME}-psql,CreationInfo=\{OwnerUid=999,OwnerGid=999,Permissions=755\} \
   --posix-user Uid=999,Gid=999 | jq .AccessPointId`
 
+echo "creating mount targets"
+aws efs create-mount-target \
+--file-system-id $EFS_FS_ID \
+--subnet-id  $SUBNET0
 
-
+aws efs create-mount-target \
+--file-system-id $EFS_FS_ID \
+--subnet-id  $SUBNET1
 
   cat <<ECS_PARAMS > ${CLUSTER_NAME}-ecs-params.yml
 version: 1
@@ -87,7 +92,7 @@ task_definition:
         filesystem_id: $EFS_FS_ID
         access_point: $ACCESS_POINT_ID_SOLR
         transit_encryption: ENABLED
-        transit_encryption_port: 4182
+        transit_encryption_port: 4181
         iam: DISABLED
       - name: "psql_efs"
         filesystem_id: $EFS_FS_ID

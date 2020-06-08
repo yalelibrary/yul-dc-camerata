@@ -2,11 +2,11 @@
 
 . ./funs.sh
 
-CLUSTER_NAME=$1
+export CLUSTER_NAME=$1
 
 if  check_name $CLUSTER_NAME && \
-   check_vars AWS_PROFILE AWS_DEFAULT_REGION && \
-   check_files '.secrets' "${CLUSTER_NAME}-ecs-params.yaml" && \
+   check_vars "AWS_PROFILE" "AWS_DEFAULT_REGION" && \
+   check_files '.secrets' "${CLUSTER_NAME}-ecs-params.yml" && \
    check_exec yq \
    && check_exec 'jq';
 then
