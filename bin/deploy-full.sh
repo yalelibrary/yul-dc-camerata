@@ -1,4 +1,6 @@
 #!/bin/sh
+set -e
+
 if [[ -z $1 ]]
 then
   echo "ERROR: Please supply a cluster name"
