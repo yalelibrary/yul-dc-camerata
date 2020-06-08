@@ -52,5 +52,5 @@ services:
         awslogs-region: ${AWS_DEFAULT_REGION}
         awslogs-stream-prefix: management
     environment:
-      SOLR_URL: http://localhost:8983/solr
+      SOLR_BASE_URL: http://localhost:8983/solr
       POSTGRES_HOST: localhost
