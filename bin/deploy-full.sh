@@ -36,11 +36,11 @@ then
   echo $MFST_TG_ARN
 
   # Get MANAGEMENT target group ARN so we can connect the new cluster to the existing load balancer
-  MGMT_TG_ARN=`aws elbv2 describe-target-groups \
-    --names tg-${CLUSTER_NAME}-management \
-    --query "(TargetGroups[?TargetGroupName=='tg-${CLUSTER_NAME}-management'])[0].TargetGroupArn" \
-      | grep -Eo "arn:aws:[^\"]+"`
-  echo $MGMT_TG_ARN
+#  MGMT_TG_ARN=`aws elbv2 describe-target-groups \
+#    --names tg-${CLUSTER_NAME}-management \
+#    --query "(TargetGroups[?TargetGroupName=='tg-${CLUSTER_NAME}-management'])[0].TargetGroupArn" \
+#      | grep -Eo "arn:aws:[^\"]+"`
+#  echo $MGMT_TG_ARN
 
   # Merge the docker-compose.yml and docker-compose-ecs.yml files
   # Mimics docker-compose support for multiple compsose files since
@@ -59,6 +59,6 @@ then
     --cluster ${CLUSTER_NAME} \
     --target-groups targetGroupArn=$BL_TG_ARN,containerName=blacklight,containerPort=3000 \
     --target-groups targetGroupArn=$IMG_TG_ARN,containerName=iiif_image,containerPort=8182 \
-    --target-groups targetGroupArn=$MFST_TG_ARN,containerName=iiif_manifest,containerPort=80 \
-    --target-groups targetGroupArn=$MGMT_TG_ARN,containerName=management,containerPort=3001
+    --target-groups targetGroupArn=$MFST_TG_ARN,containerName=iiif_manifest,containerPort=80 
+#    --target-groups targetGroupArn=$MGMT_TG_ARN,containerName=management,containerPort=3001
 fi

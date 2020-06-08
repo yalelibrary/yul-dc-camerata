@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash -ex
 . ./funs.sh
 
 
@@ -20,30 +20,33 @@ then
   echo "  $SUBNET1"
 
   echo "Setup ingress security group"
-  SG_ID=`aws ec2 describe-security-groups --filters Name=vpc-id,Values=$VPC_ID --region=$AWS_DEFAULT_REGION | grep -Eo -m 1 'sg-\w+'`
+  SG_ID=`aws ec2 describe-security-groups --filters Name=vpc-id,Values=$VPC_ID --region=$AWS_DEFAULT_REGION | jq '.SecurityGroups[0].GroupId'`
   echo "  $SG_ID"
 
-  aws ec2 authorize-security-group-ingress --group-id $SG_ID \
-    --protocol tcp --port 80 \
-    --cidr 0.0.0.0/0 \
-    --region=$AWS_DEFAULT_REGION
-  aws ec2 authorize-security-group-ingress --group-id $SG_ID \
-    --protocol tcp --port 3000 \
-    --cidr 0.0.0.0/0 \
-    --region=$AWS_DEFAULT_REGION
-  aws ec2 authorize-security-group-ingress --group-id $SG_ID \
-    --protocol tcp --port 8983 \
-    --cidr 0.0.0.0/0 \
-    --region=$AWS_DEFAULT_REGION
-  aws ec2 authorize-security-group-ingress --group-id $SG_ID \
-    --protocol tcp --port 8182 \
-    --cidr 0.0.0.0/0 \
-    --region=$AWS_DEFAULT_REGION
-
-  aws ec2 authorize-security-group-ingress --group-id $SG_ID \
-    --protocol tcp --port 3001 \
-    --cidr 0.0.0.0/0 \
-    --region=$AWS_DEFAULT_REGION
+#  aws ec2 authorize-security-group-ingress --group-id $SG_ID \
+#    --protocol tcp --port 80 \
+#    --cidr 0.0.0.0/0 \
+#    --region=$AWS_DEFAULT_REGION
+#
+#  aws ec2 authorize-security-group-ingress --group-id $SG_ID \
+#    --protocol tcp --port 3000 \
+#    --cidr 0.0.0.0/0 \
+#    --region=$AWS_DEFAULT_REGION
+#
+#  aws ec2 authorize-security-group-ingress --group-id $SG_ID \
+#    --protocol tcp --port 8983 \
+#    --cidr 0.0.0.0/0 \
+#    --region=$AWS_DEFAULT_REGION
+#
+#  aws ec2 authorize-security-group-ingress --group-id $SG_ID \
+#    --protocol tcp --port 8182 \
+#    --cidr 0.0.0.0/0 \
+#    --region=$AWS_DEFAULT_REGION
+#
+#  aws ec2 authorize-security-group-ingress --group-id $SG_ID \
+#    --protocol tcp --port 3001 \
+#    --cidr 0.0.0.0/0 \
+#    --region=$AWS_DEFAULT_REGION
 
   EFS_FS_ID=`aws efs create-file-system \
     --creation-token ${CLUSTER_NAME}-solr-efs \
@@ -88,7 +91,7 @@ task_definition:
     mem_limit: 8GB
     cpu_limit: 2048
   efs_volumes:
-      - name: "solr_efs"
+      - name: "efs"
         filesystem_id: $EFS_FS_ID
         access_point: $ACCESS_POINT_ID_SOLR
         transit_encryption: ENABLED

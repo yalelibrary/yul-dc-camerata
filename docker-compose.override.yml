@@ -12,14 +12,14 @@ services:
       - db
       - solr
       - iiif_manifest
-      - management
+#      - management
     volumes:
       - blacklight:/home/app/webapp
 
-  management:
-    depends_on:
-      - db
-      - solr
+#  management:
+#    depends_on:
+#      - db
+#      - solr
 volumes:
   db:
   blacklight:

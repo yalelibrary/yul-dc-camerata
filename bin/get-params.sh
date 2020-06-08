@@ -1,4 +1,5 @@
 #!/bin/bash -e
+CLUSTER_NAME=$1
 if [[ -z $1 ]]
 then
   echo "ERROR: Please supply a cluster name"
@@ -52,8 +53,14 @@ then
         --query "(StackResourceSummaries[?LogicalResourceId=='Vpc'].PhysicalResourceId)[0]"`
   SG_ID=`aws ec2 describe-security-groups \
     --filters Name=vpc-id,Values=$VPC_ID \
-      --query "(SecurityGroups[?GroupName=='default'])[0].GroupId" `
+    --query "(SecurityGroups[?GroupName=='default'])[0].GroupId" `
 
+  FS_ID=`aws efs describe-file-systems --region $AWS_DEFAULT_REGION  |  jq ".FileSystems[]|select(.Tags[].Value == \"${1}-solr\").FileSystemId"`
+  AP_SQL=`aws efs describe-access-points --region $AWS_DEFAULT_REGION | jq ".AccessPoints[]|select(.ClientToken==\"${1}-ap-psql-1\").AccessPointId"`
+  AP_SOLR=`aws efs describe-access-points --region $AWS_DEFAULT_REGION | jq ".AccessPoints[]|select(.ClientToken==\"${1}-ap-solr-1\").AccessPointId"`
+  echo $FS_ID
+  echo $AP_SQL
+  echo $AP_SOLR
   echo $SUBNET0
   echo $SUBNET1
   echo $SG_ID
@@ -67,6 +74,19 @@ task_definition:
   task_size:
     mem_limit: $memory
     cpu_limit: $cpu
+  efs_volumes:
+      - name: "solr_efs"
+        filesystem_id: $FS_ID
+        access_point: $AP_SOLR
+        transit_encryption: ENABLED
+        transit_encryption_port: 4181
+        iam: DISABLED
+      - name: "psql_efs"
+        filesystem_id: $FS_ID
+        access_point: $AP_SQL
+        transit_encryption: ENABLED
+        transit_encryption_port: 4182
+        iam: DISABLED
 run_params:
   network_configuration:
     awsvpc_configuration:
