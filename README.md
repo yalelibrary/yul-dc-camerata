@@ -122,5 +122,5 @@ bin/deploy-simple.sh panicle
 ```
 bin/add-alb.sh $CLUSTER_NAME
 ```
-This command configures an application load balancer for the cluster and sets up rules to rout requests
-to the blacklight, image, and manifest apps.
+This command configures an application load balancer for the cluster and sets up rules to route requests
+to the blacklight, image, manifest, and management apps.
