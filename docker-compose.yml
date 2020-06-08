@@ -60,17 +60,14 @@ services:
 
   management:
     image: yalelibraryit/dc-management:${MANAGEMENT_VERSION}
-    command: /bin/sh -c "cd /home/app/webapp && sleep 30 && SOLR_CORE=blacklight-core bundle exec rake yale:index_fixture_data && /sbin/my_init"
+    command: /bin/sh -c "cd /home/app/webapp && sleep 60 && SOLR_CORE=blacklight-core bundle exec rake yale:index_fixture_data && /sbin/my_init"
     env_file:
       - .secrets
     environment:
-      # POSTGRES_DB: yul_dc_management_development
       POSTGRES_HOST: db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
-      SOLR_URL: http://localhost:8983/solr
-      # Hacky work-around for not having manaement running in ECS yet - point to the cluster solr
-      # SOLR_URL: http://54.221.58.209:8983/solr
+      SOLR_BASE_URL: http://solr:8983/solr
       SOLR_CORE: blacklight-core
       PASSENGER_APP_ENV: development
     ports:
