@@ -32,7 +32,7 @@ services:
     image: curationexperts/dc-postgres:${POSTGRES_VERSION}
     environment:
       POSTGRES_MULTIPLE_DATABASES: blacklight_yul_development,yul_dc_management_development
-      POSTGRES_HOST: db
+      POSTGRES_HOST: localhost
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
     ports:
@@ -45,10 +45,10 @@ services:
     command: bash -c "echo $$(date -u +%FT%TZ) > DEPLOYED_AT && /sbin/my_init"
     environment:
       POSTGRES_DB: blacklight_yul_development
-      POSTGRES_HOST: db
+      POSTGRES_HOST: localhost
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
-      SOLR_URL: http://solr:8983/solr/blacklight-core
+      SOLR_URL: http://localhost:8983/solr/blacklight-core
       IIIF_MANIFESTS_BASE_URL: http://localhost/manifests/
       PASSENGER_APP_ENV: development
       HTTP_PASSWORD_PROTECT: 'true'
@@ -64,10 +64,10 @@ services:
     env_file:
       - .secrets
     environment:
-      POSTGRES_HOST: db
+      POSTGRES_HOST: localhost
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
-      SOLR_BASE_URL: http://solr:8983/solr
+      SOLR_BASE_URL: http://localhost:8983/solr
       SOLR_CORE: blacklight-core
       PASSENGER_APP_ENV: development
     ports:
