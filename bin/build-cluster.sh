@@ -1,5 +1,4 @@
-#!/bin/bash
-set -ex
+#!/bin/bash -e
 . ./funs.sh
 
 

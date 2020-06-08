@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash -e
 . funs.sh
 if check_vars
 then

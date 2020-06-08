@@ -6,3 +6,21 @@ services:
   db:
     volumes:
       - psql_efs:/var/lib/postgresql/data
+
+  blacklight:
+    depends_on:
+      - db
+      - solr
+      - iiif_manifest
+      - management
+    volumes:
+      - blacklight:/home/app/webapp
+
+  management:
+    depends_on:
+      - db
+      - solr
+
+  volumes:
+    db:
+    blacklight:
