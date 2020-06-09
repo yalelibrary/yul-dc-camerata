@@ -102,14 +102,6 @@ bin/get-params.sh $CLUSTER_NAME 4GB 2048
 
 Valid combinations of memory and cpu documented here: <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/AWS_Fargate.html#fargate-tasks-size>
 
-### Deploy a reference container
-
-```
-bin/deploy-simple.sh $CLUSTER_NAME
-```
-
-This command deploys a single container PHP application to the named cluster. You must have a valid params file obatined by running `bin/get-params` against your cluster first.
-
 ### Deploy the Yale stack
 
 ```
