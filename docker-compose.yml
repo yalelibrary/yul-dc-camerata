@@ -13,7 +13,7 @@ services:
       SOLR_VERSION:
     ports:
       - "8983:8983"
-    command: bash -c 'mount && ls -la /var/solr/data && precreate-core $${SOLR_CORE} /opt/config && touch /var/solr/data/blacklight-core/foobar.txt && exec solr -f'
+    command: bash -c 'precreate-core $${SOLR_CORE} /opt/config && exec solr -f'
     volumes:
       - "solr_efs:/var/solr/data/blacklight-core"
 
@@ -60,7 +60,7 @@ services:
 
   management:
     image: yalelibraryit/dc-management:${MANAGEMENT_VERSION}
-    command: /bin/sh -c "cd /home/app/webapp && sleep 60 && SOLR_CORE=blacklight-core bundle exec rake yale:index_fixture_data && /sbin/my_init"
+    command: /bin/sh -c "cd /home/app/webapp && /sbin/my_init" # && sleep 60  #&& SOLR_CORE=blacklight-core bundle exec rake yale:index_fixture_data && /sbin/my_init"
     env_file:
       - .secrets
     environment:
