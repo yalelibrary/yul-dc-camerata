@@ -13,7 +13,7 @@ services:
       SOLR_VERSION:
     ports:
       - "8983:8983"
-    command: bash -c 'precreate-core $${SOLR_CORE} /opt/config; exec solr -f'
+    command: bash -c 'mount && ls -la /var/solr/data && precreate-core $${SOLR_CORE} /opt/config && touch /var/solr/data/blacklight-core/foobar.txt && exec solr -f'
     volumes:
       - "solr_efs:/var/solr/data/blacklight-core"
 
@@ -58,20 +58,20 @@ services:
     ports:
       - "3000:3000"
 
-#  management:
-#    image: yalelibraryit/dc-management:${MANAGEMENT_VERSION}
-#    command: /bin/sh -c "cd /home/app/webapp && sleep 60 && SOLR_CORE=blacklight-core bundle exec rake yale:index_fixture_data && /sbin/my_init"
-#    env_file:
-#      - .secrets
-#    environment:
-#      POSTGRES_HOST: localhost
-#      POSTGRES_USER: postgres
-#      POSTGRES_PASSWORD: password
-#      SOLR_BASE_URL: http://localhost:8983/solr
-#      SOLR_CORE: blacklight-core
-#      PASSENGER_APP_ENV: development
-#    ports:
-#      - "3001:3001"
+  management:
+    image: yalelibraryit/dc-management:${MANAGEMENT_VERSION}
+    command: /bin/sh -c "cd /home/app/webapp && sleep 60 && SOLR_CORE=blacklight-core bundle exec rake yale:index_fixture_data && /sbin/my_init"
+    env_file:
+      - .secrets
+   environment:
+      POSTGRES_HOST: localhost
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      SOLR_BASE_URL: http://localhost:8983/solr
+     SOLR_CORE: blacklight-core
+      PASSENGER_APP_ENV: development
+    ports:
+      - "3001:3001"
 
 volumes:
   solr_efs:

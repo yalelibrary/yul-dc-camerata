@@ -1,4 +1,4 @@
-#!/bin/bash -ex
+#!/bin/bash -e
 . ./funs.sh
 
 
@@ -23,30 +23,30 @@ then
   SG_ID=`aws ec2 describe-security-groups --filters Name=vpc-id,Values=$VPC_ID --region=$AWS_DEFAULT_REGION | jq '.SecurityGroups[0].GroupId'`
   echo "  $SG_ID"
 
-#  aws ec2 authorize-security-group-ingress --group-id $SG_ID \
-#    --protocol tcp --port 80 \
-#    --cidr 0.0.0.0/0 \
-#    --region=$AWS_DEFAULT_REGION
-#
-#  aws ec2 authorize-security-group-ingress --group-id $SG_ID \
-#    --protocol tcp --port 3000 \
-#    --cidr 0.0.0.0/0 \
-#    --region=$AWS_DEFAULT_REGION
-#
-#  aws ec2 authorize-security-group-ingress --group-id $SG_ID \
-#    --protocol tcp --port 8983 \
-#    --cidr 0.0.0.0/0 \
-#    --region=$AWS_DEFAULT_REGION
-#
-#  aws ec2 authorize-security-group-ingress --group-id $SG_ID \
-#    --protocol tcp --port 8182 \
-#    --cidr 0.0.0.0/0 \
-#    --region=$AWS_DEFAULT_REGION
-#
-#  aws ec2 authorize-security-group-ingress --group-id $SG_ID \
-#    --protocol tcp --port 3001 \
-#    --cidr 0.0.0.0/0 \
-#    --region=$AWS_DEFAULT_REGION
+  aws ec2 authorize-security-group-ingress --group-id $SG_ID \
+    --protocol tcp --port 80 \
+    --cidr 0.0.0.0/0 \
+    --region=$AWS_DEFAULT_REGION
+
+  aws ec2 authorize-security-group-ingress --group-id $SG_ID \
+    --protocol tcp --port 3000 \
+    --cidr 0.0.0.0/0 \
+    --region=$AWS_DEFAULT_REGION
+
+  aws ec2 authorize-security-group-ingress --group-id $SG_ID \
+    --protocol tcp --port 8983 \
+    --cidr 0.0.0.0/0 \
+    --region=$AWS_DEFAULT_REGION
+
+  aws ec2 authorize-security-group-ingress --group-id $SG_ID \
+    --protocol tcp --port 8182 \
+    --cidr 0.0.0.0/0 \
+    --region=$AWS_DEFAULT_REGION
+
+  aws ec2 authorize-security-group-ingress --group-id $SG_ID \
+    --protocol tcp --port 3001 \
+    --cidr 0.0.0.0/0 \
+    --region=$AWS_DEFAULT_REGION
 
   EFS_FS_ID=`aws efs create-file-system \
     --creation-token ${CLUSTER_NAME}-solr-efs \
@@ -58,13 +58,31 @@ then
 
   sleep 30 #allow time for the filesystem to come online
 
+  aws efs put-file-system-policy --file-system-id $EFS_FS_ID  --policy '{
+    "Version": "2012-10-17",
+    "Id": "allorw",
+    "Statement": [
+        {
+            "Sid": "AllowRW",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "*"
+            },
+            "Action": [
+                "elasticfilesystem:ClientMount",
+                "elasticfilesystem:ClientWrite"
+            ]
+        }
+    ]
+}'
+
 
 ACCESS_POINT_ID_SOLR=`aws efs create-access-point \
   --file-system-id ${EFS_FS_ID} \
   --client-token ${CLUSTER_NAME}-ap-solr-1 \
   --tags Key=Name,Value="${CLUSTER_NAME}-ap-solr" \
-  --root-directory Path=/efs-ap-${CLUSTER_NAME}-solr,CreationInfo=\{OwnerUid=8389,OwnerGid=8389,Permissions=755\} \
-  --posix-user Uid=8389,Gid=8389 | jq .AccessPointId`
+  --root-directory Path=/efs-ap-${CLUSTER_NAME}-solr,CreationInfo=\{OwnerUid=8983,OwnerGid=8983,Permissions=755\} \
+  --posix-user Uid=8983,Gid=8983 | jq .AccessPointId`
 
 ACCESS_POINT_ID_PSQL=`aws efs create-access-point \
   --file-system-id ${EFS_FS_ID} \
