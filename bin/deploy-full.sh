@@ -54,6 +54,7 @@ then
     --project-name ${CLUSTER_NAME}-project \
     --file docker-compose-merged.yml \
     --ecs-params ${CLUSTER_NAME}-ecs-params.yml \
+    --force \
     service up \
     --create-log-groups \
     --cluster ${CLUSTER_NAME} \

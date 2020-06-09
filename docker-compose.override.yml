@@ -12,7 +12,7 @@ services:
       - db
       - solr
       - iiif_manifest
-#      - management
+      - management
     volumes:
       - blacklight:/home/app/webapp
 

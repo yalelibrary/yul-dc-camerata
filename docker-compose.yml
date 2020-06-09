@@ -68,7 +68,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
       SOLR_BASE_URL: http://localhost:8983/solr
-     SOLR_CORE: blacklight-core
+      SOLR_CORE: blacklight-core
       PASSENGER_APP_ENV: development
     ports:
       - "3001:3001"
