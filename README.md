@@ -26,6 +26,7 @@ POSTGRES_HOST=db
   docker-compose up blacklight
   docker-compose up solr
   docker-compose up db
+  docker-compose up management
   ```
 
 - Access the blacklight app at `http://localhost:3000`
@@ -35,6 +36,8 @@ POSTGRES_HOST=db
 - Access the image instance at `http://localhost:8182`
 
 - Access the manifests instance at `http://localhost`
+
+- Access the management app at `http://localhost:3001/management`
 
 ## Local Development vs. ECS Deployment
 
