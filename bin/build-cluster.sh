@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash -ex
 . ./funs.sh
 
 
@@ -9,7 +9,7 @@ then
   echo "Target cluster: ${CLUSTER_NAME}"
   echo "Using AWS_PROFILE=${AWS_PROFILE}";
   echo "      AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}";
-  ecs-cli up --cluster ${CLUSTER_NAME} --launch-type FARGATE --region $AWS_DEFAULT_REGION | tee cluster-ids.txt
+  ecs-cli up --force --cluster ${CLUSTER_NAME} --launch-type FARGATE --region $AWS_DEFAULT_REGION | tee cluster-ids.txt
 
   echo "Extracting vpc & subnet IDs"
   VPC_ID=`sed -n 's/VPC created: \(.*\)/\1/p' < cluster-ids.txt`
@@ -20,33 +20,9 @@ then
   echo "  $SUBNET1"
 
   echo "Setup ingress security group"
-  SG_ID=`aws ec2 describe-security-groups --filters Name=vpc-id,Values=$VPC_ID --region=$AWS_DEFAULT_REGION | jq '.SecurityGroups[0].GroupId'`
+  SG_ID=`aws ec2 describe-security-groups --filters Name=vpc-id,Values=$VPC_ID --region=$AWS_DEFAULT_REGION | jq -r ".SecurityGroups[0].GroupId"`
   echo "  $SG_ID"
 
-  aws ec2 authorize-security-group-ingress --group-id $SG_ID \
-    --protocol tcp --port 80 \
-    --cidr 0.0.0.0/0 \
-    --region=$AWS_DEFAULT_REGION
-
-  aws ec2 authorize-security-group-ingress --group-id $SG_ID \
-    --protocol tcp --port 3000 \
-    --cidr 0.0.0.0/0 \
-    --region=$AWS_DEFAULT_REGION
-
-  aws ec2 authorize-security-group-ingress --group-id $SG_ID \
-    --protocol tcp --port 8983 \
-    --cidr 0.0.0.0/0 \
-    --region=$AWS_DEFAULT_REGION
-
-  aws ec2 authorize-security-group-ingress --group-id $SG_ID \
-    --protocol tcp --port 8182 \
-    --cidr 0.0.0.0/0 \
-    --region=$AWS_DEFAULT_REGION
-
-  aws ec2 authorize-security-group-ingress --group-id $SG_ID \
-    --protocol tcp --port 3001 \
-    --cidr 0.0.0.0/0 \
-    --region=$AWS_DEFAULT_REGION
 
   EFS_FS_ID=`aws efs create-file-system \
     --creation-token ${CLUSTER_NAME}-solr-efs \
