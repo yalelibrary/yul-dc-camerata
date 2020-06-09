@@ -31,7 +31,9 @@ POSTGRES_HOST=db
 - Access the blacklight app at `http://localhost:3000`
 
 - Access the solr instance at `http://localhost:8983`
+
 - Access the image instance at `http://localhost:8182`
+
 - Access the manifests instance at `http://localhost`
 
 ## Local Development vs. ECS Deployment
@@ -137,9 +139,17 @@ You should now be able to use the AWS web console to get the DNS name for your l
 Example:
 
 ```
-export CLUSTER_NAME=gobstopper
-bin/build-cluster.sh $CLUSTER_NAME
-bin/get-params.sh $CLUSTER_NAME
-bin/add-alb.sh $CLUSTER_NAME
-bin/deploy-full.sh $CLUSTER_NAME
+bin/build-cluster.sh gobstopper
+bin/get-params.sh gobstopper
+bin/add-alb.sh gobstopper
+bin/deploy-full.sh gobstopper
 ```
+
+## Releasing a new version
+
+1. Decide on a new version number. We use [semantic versioning](https://semver.org/).
+2. Update the version number in `.github_changelog_generator`
+3. `github_changelog_generator --user yalelibrary --project yul-dc-camerata --token $YOUR_GITHUB_TOKEN`
+4. Commit and merge the changes you just made with a message like "Prep for x.y.z release"
+5. Once those changes are merged to the `master` branch, in the github web UI go to `Releases` and tag a new release with the right version number. Paste in the release notes for this version from the changelog you generated. In the release notes, split out `Features`, `Bug Fixes`, and `Other`
+6. Once the CI build has completed for `master`, deploy the camerata application using `bin/deploy-full.sh yul-test`
