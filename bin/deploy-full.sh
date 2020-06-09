@@ -17,7 +17,7 @@ if [[ -f .secrets ]]
 then
   secrets='ok'
 else
-  echo "ERROR: Please provide a \".secrets.yml\" file.  See \"secrets-template.yml\" for an example."
+  echo "ERROR: Please provide a \".secrets\" file.  See the \"secrets-template\" file for an example."
 fi
 
 if [[ -z ${AWS_PROFILE} ]]
