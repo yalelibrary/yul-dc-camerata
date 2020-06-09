@@ -63,7 +63,7 @@ services:
     command: /bin/sh -c "cd /home/app/webapp && sleep 60 && SOLR_CORE=blacklight-core bundle exec rake yale:index_fixture_data && /sbin/my_init"
     env_file:
       - .secrets
-   environment:
+    environment:
       POSTGRES_HOST: localhost
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
