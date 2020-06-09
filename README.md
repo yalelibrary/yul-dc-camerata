@@ -147,7 +147,7 @@ bin/deploy-full.sh gobstopper
 
 ## Releasing a new version
 
-1. Decide on a new version number. We use [semantic versioning](https://semver.org/).
+1. Decide on a new version number. We use [semantic versioning](https://github.com/yalelibrary/yul-dc-camerata/wiki/Semantic-Versioning).
 2. Update the version number in `.github_changelog_generator`
 3. `github_changelog_generator --user yalelibrary --project yul-dc-camerata --token $YOUR_GITHUB_TOKEN`
 4. Commit and merge the changes you just made with a message like "Prep for x.y.z release"
