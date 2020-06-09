@@ -37,7 +37,7 @@ POSTGRES_HOST=db
 
 - Access the manifests instance at `http://localhost`
 
-- Access the management app at `http://localhost:3001`
+- Access the management app at `http://localhost:3001/management`
 
 ## Local Development vs. ECS Deployment
 
