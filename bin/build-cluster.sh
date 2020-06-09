@@ -85,7 +85,7 @@ task_definition:
     mem_limit: 8GB
     cpu_limit: 2048
   efs_volumes:
-      - name: "efs"
+      - name: "solr_efs"
         filesystem_id: $EFS_FS_ID
         access_point: $ACCESS_POINT_ID_SOLR
         transit_encryption: ENABLED
