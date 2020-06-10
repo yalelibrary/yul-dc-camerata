@@ -3,9 +3,12 @@ version: '3'
 
 services:
 
+  solr:
+    volumes:
+      - ./solrdata:/var/solr/data/blacklight-core
   db:
     volumes:
-      - psql_efs:/var/lib/postgresql/data
+      - ./dbdata:/var/lib/postgresql/data
 
   blacklight:
     depends_on:
@@ -14,12 +17,4 @@ services:
       - iiif_manifest
       - management
     volumes:
-      - blacklight:/home/app/webapp
-
-#  management:
-#    depends_on:
-#      - db
-#      - solr
-volumes:
-  db:
-  blacklight:
+      - ../yul-dc-blacklight:/home/app/webapp

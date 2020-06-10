@@ -1,6 +1,0 @@
-version: '3'
-services:
-  php:
-    image: amazon/amazon-ecs-sample
-    ports:
-      - "80:80"

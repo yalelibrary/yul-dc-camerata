@@ -1,4 +1,5 @@
 git/
+solrdata
 ecs-params.yml
 *-ecs-params.yml
 .secrets
