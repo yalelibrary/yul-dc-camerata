@@ -59,6 +59,6 @@ then
     --cluster ${CLUSTER_NAME} \
     --target-groups targetGroupArn=$BL_TG_ARN,containerName=blacklight,containerPort=3000 \
     --target-groups targetGroupArn=$IMG_TG_ARN,containerName=iiif_image,containerPort=8182 \
-    --target-groups targetGroupArn=$MFST_TG_ARN,containerName=iiif_manifest,containerPort=80 
+    --target-groups targetGroupArn=$MFST_TG_ARN,containerName=iiif_manifest,containerPort=80 \
     --target-groups targetGroupArn=$MGMT_TG_ARN,containerName=management,containerPort=3001
 fi
