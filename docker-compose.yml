@@ -13,9 +13,9 @@ services:
       SOLR_VERSION:
     ports:
       - "8983:8983"
-    command: bash -c 'cp -r /opt/config/ /var/solr/data/blacklight-core/conf && touch /var/solr/data/blacklight-core/core.properties && exec solr -f'
+    command: bash -c 'cp -rn /opt/config/ /var/solr/data/$${SOLR_CORE}/conf && touch /var/solr/data/$${SOLR_CORE}/core.properties && exec solr -f'
     volumes:
-      - "solr_efs:/var/solr/data/blacklight-core"
+      - solr_efs:/var/solr/data/blacklight-core #this appears to not support variable expansion :/
 
   iiif_image:
     image: yalelibraryit/dc-iiif-cantaloupe:${IIIF_IMAGE_VERSION}
@@ -32,7 +32,7 @@ services:
     image: curationexperts/dc-postgres:${POSTGRES_VERSION}
     environment:
       POSTGRES_MULTIPLE_DATABASES: blacklight_yul_development,yul_dc_management_development
-      POSTGRES_HOST: localhost
+      POSTGRES_HOST: db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
     ports:
@@ -42,13 +42,13 @@ services:
 
   blacklight:
     image: yalelibraryit/dc-blacklight:${BLACKLIGHT_VERSION}
-    command: bash -c "echo $$(date -u +%FT%TZ) > DEPLOYED_AT && /sbin/my_init"
+    command: bash -c "echo $$(date -u +%FT%TZ) > DEPLOYED_AT && sleep 30 && /sbin/my_init"
     environment:
       POSTGRES_DB: blacklight_yul_development
-      POSTGRES_HOST: localhost
+      POSTGRES_HOST: db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
-      SOLR_URL: http://localhost:8983/solr/blacklight-core
+      SOLR_URL: http://solr:8983/solr/blacklight-core
       IIIF_MANIFESTS_BASE_URL: http://localhost/manifests/
       PASSENGER_APP_ENV: development
       HTTP_PASSWORD_PROTECT: 'true'
@@ -60,14 +60,14 @@ services:
 
   management:
     image: yalelibraryit/dc-management:${MANAGEMENT_VERSION}
-    command: /bin/sh -c "cd /home/app/webapp && sleep 60 && SOLR_CORE=blacklight-core bundle exec rake yale:index_fixture_data && /sbin/my_init"
+    command: /bin/sh -c "cd /home/app/webapp && sleep 30 && /sbin/my_init" #the reindex job should only be run once, preferably from inside the mgmt app itself
     env_file:
       - .secrets
     environment:
-      POSTGRES_HOST: localhost
+      POSTGRES_HOST: db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
-      SOLR_BASE_URL: http://localhost:8983/solr
+      SOLR_BASE_URL: http://solr:8983/solr
       SOLR_CORE: blacklight-core
       PASSENGER_APP_ENV: development
     ports:
