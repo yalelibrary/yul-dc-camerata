@@ -60,7 +60,7 @@ services:
 
   management:
     image: yalelibraryit/dc-management:${MANAGEMENT_VERSION}
-    command: /bin/sh -c "cd /home/app/webapp && sleep 30 && /sbin/my_init" #the reindex job should only be run once, preferably from inside the mgmt app itself
+    command: /bin/sh -c "cd /home/app/webapp && sleep 60 && SOLR_CORE=blacklight-core METADATA_SOURCE=ladybird bundle exec rake yale:index_fixture_data && /sbin/my_init"
     env_file:
       - .secrets
     environment:

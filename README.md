@@ -26,6 +26,7 @@ POSTGRES_HOST=db
   docker-compose up blacklight
   docker-compose up solr
   docker-compose up db
+  docker-compose up management
   ```
 
 - Access the blacklight app at `http://localhost:3000`
@@ -35,6 +36,8 @@ POSTGRES_HOST=db
 - Access the image instance at `http://localhost:8182`
 
 - Access the manifests instance at `http://localhost`
+
+- Access the management app at `http://localhost:3001/management`
 
 ## Local Development vs. ECS Deployment
 
@@ -98,14 +101,6 @@ bin/get-params.sh $CLUSTER_NAME 4GB 2048
 ```
 
 Valid combinations of memory and cpu documented here: <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/AWS_Fargate.html#fargate-tasks-size>
-
-### Deploy a reference container
-
-```
-bin/deploy-simple.sh $CLUSTER_NAME
-```
-
-This command deploys a single container PHP application to the named cluster. You must have a valid params file obatined by running `bin/get-params` against your cluster first.
 
 ### Deploy the Yale stack
 

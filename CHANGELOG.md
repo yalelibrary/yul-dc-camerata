@@ -1,11 +1,22 @@
 # Changelog
 
-## [1.2.3](https://github.com/yalelibrary/yul-dc-camerata/tree/1.2.3) (2020-06-09)
+## [1.3.0](https://github.com/yalelibrary/yul-dc-camerata/tree/1.3.0) (2020-06-09)
 
-[Full Changelog](https://github.com/yalelibrary/yul-dc-camerata/compare/v1.2.2...1.2.3)
+[Full Changelog](https://github.com/yalelibrary/yul-dc-camerata/compare/v1.2.3...1.3.0)
 
 **Merged pull requests:**
 
+- update management app release [\#30](https://github.com/yalelibrary/yul-dc-camerata/pull/30) ([FCRodriguez7](https://github.com/FCRodriguez7))
+- Add info on Management application to readme [\#29](https://github.com/yalelibrary/yul-dc-camerata/pull/29) ([maxkadel](https://github.com/maxkadel))
+- Provide more guidance around semantic versioning [\#28](https://github.com/yalelibrary/yul-dc-camerata/pull/28) ([bess](https://github.com/bess))
+
+## [v1.2.3](https://github.com/yalelibrary/yul-dc-camerata/tree/v1.2.3) (2020-06-09)
+
+[Full Changelog](https://github.com/yalelibrary/yul-dc-camerata/compare/v1.2.2...v1.2.3)
+
+**Merged pull requests:**
+
+- Document release process [\#27](https://github.com/yalelibrary/yul-dc-camerata/pull/27) ([bess](https://github.com/bess))
 - Remove obsolete & duplicated config settings [\#26](https://github.com/yalelibrary/yul-dc-camerata/pull/26) ([mark-dce](https://github.com/mark-dce))
 - Update all shell scripts to exit immediately on failed commands [\#25](https://github.com/yalelibrary/yul-dc-camerata/pull/25) ([mark-dce](https://github.com/mark-dce))
 
