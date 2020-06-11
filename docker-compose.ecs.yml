@@ -43,8 +43,6 @@ services:
       SOLR_URL: http://localhost:8983/solr/blacklight-core
       POSTGRES_HOST: localhost
       IIIF_MANIFESTS_BASE_URL: /manifests/
-      RAILS_ENV: production
-      RACK_ENV: production
       PASSENGER_APP_ENV: production
 
   management:
@@ -57,8 +55,6 @@ services:
     environment:
       SOLR_BASE_URL: http://localhost:8983/solr
       POSTGRES_HOST: localhost
-      RAILS_ENV: production
-      RACK_ENV: production
       PASSENGER_APP_ENV: production
 
 
