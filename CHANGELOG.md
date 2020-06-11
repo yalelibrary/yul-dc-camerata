@@ -1,11 +1,23 @@
 # Changelog
 
-## [1.4.0](https://github.com/yalelibrary/yul-dc-camerata/tree/1.4.0) (2020-06-11)
+## [1.4.1](https://github.com/yalelibrary/yul-dc-camerata/tree/1.4.1) (2020-06-11)
 
-[Full Changelog](https://github.com/yalelibrary/yul-dc-camerata/compare/v1.3.0...1.4.0)
+[Full Changelog](https://github.com/yalelibrary/yul-dc-camerata/compare/v1.4.0...1.4.1)
 
 **Merged pull requests:**
 
+- Bump manifests [\#38](https://github.com/yalelibrary/yul-dc-camerata/pull/38) ([bess](https://github.com/bess))
+- WIP Rails in production on ecs [\#37](https://github.com/yalelibrary/yul-dc-camerata/pull/37) ([JzGo](https://github.com/JzGo))
+- Extract repetitive error checks to a shared function script [\#34](https://github.com/yalelibrary/yul-dc-camerata/pull/34) ([mark-dce](https://github.com/mark-dce))
+- Bump management
+
+## [v1.4.0](https://github.com/yalelibrary/yul-dc-camerata/tree/v1.4.0) (2020-06-11)
+
+[Full Changelog](https://github.com/yalelibrary/yul-dc-camerata/compare/v1.3.0...v1.4.0)
+
+**Merged pull requests:**
+
+- Release v1.4.0 [\#36](https://github.com/yalelibrary/yul-dc-camerata/pull/36) ([alishaevn](https://github.com/alishaevn))
 - Update the blacklight version to 1.3.0 [\#35](https://github.com/yalelibrary/yul-dc-camerata/pull/35) ([alishaevn](https://github.com/alishaevn))
 - Update deploy error message to ask for .secrets instead of .secrets.yml [\#33](https://github.com/yalelibrary/yul-dc-camerata/pull/33) ([mark-dce](https://github.com/mark-dce))
 - Remove the `bin/deploy-simple.sh` option [\#32](https://github.com/yalelibrary/yul-dc-camerata/pull/32) ([mark-dce](https://github.com/mark-dce))
