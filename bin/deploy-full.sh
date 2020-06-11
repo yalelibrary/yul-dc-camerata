@@ -1,41 +1,9 @@
 #!/bin/sh
 set -e
 
-if [[ -z $1 ]]
-then
-  echo "ERROR: Please supply a cluster name"
-else
-  if [[ -f ${1}-ecs-params.yml ]]
-  then
-    cluster='ok'
-  else
-    echo "ERROR: Missing params file, please run \"bin/get-params.sh ${1}\" first"
-  fi
-fi
+. $(dirname "$0")/shared-checks.sh
 
-if [[ -f .secrets ]]
-then
-  secrets='ok'
-else
-  echo "ERROR: Please provide a \".secrets\" file.  See the \"secrets-template\" file for an example."
-fi
-
-if [[ -z ${AWS_PROFILE} ]]
-then
-  echo "ERROR: Please set an aws profile using \"export AWS_PROFILE=your_profile_name\"\n"
-else
-  profile='ok'
-fi
-
-if [[ -z ${AWS_DEFAULT_REGION} ]]
-then
-  echo "ERROR: Please set an aws region using \"export AWS_DEFAULT_REGION=your_region\"\n"
-else
-  region='ok'
-fi
-
-
-if [[ -n ${cluster} ]] && [[ -n ${profile} ]] && [[ -n ${region} ]] && [[ -n ${secrets} ]]
+if check_profile && check_region && check_cluster $1 && check_params $1 && check_secrets && all_pass
 then
   echo "Target cluster: ${1}"
   export CLUSTER_NAME=${1}
