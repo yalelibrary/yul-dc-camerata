@@ -1,11 +1,22 @@
 # Changelog
 
-## [1.3.0](https://github.com/yalelibrary/yul-dc-camerata/tree/1.3.0) (2020-06-09)
+## [1.4.0](https://github.com/yalelibrary/yul-dc-camerata/tree/1.4.0) (2020-06-11)
 
-[Full Changelog](https://github.com/yalelibrary/yul-dc-camerata/compare/v1.2.3...1.3.0)
+[Full Changelog](https://github.com/yalelibrary/yul-dc-camerata/compare/v1.3.0...1.4.0)
 
 **Merged pull requests:**
 
+- Update the blacklight version to 1.3.0 [\#35](https://github.com/yalelibrary/yul-dc-camerata/pull/35) ([alishaevn](https://github.com/alishaevn))
+- Update deploy error message to ask for .secrets instead of .secrets.yml [\#33](https://github.com/yalelibrary/yul-dc-camerata/pull/33) ([mark-dce](https://github.com/mark-dce))
+- Remove the `bin/deploy-simple.sh` option [\#32](https://github.com/yalelibrary/yul-dc-camerata/pull/32) ([mark-dce](https://github.com/mark-dce))
+
+## [v1.3.0](https://github.com/yalelibrary/yul-dc-camerata/tree/v1.3.0) (2020-06-09)
+
+[Full Changelog](https://github.com/yalelibrary/yul-dc-camerata/compare/v1.2.3...v1.3.0)
+
+**Merged pull requests:**
+
+- Prep for v1.3.0 release [\#31](https://github.com/yalelibrary/yul-dc-camerata/pull/31) ([FCRodriguez7](https://github.com/FCRodriguez7))
 - update management app release [\#30](https://github.com/yalelibrary/yul-dc-camerata/pull/30) ([FCRodriguez7](https://github.com/FCRodriguez7))
 - Add info on Management application to readme [\#29](https://github.com/yalelibrary/yul-dc-camerata/pull/29) ([maxkadel](https://github.com/maxkadel))
 - Provide more guidance around semantic versioning [\#28](https://github.com/yalelibrary/yul-dc-camerata/pull/28) ([bess](https://github.com/bess))
