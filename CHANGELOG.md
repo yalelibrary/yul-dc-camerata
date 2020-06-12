@@ -1,15 +1,32 @@
 # Changelog
 
-## [1.4.1](https://github.com/yalelibrary/yul-dc-camerata/tree/1.4.1) (2020-06-11)
+## [1.4.3](https://github.com/yalelibrary/yul-dc-camerata/tree/1.4.3) (2020-06-12)
 
-[Full Changelog](https://github.com/yalelibrary/yul-dc-camerata/compare/v1.4.0...1.4.1)
+[Full Changelog](https://github.com/yalelibrary/yul-dc-camerata/compare/v1.4.2...1.4.3)
 
 **Merged pull requests:**
 
+- Bump blacklight version [\#42](https://github.com/yalelibrary/yul-dc-camerata/pull/42) ([FCRodriguez7](https://github.com/FCRodriguez7))
+
+## [v1.4.2](https://github.com/yalelibrary/yul-dc-camerata/tree/v1.4.2) (2020-06-12)
+
+[Full Changelog](https://github.com/yalelibrary/yul-dc-camerata/compare/v1.4.1...v1.4.2)
+
+**Merged pull requests:**
+
+- Bump IIIF manifest minor version. [\#41](https://github.com/yalelibrary/yul-dc-camerata/pull/41) ([fnibbit](https://github.com/fnibbit))
+- Revert the changes made by PR \#37 [\#40](https://github.com/yalelibrary/yul-dc-camerata/pull/40) ([mark-dce](https://github.com/mark-dce))
+
+## [v1.4.1](https://github.com/yalelibrary/yul-dc-camerata/tree/v1.4.1) (2020-06-11)
+
+[Full Changelog](https://github.com/yalelibrary/yul-dc-camerata/compare/v1.4.0...v1.4.1)
+
+**Merged pull requests:**
+
+- Bump management, prep for release [\#39](https://github.com/yalelibrary/yul-dc-camerata/pull/39) ([maxkadel](https://github.com/maxkadel))
 - Bump manifests [\#38](https://github.com/yalelibrary/yul-dc-camerata/pull/38) ([bess](https://github.com/bess))
 - WIP Rails in production on ecs [\#37](https://github.com/yalelibrary/yul-dc-camerata/pull/37) ([JzGo](https://github.com/JzGo))
 - Extract repetitive error checks to a shared function script [\#34](https://github.com/yalelibrary/yul-dc-camerata/pull/34) ([mark-dce](https://github.com/mark-dce))
-- Bump management
 
 ## [v1.4.0](https://github.com/yalelibrary/yul-dc-camerata/tree/v1.4.0) (2020-06-11)
 
@@ -76,7 +93,6 @@
 - Multiple db from image [\#13](https://github.com/yalelibrary/yul-dc-camerata/pull/13) ([maxkadel](https://github.com/maxkadel))
 - bump mft service [\#12](https://github.com/yalelibrary/yul-dc-camerata/pull/12) ([mlooney](https://github.com/mlooney))
 - Environment for blacklight basic auth [\#11](https://github.com/yalelibrary/yul-dc-camerata/pull/11) ([fnibbit](https://github.com/fnibbit))
-- CI - first pass [\#10](https://github.com/yalelibrary/yul-dc-camerata/pull/10) ([maxkadel](https://github.com/maxkadel))
 - Efs mounts [\#9](https://github.com/yalelibrary/yul-dc-camerata/pull/9) ([maxkadel](https://github.com/maxkadel))
 
 ## [v1.1.0](https://github.com/yalelibrary/yul-dc-camerata/tree/v1.1.0) (2020-05-29)
@@ -96,6 +112,7 @@
 
 **Merged pull requests:**
 
+- CI - first pass [\#10](https://github.com/yalelibrary/yul-dc-camerata/pull/10) ([maxkadel](https://github.com/maxkadel))
 - Tag v1.0.0 for all versions [\#4](https://github.com/yalelibrary/yul-dc-camerata/pull/4) ([bess](https://github.com/bess))
 - Move all environment variable setup into compose file [\#3](https://github.com/yalelibrary/yul-dc-camerata/pull/3) ([mark-dce](https://github.com/mark-dce))
 - blacklight and management apps working independently, not together [\#2](https://github.com/yalelibrary/yul-dc-camerata/pull/2) ([maxkadel](https://github.com/maxkadel))
