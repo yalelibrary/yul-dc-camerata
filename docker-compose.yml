@@ -50,9 +50,11 @@ services:
       POSTGRES_PASSWORD: password
       SOLR_URL: http://solr:8983/solr/blacklight-core
       IIIF_MANIFESTS_BASE_URL: http://localhost/manifests/
-      PASSENGER_APP_ENV: development
+      # PASSENGER_APP_ENV: development
+      PASSENGER_APP_ENV: production
       HTTP_PASSWORD_PROTECT: 'true'
       BLACKLIGHT_VERSION:
+      RAILS_MASTER_KEY:
     env_file:
       - .secrets
     ports:
@@ -77,6 +79,8 @@ services:
       SOLR_BASE_URL: http://solr:8983/solr
       SOLR_CORE: blacklight-core
       PASSENGER_APP_ENV: development
+      MANAGEMENT_VERSION:
+      RAILS_MASTER_KEY:
     ports:
       - "3001:3001"
     depends_on:
