@@ -1,0 +1,6 @@
+version: '3'
+services:
+  base:
+    build: .
+    image: yalelibraryit/dc-base:v0.0.1
+
