@@ -1,14 +1,8 @@
 #!/bin/bash -e
 
-. ./funs.sh
+. $(dirname "$0")/shared-checks.sh
 
-export CLUSTER_NAME=$1
-
-if  check_name $CLUSTER_NAME && \
-   check_vars "AWS_PROFILE" "AWS_DEFAULT_REGION" && \
-   check_files '.secrets' "${CLUSTER_NAME}-ecs-params.yml" && \
-   check_exec yq \
-   && check_exec 'jq';
+if check_profile && check_region && check_cluster $1 && check_params $1 && check_secrets && all_pass
 then
   echo "Target cluster: ${CLUSTER_NAME}"
   echo "Using AWS_PROFILE=${AWS_PROFILE}";

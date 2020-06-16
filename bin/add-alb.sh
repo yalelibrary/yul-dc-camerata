@@ -1,6 +1,8 @@
 #!/bin/bash -e
-. funs.sh
-if check_vars
+
+. $(dirname "$0")/shared-checks.sh
+
+if check_profile && check_region && check_cluster $1 && all_pass
 then
   CLUSTER_NAME=${1}
   echo "Target cluster: ${CLUSTER_NAME}"

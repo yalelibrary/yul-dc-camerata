@@ -140,6 +140,12 @@ bin/add-alb.sh gobstopper
 bin/deploy-full.sh gobstopper
 ```
 
+## Running the deployment test against a deployed cluster
+
+1. `bundle install`
+2. Set YUL_DC_SERVER to the domain name for your deployed cluster `export YUL_DC_SERVER=collections-test.curationexperts.com`
+3. `rspec spec/deploy_spec.rb`
+
 ## Releasing a new version
 
 1. Decide on a new version number. We use [semantic versioning](https://github.com/yalelibrary/yul-dc-camerata/wiki/Semantic-Versioning).
