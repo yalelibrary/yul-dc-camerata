@@ -21,6 +21,7 @@ jobs:
           HTTP_USERNAME: yul-dc
           HTTP_PASSWORD: nocrawl
           YUL_DC_SERVER: localhost
+          BUNDLER_VERSION: 2.1.4
       - name: blacklight
         image: yalelibraryit/dc-blacklight:v1.3.1
         environment:
