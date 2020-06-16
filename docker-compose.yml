@@ -59,8 +59,8 @@ services:
       - .secrets
     ports:
       - "3000:3000"
-    volumes:
-      - blacklight:/home/app/webapp
+    # volumes:
+      # - blacklight:/home/app/webapp
     depends_on:
       - db
       - solr
@@ -78,7 +78,7 @@ services:
       POSTGRES_PASSWORD: password
       SOLR_BASE_URL: http://solr:8983/solr
       SOLR_CORE: blacklight-core
-      PASSENGER_APP_ENV: development
+      PASSENGER_APP_ENV: production
       MANAGEMENT_VERSION:
       RAILS_MASTER_KEY:
     ports:
