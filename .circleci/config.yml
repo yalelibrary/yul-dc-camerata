@@ -16,6 +16,11 @@ commands:
 jobs:
   run-tests:
     docker:
+      - image: circleci/ruby:2.6.6-node-browsers
+        environment:
+          HTTP_USERNAME: yul-dc
+          HTTP_PASSWORD: nocrawl
+          YUL_DC_SERVER: localhost
       - name: blacklight
         image: yalelibraryit/dc-blacklight:v1.3.1
         environment:
@@ -24,7 +29,7 @@ jobs:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: password
           SOLR_URL: http://solr:8983/solr/blacklight-core
-          IIIF_MANIFESTS_BASE_URL: http://blacklight/manifests/
+          IIIF_MANIFESTS_BASE_URL: http://localhost/manifests/
           PASSENGER_APP_ENV: development
           HTTP_PASSWORD_PROTECT: 'true'
       - name: iiif
