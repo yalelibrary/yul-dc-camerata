@@ -64,6 +64,9 @@ jobs:
       - setup_remote_docker
       - checkout
       - run:
+          name: Bundler
+          command: gem install bundler -v 2.1.4
+      - run:
           name: Rubocop
           command: bundle exec rubocop --parallel
       - run:
