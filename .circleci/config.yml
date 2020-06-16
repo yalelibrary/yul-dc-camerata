@@ -16,28 +16,45 @@ commands:
 jobs:
   run-tests:
     docker:
-      - image: yalelibraryit/dc-iiif-manifest:v1.1.2
-      - image: yalelibraryit/dc-solr:v1.0.0
+      - name: iiif
+        image: yalelibraryit/dc-iiif-manifest:v1.1.2
+      - name: solr
+        image: yalelibraryit/dc-solr:v1.0.0
         command: bash -c 'precreate-core blacklight-test /opt/config; exec solr -f'
-      - image: yalelibraryit/dc-iiif-cantaloupe:v1.0.0
+      - name: cantaloup
+        image: yalelibraryit/dc-iiif-cantaloupe:v1.0.0
         environment:
           S3CACHE_BUCKET_NAME: yale-image-samples/cantaloupe/cache #NO TRAILING SLASH!
           S3_SOURCE_BUCKET_NAME: yale-image-samples
-
-      - image: yalelibraryit/dc-postgres:v1.0.0
+      - name: db
+        image: yalelibraryit/dc-postgres:v1.0.0
         environment:
           POSTGRES_MULTIPLE_DATABASES: blacklight_yul_development,yul_dc_management_development
           POSTGRES_HOST: db
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: password
-      - image: yalelibraryit/dc-management:$CIRCLE_SHA1
+      - name: blacklight
+        image: yalelibraryit/dc-blacklight:v1.3.1
+        command: bash -c "echo $$(date -u +%FT%TZ) > DEPLOYED_AT && /sbin/my_init"
         environment:
-          POSTGRES_HOST: localhost
-          POSTGRES_DB: yul_dc_management_test
+          POSTGRES_DB: blacklight_yul_development
+          POSTGRES_HOST: db
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+          SOLR_URL: http://solr:8983/solr/blacklight-core
+          IIIF_MANIFESTS_BASE_URL: http://blacklight/manifests/
+          PASSENGER_APP_ENV: development
+          HTTP_PASSWORD_PROTECT: 'true'
+      - name: management
+        image: yalelibraryit/dc-management:v1.4.1
+        command: /bin/sh -c "cd /home/app/webapp && sleep 60 && SOLR_CORE=blacklight-core METADATA_SOURCE=ladybird bundle exec rake yale:index_fixture_data && /sbin/my_init"
+        environment:
+          POSTGRES_HOST: db
+          POSTGRES_DB: yul_dc_management_development
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: password
           SOLR_CORE: blacklight-test
-          SOLR_BASE_URL: http://localhost:8983/solr
+          SOLR_BASE_URL: http://solr:8983/solr
     executor: docker/docker
     steps:
       - setup_remote_docker
@@ -49,55 +66,11 @@ jobs:
           name: rspec
           command:  |
             bundle exec rspec
-  publish-latest:
-    executor: docker/docker
-    steps:
-      - setup_remote_docker
-      - docker/check
-      - docker/pull:
-          images: yalelibraryit/dc-management:$CIRCLE_SHA1
-      - docker-tag:
-          image: yalelibraryit/dc-management
-          from_tag: $CIRCLE_SHA1
-          to_tag: $CIRCLE_BRANCH
-      - docker/push:
-          image: yalelibraryit/dc-management
-          tag: $CIRCLE_BRANCH
-  publish-github-release:
-    executor: docker/docker
-    steps:
-      - setup_remote_docker
-      - docker/check
-      - docker/pull:
-          images: yalelibraryit/dc-management:$CIRCLE_SHA1
-      - docker-tag:
-          image: yalelibraryit/dc-management
-          from_tag: $CIRCLE_SHA1
-          to_tag: $CIRCLE_TAG
-      - docker/push:
-          image: yalelibraryit/dc-management
-          tag: $CIRCLE_TAG
-
 orbs:
   docker: circleci/docker@1.0.1
 version: 2.1
 workflows:
   commit:
     jobs:
-      - build-and-push:
-          context: yul-dc
       - run-tests:
-          requires:
-            - build-and-push
-      - publish-latest:
           context: yul-dc
-          requires:
-            - build-and-push
-            - run-tests
-      - publish-github-release:
-          context: yul-dc
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^v\d+\.\d+\.\d+$/
