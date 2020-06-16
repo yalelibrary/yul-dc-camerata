@@ -18,8 +18,8 @@ jobs:
     docker:
       - image: circleci/ruby:2.6.6-node-browsers
         environment:
-          HTTP_USERNAME: yul-dc
-          HTTP_PASSWORD: nocrawl
+          HTTP_USERNAME: test
+          HTTP_PASSWORD: test
           BLACKLIGHT_URL: http://blacklight:3000
           IIIF_URL: http://iiif:8182
           BUNDLER_VERSION: 2.1.4
@@ -34,6 +34,8 @@ jobs:
           IIIF_MANIFESTS_BASE_URL: http://localhost/manifests/
           PASSENGER_APP_ENV: development
           HTTP_PASSWORD_PROTECT: 'true'
+          HTTP_USERNAME: test
+          HTTP_PASSWORD: test
       - name: iiif
         image: yalelibraryit/dc-iiif-manifest:v1.1.2
       - name: solr
