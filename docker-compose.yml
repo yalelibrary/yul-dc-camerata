@@ -4,7 +4,7 @@ services:
   iiif_manifest:
     image: yalelibraryit/dc-iiif-manifest:${IIIF_MANIFEST_VERSION}
     ports:
-      - '80:80'
+      - '8080:80'
 
   solr:
     image: yalelibraryit/dc-solr:${SOLR_VERSION}
@@ -29,7 +29,7 @@ services:
       - "8182:8182"
 
   db:
-    image: curationexperts/dc-postgres:${POSTGRES_VERSION}
+    image: yalelibraryit/dc-postgres:${POSTGRES_VERSION}
     environment:
       POSTGRES_MULTIPLE_DATABASES: blacklight_yul_development,yul_dc_management_development
       POSTGRES_HOST: db
