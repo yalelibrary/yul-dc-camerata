@@ -65,7 +65,7 @@ jobs:
       - checkout
       - run:
           name: Bundler
-          command: gem install bundler -v 2.1.4
+          command: gem install bundler -v 2.1.4 && bundle
       - run:
           name: Rubocop
           command: bundle exec rubocop --parallel
