@@ -35,7 +35,6 @@ jobs:
           POSTGRES_PASSWORD: password
       - name: blacklight
         image: yalelibraryit/dc-blacklight:v1.3.1
-        command: bash -c "echo $$(date -u +%FT%TZ) > DEPLOYED_AT && /sbin/my_init"
         environment:
           POSTGRES_DB: blacklight_yul_development
           POSTGRES_HOST: db
@@ -47,7 +46,6 @@ jobs:
           HTTP_PASSWORD_PROTECT: 'true'
       - name: management
         image: yalelibraryit/dc-management:v1.4.1
-        command: /bin/sh -c "cd /home/app/webapp && sleep 60 && SOLR_CORE=blacklight-core METADATA_SOURCE=ladybird bundle exec rake yale:index_fixture_data && /sbin/my_init"
         environment:
           POSTGRES_HOST: db
           POSTGRES_DB: yul_dc_management_development
