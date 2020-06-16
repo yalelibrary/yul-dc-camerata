@@ -7,23 +7,11 @@ require 'http'
 
 username = ENV['HTTP_USERNAME']
 password = ENV['HTTP_PASSWORD']
-server = ENV['YUL_DC_SERVER']
-server ||= 'localhost'
-local_server_names = ['127.0.0.1', 'localhost']
-if local_server_names.include? server
-  blacklight_port = ':3000'
-  manifest_port = ''
-  prefix = 'http://'
-  iiif_port = ':8182'
-else
-  blacklight_port = ''
-  manifest_port = ''
-  prefix = 'https://'
-  iiif_port = ''
-end
+server = ENV['BLACKLIGHT_URL']
+
 RSpec.describe "The cluster at #{server}" do
   describe "The blacklight site at #{server}" do
-    let(:uri) { "#{prefix}#{server}#{blacklight_port}/" }
+    let(:uri) { "#{ENV['BLACKLIGHT_URL']}/" }
     it 'accepts the provided HTTP_PASSWORD and HTTP_USERNAME' do
       response = HTTP.basic_auth(user: username, pass: password).get(uri)
       expect(response.code).to eq(200)
@@ -34,7 +22,7 @@ RSpec.describe "The cluster at #{server}" do
       expect(response.body).to match(/blacklight-language_ssim/)
     end
     describe 'has search results' do
-      let(:uri) { "#{prefix}#{server}#{blacklight_port}/?search_field=all_fields&q=" }
+      let(:uri) { "#{ENV['BLACKLIGHT_URL']}/?search_field=all_fields&q=" }
       it 'with at least 5 pages' do
         response = HTTP.basic_auth(user: username, pass: password).get(uri)
         expect(response.code).to eq(200)
@@ -42,7 +30,7 @@ RSpec.describe "The cluster at #{server}" do
       end
     end
     describe 'has a public item' do
-      let(:uri) { "#{prefix}#{server}#{blacklight_port}/catalog/16189097" }
+      let(:uri) { "#{ENV['BLACKLIGHT_URL']}/catalog/16189097" }
       it 'that shows Universal Viewer' do
         response = HTTP.basic_auth(user: username, pass: password).get(uri)
         expect(response.code).to eq(200)
@@ -50,7 +38,7 @@ RSpec.describe "The cluster at #{server}" do
       end
     end
     describe 'has a yale-only item' do
-      let(:uri) { URI("#{prefix}#{server}#{blacklight_port}/catalog/16189097-yale") }
+      let(:uri) { URI("#{ENV['BLACKLIGHT_URL']}/catalog/16189097-yale") }
       it 'that does not show Universal Viewer' do
         response = HTTP.basic_auth(user: username, pass: password).get(uri)
         expect(response.code).to eq(200)
@@ -60,7 +48,7 @@ RSpec.describe "The cluster at #{server}" do
   end
 
   describe "The manifest service at #{server}" do
-    let(:uri) { "#{prefix}#{server}#{manifest_port}/manifests/#{oid}\.json" }
+    let(:uri) { "#{ENV['BLACKLIGHT_URL']}/manifests/#{oid}\.json" }
     describe 'provides a manifest for item 16686591' do
       let(:oid) { '16685691' }
       it 'serves a manifest for item 16685691 with a sequence containing one canvas' do
@@ -80,7 +68,7 @@ RSpec.describe "The cluster at #{server}" do
   end
 
   describe "The iiif service at #{server}" do
-    let(:uri) { "#{prefix}#{server}#{iiif_port}/iiif/2/#{oid}/info.json" }
+    let(:uri) { "#{ENV['IIIF_URL']}/iiif/2/#{oid}/info.json" }
     let(:oid) { '16854589' }
     it 'serves an info.json for image 16854589 that has a width/height ratio between 0.75 and 0.8' do
       response = HTTP.get(uri)
