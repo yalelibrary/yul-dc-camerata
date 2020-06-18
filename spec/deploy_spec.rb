@@ -9,6 +9,7 @@ username = ENV['HTTP_USERNAME']
 password = ENV['HTTP_PASSWORD']
 server = ENV['BLACKLIGHT_URL']
 
+
 RSpec.describe "The cluster at #{server}" do
   describe "The blacklight site at #{server}" do
     let(:uri) { "#{ENV['BLACKLIGHT_URL']}/" }
@@ -48,7 +49,7 @@ RSpec.describe "The cluster at #{server}" do
   end
 
   describe "The manifest service at #{server}" do
-    let(:uri) { "#{ENV['BLACKLIGHT_URL']}/manifests/#{oid}\.json" }
+    let(:uri) { "#{ENV['IIIF_MANIFEST_URL']}/manifests/#{oid}\.json" }
     describe 'provides a manifest for item 16686591' do
       let(:oid) { '16685691' }
       it 'serves a manifest for item 16685691 with a sequence containing one canvas' do
@@ -68,7 +69,7 @@ RSpec.describe "The cluster at #{server}" do
   end
 
   describe "The iiif service at #{server}" do
-    let(:uri) { "#{ENV['IIIF_URL']}/iiif/2/#{oid}/info.json" }
+    let(:uri) { "#{ENV['IIIF_IMAGE_URL']}/iiif/2/#{oid}/info.json" }
     let(:oid) { '16854589' }
     it 'serves an info.json for image 16854589 that has a width/height ratio between 0.75 and 0.8' do
       response = HTTP.get(uri)

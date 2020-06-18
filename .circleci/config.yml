@@ -21,7 +21,8 @@ jobs:
           HTTP_USERNAME: test
           HTTP_PASSWORD: test
           BLACKLIGHT_URL: http://blacklight.library.yale.edu:3000
-          IIIF_URL: http://cantaloup:8182
+          IIIF_IMAGE_URL: http://cantaloup:8182
+          IIIF_MANIFEST_URL: http://iiif-manifest
           BUNDLER_VERSION: 2.1.4
       - name: blacklight.library.yale.edu
         image: yalelibraryit/dc-blacklight:v1.3.1
@@ -30,13 +31,13 @@ jobs:
           POSTGRES_HOST: db
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: password
-          SOLR_URL: http://solr:8983/solr/blacklight-core
-          IIIF_MANIFESTS_BASE_URL: http://blacklight:3000/manifests/
+          SOLR_URL: http://solr:8983/solr/blacklight-test
+          IIIF_MANIFESTS_BASE_URL: http://iiif-manifest/manifests/
           PASSENGER_APP_ENV: development
           HTTP_PASSWORD_PROTECT: 'true'
           HTTP_USERNAME: test
           HTTP_PASSWORD: test
-      - name: iiif
+      - name: iiif-manifest
         image: yalelibraryit/dc-iiif-manifest:v1.1.2
       - name: solr
         image: yalelibraryit/dc-solr:v1.0.0
