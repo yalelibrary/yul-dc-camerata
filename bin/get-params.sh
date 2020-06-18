@@ -1,5 +1,6 @@
 #!/bin/bash -e
 . $(dirname "$0")/shared-checks.sh
+CLUSTER_NAME=$1
 
 if [[ -z $2 ]]
 then
@@ -36,7 +37,7 @@ then
     --filters Name=vpc-id,Values=$VPC_ID \
     --query "(SecurityGroups[?GroupName=='default'])[0].GroupId" `
 
-  FS_ID=`aws efs describe-file-systems --region $AWS_DEFAULT_REGION  |  jq ".FileSystems[]|select(.Tags[].Value == \"${1}-solr\").FileSystemId"`
+  FS_ID=`aws efs describe-file-systems --region $AWS_DEFAULT_REGION  |  jq ".FileSystems[]|select(.Tags[].Value == \"${1}-efs\").FileSystemId"`
   AP_SQL=`aws efs describe-access-points --region $AWS_DEFAULT_REGION | jq ".AccessPoints[]|select(.ClientToken==\"${1}-ap-psql-1\").AccessPointId"`
   AP_SOLR=`aws efs describe-access-points --region $AWS_DEFAULT_REGION | jq ".AccessPoints[]|select(.ClientToken==\"${1}-ap-solr-1\").AccessPointId"`
   echo $FS_ID
@@ -47,7 +48,7 @@ then
   echo $SG_ID
   echo $VPC_ID
 
-  cat <<ECS_PARAMS > ${1}-ecs-params.yml
+  cat <<ECS_PARAMS > ${1}-solr-params.yml
 version: 1
 task_definition:
   task_execution_role: ecsTaskExecutionRole
@@ -62,11 +63,36 @@ task_definition:
         transit_encryption: ENABLED
         transit_encryption_port: 4181
         iam: DISABLED
+run_params:
+  network_configuration:
+    awsvpc_configuration:
+      subnets:
+        - $SUBNET0
+        - $SUBNET1
+      security_groups:
+        - $SG_ID
+      assign_public_ip: ENABLED
+  service_discovery:
+    container_name: solr
+    private_dns_namespace:
+      name: app
+      vpc: $VPC_ID
+
+ECS_PARAMS
+  cat <<ECS_PARAMS > ${1}-psql-params.yml
+version: 1
+task_definition:
+  task_execution_role: ecsTaskExecutionRole
+  ecs_network_mode: awsvpc
+  task_size:
+    mem_limit: $memory
+    cpu_limit: $cpu
+  efs_volumes:
       - name: "psql_efs"
         filesystem_id: $FS_ID
         access_point: $AP_SQL
         transit_encryption: ENABLED
-        transit_encryption_port: 4182
+        transit_encryption_port: 4181
         iam: DISABLED
 run_params:
   network_configuration:
@@ -77,6 +103,35 @@ run_params:
       security_groups:
         - $SG_ID
       assign_public_ip: ENABLED
+  service_discovery:
+    container_name: db
+    private_dns_namespace:
+      name: app
+      vpc: $VPC_ID
+
+ECS_PARAMS
+
+  cat <<ECS_PARAMS > ${1}-ecs-params.yml
+version: 1
+task_definition:
+  task_execution_role: ecsTaskExecutionRole
+  ecs_network_mode: awsvpc
+  task_size:
+    mem_limit: $memory
+    cpu_limit: $cpu
+run_params:
+  network_configuration:
+    awsvpc_configuration:
+      subnets:
+        - $SUBNET0
+        - $SUBNET1
+      security_groups:
+        - $SG_ID
+      assign_public_ip: ENABLED
+  service_discovery:
+    private_dns_namespace:
+      name: app
+      vpc: $VPC_ID
 ECS_PARAMS
 else
   echo "\nUSAGE: bin/cluster-ps.sh \$CLUSTER_NAME [memory] [cpu]\n" # Parameters not set correctly

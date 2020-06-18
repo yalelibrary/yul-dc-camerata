@@ -1,0 +1,22 @@
+version: '3'
+services:
+  db:
+    logging:
+      driver: awslogs
+      options:
+        awslogs-group: ${CLUSTER_NAME}
+        awslogs-region: ${AWS_DEFAULT_REGION}
+        awslogs-stream-prefix: psql
+    image: yalelibraryit/dc-postgres:${POSTGRES_VERSION}
+    environment:
+      POSTGRES_MULTIPLE_DATABASES: blacklight_yul_development,yul_dc_management_development
+      POSTGRES_HOST: db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - "psql_efs:/var/lib/postgresql/data"
+
+volumes:
+  psql_efs:

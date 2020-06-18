@@ -1,5 +1,6 @@
-#!/bin/bash -e
+#!/bin/bash -ex
 
+export CLUSTER_NAME=$1
 . $(dirname "$0")/shared-checks.sh
 
 if check_profile && check_region && check_cluster $1 && check_params $1 && check_secrets && all_pass
@@ -45,10 +46,11 @@ then
   # Launch the service and register containers with the loadbalancer
   ecs-cli compose  \
     --region $AWS_DEFAULT_REGION \
-    --project-name ${CLUSTER_NAME}-project \
+    --project-name ${CLUSTER_NAME}-main \
     --file docker-compose-merged.yml \
     --ecs-params ${CLUSTER_NAME}-ecs-params.yml \
     service up \
+    $2 \
     --create-log-groups \
     --cluster ${CLUSTER_NAME} \
     --target-groups targetGroupArn=$BL_TG_ARN,containerName=blacklight,containerPort=3000 \

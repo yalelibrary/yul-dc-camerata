@@ -6,16 +6,6 @@ services:
     ports:
       - '80:80'
 
-  solr:
-    image: yalelibraryit/dc-solr:${SOLR_VERSION}
-    environment:
-      SOLR_CORE: blacklight-core
-      SOLR_VERSION:
-    ports:
-      - "8983:8983"
-    command: bash -c 'cp -rn /opt/config/ /var/solr/data/$${SOLR_CORE}/conf && touch /var/solr/data/$${SOLR_CORE}/core.properties && exec solr -f'
-    volumes:
-      - solr_efs:/var/solr/data/blacklight-core #this appears to not support variable expansion :/
 
   iiif_image:
     image: yalelibraryit/dc-iiif-cantaloupe:${IIIF_IMAGE_VERSION}
@@ -27,18 +17,6 @@ services:
       - .secrets
     ports:
       - "8182:8182"
-
-  db:
-    image: yalelibraryit/dc-postgres:${POSTGRES_VERSION}
-    environment:
-      POSTGRES_MULTIPLE_DATABASES: blacklight_yul_development,yul_dc_management_development
-      POSTGRES_HOST: db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-    ports:
-      - "5432:5432"
-    volumes:
-      - "psql_efs:/var/lib/postgresql/data"
 
   blacklight:
     image: yalelibraryit/dc-blacklight:${BLACKLIGHT_VERSION}
@@ -72,7 +50,3 @@ services:
       PASSENGER_APP_ENV: development
     ports:
       - "3001:3001"
-
-volumes:
-  solr_efs:
-  psql_efs:

@@ -1,7 +1,8 @@
-#!/bin/bash -e
+#!/bin/bash -ex
 
 . $(dirname "$0")/shared-checks.sh
-
+. $(dirname "$0")/efs-fun.sh
+CLUSTER_NAME=$1
 if check_profile && check_region && check_cluster $1 && all_pass
 then
   echo "Target cluster: ${CLUSTER_NAME}"
@@ -16,65 +17,16 @@ then
   echo "  $VPC_ID"
   echo "  $SUBNET0"
   echo "  $SUBNET1"
-
   echo "Setup ingress security group"
   SG_ID=`aws ec2 describe-security-groups --filters Name=vpc-id,Values=$VPC_ID --region=$AWS_DEFAULT_REGION | jq -r ".SecurityGroups[0].GroupId"`
   echo "  $SG_ID"
 
-
-  EFS_FS_ID=`aws efs create-file-system \
-    --creation-token ${CLUSTER_NAME}-solr-efs \
-    --performance-mode generalPurpose \
-    --throughput-mode bursting \
-    --region $AWS_DEFAULT_REGION \
-    --tags Key=Name,Value="${CLUSTER_NAME}-solr" \
-      | grep -Eo -m 1 '\"fs-\w+' | sed s/\"//`
-
-  sleep 30 #allow time for the filesystem to come online
-
-  aws efs put-file-system-policy --file-system-id $EFS_FS_ID  --policy '{
-    "Version": "2012-10-17",
-    "Id": "allorw",
-    "Statement": [
-        {
-            "Sid": "AllowRW",
-            "Effect": "Allow",
-            "Principal": {
-                "AWS": "*"
-            },
-            "Action": [
-                "elasticfilesystem:ClientMount",
-                "elasticfilesystem:ClientWrite"
-            ]
-        }
-    ]
-}'
-
-
-ACCESS_POINT_ID_SOLR=`aws efs create-access-point \
-  --file-system-id ${EFS_FS_ID} \
-  --client-token ${CLUSTER_NAME}-ap-solr-1 \
-  --tags Key=Name,Value="${CLUSTER_NAME}-ap-solr" \
-  --root-directory Path=/efs-ap-${CLUSTER_NAME}-solr,CreationInfo=\{OwnerUid=8983,OwnerGid=8983,Permissions=755\} \
-  --posix-user Uid=8983,Gid=8983 | jq .AccessPointId`
-
-ACCESS_POINT_ID_PSQL=`aws efs create-access-point \
-  --file-system-id ${EFS_FS_ID} \
-  --client-token ${CLUSTER_NAME}-ap-psql-1 \
-  --tags Key=Name,Value="${CLUSTER_NAME}-ap-psql" \
-  --root-directory Path=/efs-ap-${CLUSTER_NAME}-psql,CreationInfo=\{OwnerUid=999,OwnerGid=999,Permissions=755\} \
-  --posix-user Uid=999,Gid=999 | jq .AccessPointId`
-
-echo "creating mount targets"
-aws efs create-mount-target \
---file-system-id $EFS_FS_ID \
---subnet-id  $SUBNET0
-
-aws efs create-mount-target \
---file-system-id $EFS_FS_ID \
---subnet-id  $SUBNET1
-
-  cat <<ECS_PARAMS > ${CLUSTER_NAME}-ecs-params.yml
+  create_fs $CLUSTER_NAME $AWS_DEFAULT_REGION
+  put_policy
+  create_mount_target $SUBNET0
+  create_mount_target $SUBNET1
+  create_access_point "solr" "8983" "8983" "755" 
+cat <<-SOLR_PARAMS > $CLUSTER_NAME-solr-params.yml
 version: 1
 task_definition:
   task_execution_role: ecsTaskExecutionRole
@@ -83,15 +35,41 @@ task_definition:
     mem_limit: 8GB
     cpu_limit: 2048
   efs_volumes:
-      - name: "solr_efs"
-        filesystem_id: $EFS_FS_ID
-        access_point: $ACCESS_POINT_ID_SOLR
-        transit_encryption: ENABLED
-        transit_encryption_port: 4181
-        iam: DISABLED
+    - name: "solr_efs"
+      filesystem_id: $EFS_FS_ID
+      access_point: $ACCESS_POINT_ID
+      transit_encryption: ENABLED
+      transit_encryption_port: 4181
+      iam: DISABLED
+run_params:
+  network_configuration:
+    awsvpc_configuration:
+      subnets:
+        - $SUBNET0
+        - $SUBNET1
+      SG_IDs:
+        - $SG_ID
+      assign_public_ip: ENABLED
+  service_discovery:
+    container_name: solr
+    private_dns_namespace:
+      name: app
+      vpc: $VPC_ID
+SOLR_PARAMS
+
+  create_access_point "psql" "999" "999" "755" 
+cat <<-PSQL_PARAMS > $CLUSTER_NAME-psql-params.yml
+version: 1
+task_definition:
+  task_execution_role: ecsTaskExecutionRole
+  ecs_network_mode: awsvpc
+  task_size:
+    mem_limit: 8GB
+    cpu_limit: 2048
+  efs_volumes:
       - name: "psql_efs"
         filesystem_id: $EFS_FS_ID
-        access_point: $ACCESS_POINT_ID_PSQL
+        access_point: $ACCESS_POINT_ID
         transit_encryption: ENABLED
         transit_encryption_port: 4182
         iam: DISABLED
@@ -104,6 +82,34 @@ run_params:
       SG_IDs:
         - $SG_ID
       assign_public_ip: ENABLED
+  service_discovery:
+    container_name: db
+    private_dns_namespace:
+      name: app
+      vpc: $VPC_ID
+PSQL_PARAMS
+
+cat <<ECS_PARAMS > ${CLUSTER_NAME}-ecs-params.yml
+version: 1
+task_definition:
+  task_execution_role: ecsTaskExecutionRole
+  ecs_network_mode: awsvpc
+  task_size:
+    mem_limit: 8GB
+    cpu_limit: 2048
+run_params:
+  network_configuration:
+    awsvpc_configuration:
+      subnets:
+        - $SUBNET0
+        - $SUBNET1
+      security_groups:
+        - $SG_ID
+      assign_public_ip: ENABLED
+  service_discovery:
+    private_dns_namespace:
+      name: app
+      vpc: $VPC_ID
 ECS_PARAMS
 
 fi

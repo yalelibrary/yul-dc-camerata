@@ -8,14 +8,6 @@ services:
         awslogs-region: ${AWS_DEFAULT_REGION}
         awslogs-stream-prefix: iiif_manifest
 
-  solr:
-    logging:
-      driver: awslogs
-      options:
-        awslogs-group: ${CLUSTER_NAME}
-        awslogs-region: ${AWS_DEFAULT_REGION}
-        awslogs-stream-prefix: solr
-
   iiif_image:
     logging:
       driver: awslogs
@@ -23,14 +15,6 @@ services:
         awslogs-group: ${CLUSTER_NAME}
         awslogs-region: ${AWS_DEFAULT_REGION}
         awslogs-stream-prefix: iiif_image
-
-  db:
-    logging:
-      driver: awslogs
-      options:
-        awslogs-group: ${CLUSTER_NAME}
-        awslogs-region: ${AWS_DEFAULT_REGION}
-        awslogs-stream-prefix: db_blacklight
 
   blacklight:
     logging:
@@ -40,8 +24,8 @@ services:
         awslogs-region: ${AWS_DEFAULT_REGION}
         awslogs-stream-prefix: blacklight
     environment:
-      SOLR_URL: http://localhost:8983/solr/blacklight-core
-      POSTGRES_HOST: localhost
+      SOLR_URL: http://${CLUSTER_NAME}-solr.app:8983/solr/blacklight-core
+      POSTGRES_HOST: ${CLUSTER_NAME}-psql.app
       IIIF_MANIFESTS_BASE_URL: /manifests/
 
   management:
@@ -52,5 +36,5 @@ services:
         awslogs-region: ${AWS_DEFAULT_REGION}
         awslogs-stream-prefix: management
     environment:
-      SOLR_BASE_URL: http://localhost:8983/solr
-      POSTGRES_HOST: localhost
+      SOLR_BASE_URL: http://${CLUSTER_NAME}-solr.app:8983/solr
+      POSTGRES_HOST: ${CLUSTER_NAME}-psql.app
