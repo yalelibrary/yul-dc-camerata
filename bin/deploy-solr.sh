@@ -1,4 +1,4 @@
-#!/bin/bash -ex
+#!/bin/bash -e
 
 . $(dirname "$0")/shared-checks.sh
 . $(dirname "$0")/efs-fun.sh

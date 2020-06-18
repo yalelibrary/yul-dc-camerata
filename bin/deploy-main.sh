@@ -1,4 +1,4 @@
-#!/bin/bash -ex
+#!/bin/bash -e
 
 export CLUSTER_NAME=$1
 . $(dirname "$0")/shared-checks.sh
