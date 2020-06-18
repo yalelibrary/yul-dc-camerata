@@ -9,7 +9,6 @@ username = ENV['HTTP_USERNAME']
 password = ENV['HTTP_PASSWORD']
 server = ENV['BLACKLIGHT_URL']
 
-
 RSpec.describe "The cluster at #{server}" do
   describe "The blacklight site at #{server}" do
     let(:uri) { "#{ENV['BLACKLIGHT_URL']}/" }
