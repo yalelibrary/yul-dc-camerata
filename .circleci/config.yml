@@ -33,6 +33,8 @@ jobs:
           IIIF_MANIFESTS_BASE_URL: http://iiif-manifest/manifests/
           PASSENGER_APP_ENV: development
           HTTP_PASSWORD_PROTECT: 'true'
+          HTTP_USERNAME: $HTTP_USERNAME
+          HTTP_PASSWORD: $HTTP_PASSWORD
       - name: iiif-manifest
         image: yalelibraryit/dc-iiif-manifest:v1.1.2
       - name: solr
