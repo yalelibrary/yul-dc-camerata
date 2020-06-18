@@ -1,11 +1,20 @@
 # Changelog
 
-## [1.4.3](https://github.com/yalelibrary/yul-dc-camerata/tree/1.4.3) (2020-06-17)
+## [rc1](https://github.com/yalelibrary/yul-dc-camerata/tree/rc1) (2020-06-18)
 
-[Full Changelog](https://github.com/yalelibrary/yul-dc-camerata/compare/v1.4.3...1.4.3)
+[Full Changelog](https://github.com/yalelibrary/yul-dc-camerata/compare/v1.5.0...rc1)
 
 **Merged pull requests:**
 
+- Prepare for manifest service v.2.0.0 [\#52](https://github.com/yalelibrary/yul-dc-camerata/pull/52) ([fnibbit](https://github.com/fnibbit))
+
+## [v1.5.0](https://github.com/yalelibrary/yul-dc-camerata/tree/v1.5.0) (2020-06-17)
+
+[Full Changelog](https://github.com/yalelibrary/yul-dc-camerata/compare/v1.4.3...v1.5.0)
+
+**Merged pull requests:**
+
+- Release for v1.5.0 [\#51](https://github.com/yalelibrary/yul-dc-camerata/pull/51) ([FCRodriguez7](https://github.com/FCRodriguez7))
 - Prepare for new CircleCI config [\#48](https://github.com/yalelibrary/yul-dc-camerata/pull/48) ([fnibbit](https://github.com/fnibbit))
 - Use Yale postgres image [\#47](https://github.com/yalelibrary/yul-dc-camerata/pull/47) ([maxkadel](https://github.com/maxkadel))
 - Bump to base docker image to v1, no code changes [\#46](https://github.com/yalelibrary/yul-dc-camerata/pull/46) ([orangewolf](https://github.com/orangewolf))
