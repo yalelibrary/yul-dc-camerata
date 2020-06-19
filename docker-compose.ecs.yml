@@ -7,6 +7,9 @@ services:
         awslogs-group: ${CLUSTER_NAME}
         awslogs-region: ${AWS_DEFAULT_REGION}
         awslogs-stream-prefix: iiif_manifest
+    environment:
+      IIIF_MANIFESTS_BASE_URL: 'https://$$host/manifests/'
+      IIIF_IMAGE_BASE_URL: 'https://$$host/iiif'
 
   iiif_image:
     logging:
