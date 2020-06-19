@@ -2,13 +2,18 @@
 version: '3'
 
 services:
-
   solr:
     volumes:
       - ./solrdata:/var/solr/data/blacklight-core
     logging:
       driver: json-file
+    env_file: ../yul-dc-solr/.env
+    build:
+      context: ../yul-dc-solr 
+    command: bash -c 'precreate-core $${SOLR_CORE} /opt/config; precreate-core ${SOLR_TEST_CORE} /opt/config; exec solr -f'
+
   db:
+    build: ../yul-dc-postgres
     volumes:
       - ./dbdata:/var/lib/postgresql/data
     logging:
@@ -17,12 +22,26 @@ services:
   management:
     image: 'yalelibraryit/dc-management:master'
     build: "../yul-dc-management"
+    env_file:
+      - ../yul-dc-management/.env
+      - ../yul-dc-management/.secrets
     environment:
       REGISTRY_URI: yalelibraryit/dc-blacklight
       REGISTRY_HOST: dockerhub.io
-
     volumes:
       - ../yul-dc-management:/home/app/webapp:rw
+
+  iiif_manifest:
+    image: yalelibraryit/yul-dc-iiif-manifest:master
+    env_file: ../yul-dc-iiif-manifest/.env
+    build: 
+      context: ../yul-dc-iiif-manifest
+
+
+  iiif_image:
+    env_file: ../yul-dc-iiif-imageserver/.env
+    build: ../yul-dc-iiif-imageserver 
+    image: "yalelibraryit/dc-iiif-cantaloupe:master"
 
   blacklight:
     build: "../yul-dc-management"
