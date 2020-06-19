@@ -75,7 +75,7 @@ run_params:
   service_discovery:
     container_name: solr
     private_dns_namespace:
-      name: app
+      name: local
       vpc: $VPC_ID
 
 ECS_PARAMS
@@ -106,7 +106,7 @@ run_params:
   service_discovery:
     container_name: db
     private_dns_namespace:
-      name: app
+      name: local
       vpc: $VPC_ID
 
 ECS_PARAMS
@@ -130,7 +130,7 @@ run_params:
       assign_public_ip: ENABLED
   service_discovery:
     private_dns_namespace:
-      name: app
+      name: local
       vpc: $VPC_ID
 ECS_PARAMS
 else
