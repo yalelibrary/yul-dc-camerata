@@ -6,15 +6,41 @@ services:
   solr:
     volumes:
       - ./solrdata:/var/solr/data/blacklight-core
+    logging:
+      driver: json-file
   db:
     volumes:
       - ./dbdata:/var/lib/postgresql/data
+    logging:
+      driver: json-file
+
+  management:
+    image: 'yalelibraryit/dc-management:master'
+    build: "../yul-dc-management"
+    environment:
+      REGISTRY_URI: yalelibraryit/dc-blacklight
+      REGISTRY_HOST: dockerhub.io
+
+    volumes:
+      - ../yul-dc-management:/home/app/webapp:rw
 
   blacklight:
+    build: "../yul-dc-management"
+    image: 'yalelibraryit/dc-blacklight:master'
+    environment:
+      POSTGRES_DB: blacklight_yul_development
+      POSTGRES_HOST: db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      SOLR_URL: http://solr:8983/solr/blacklight-core
+      IIIF_MANIFESTS_BASE_URL: ${IIIF_MANIFESTS_BASE_URL}
+      PASSENGER_APP_ENV: development
+      REGISTRY_URI: yalelibraryit/dc-blacklight
+      REGISTRY_HOST: dockerhub.io
     depends_on:
       - db
       - solr
       - iiif_manifest
       - management
     volumes:
-      - ../yul-dc-blacklight:/home/app/webapp
+      - ../yul-dc-blacklight:/home/app/webapp:rw
