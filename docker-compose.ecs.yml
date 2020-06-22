@@ -33,7 +33,7 @@ services:
       options:
         awslogs-group: ${CLUSTER_NAME}
         awslogs-region: ${AWS_DEFAULT_REGION}
-        awslogs-stream-prefix: db_blacklight
+        awslogs-stream-prefix: db
 
   blacklight:
     logging:
