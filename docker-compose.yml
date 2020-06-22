@@ -71,7 +71,6 @@ services:
 
   management:
     image: yalelibraryit/dc-management:${MANAGEMENT_VERSION}
-    command: /bin/sh -c "cd /home/app/webapp && sleep 60 && SOLR_CORE=blacklight-core METADATA_SOURCE=ladybird bundle exec rake yale:index_fixture_data && /sbin/my_init"
     env_file:
       - .secrets
     environment:
@@ -82,8 +81,14 @@ services:
       SOLR_CORE: blacklight-core
       PASSENGER_APP_ENV: production
       RAILS_ENV: production
-      MANAGEMENT_VERSION:
       RAILS_MASTER_KEY:
+      # The management app needs the versions for all the applications for the dashboard
+      IIIF_MANIFEST_VERSION:
+      SOLR_VERSION:
+      IIIF_IMAGE_VERSION:
+      POSTGRES_VERSION:
+      BLACKLIGHT_VERSION:
+      MANAGEMENT_VERSION:
     ports:
       - "3001:3001"
     depends_on:
