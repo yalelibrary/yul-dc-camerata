@@ -1,11 +1,20 @@
 # Changelog
 
+## [v1.8.1](https://github.com/yalelibrary/yul-dc-camerata/tree/v1.8.1) (2020-06-22)
+
+[Full Changelog](https://github.com/yalelibrary/yul-dc-camerata/compare/v1.8.0...v1.8.1)
+
+**Merged pull requests:**
+
+- Add environment variables for management app dashboard [\#60](https://github.com/yalelibrary/yul-dc-camerata/pull/60) ([maxkadel](https://github.com/maxkadel))
+
 ## [v1.8.0](https://github.com/yalelibrary/yul-dc-camerata/tree/v1.8.0) (2020-06-22)
 
 [Full Changelog](https://github.com/yalelibrary/yul-dc-camerata/compare/v1.7.0...v1.8.0)
 
 **Merged pull requests:**
 
+- bump management, prepare for v1.8.0 release [\#59](https://github.com/yalelibrary/yul-dc-camerata/pull/59) ([maxkadel](https://github.com/maxkadel))
 - Configure camerata to run containers in Rails production mode on ECS [\#57](https://github.com/yalelibrary/yul-dc-camerata/pull/57) ([mark-dce](https://github.com/mark-dce))
 
 ## [v1.7.0](https://github.com/yalelibrary/yul-dc-camerata/tree/v1.7.0) (2020-06-22)
@@ -46,7 +55,6 @@
 
 **Merged pull requests:**
 
-- Releasev1.4.3 [\#43](https://github.com/yalelibrary/yul-dc-camerata/pull/43) ([FCRodriguez7](https://github.com/FCRodriguez7))
 - Bump blacklight version [\#42](https://github.com/yalelibrary/yul-dc-camerata/pull/42) ([FCRodriguez7](https://github.com/FCRodriguez7))
 
 ## [v1.4.2](https://github.com/yalelibrary/yul-dc-camerata/tree/v1.4.2) (2020-06-12)
@@ -64,6 +72,7 @@
 
 **Merged pull requests:**
 
+- Releasev1.4.3 [\#43](https://github.com/yalelibrary/yul-dc-camerata/pull/43) ([FCRodriguez7](https://github.com/FCRodriguez7))
 - Bump management, prep for release [\#39](https://github.com/yalelibrary/yul-dc-camerata/pull/39) ([maxkadel](https://github.com/maxkadel))
 - Bump manifests [\#38](https://github.com/yalelibrary/yul-dc-camerata/pull/38) ([bess](https://github.com/bess))
 - WIP Rails in production on ecs [\#37](https://github.com/yalelibrary/yul-dc-camerata/pull/37) ([JzGo](https://github.com/JzGo))
