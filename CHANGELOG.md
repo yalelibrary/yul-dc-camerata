@@ -6,6 +6,7 @@
 
 **Merged pull requests:**
 
+- Add a changelog for the v1.6.0 release [\#55](https://github.com/yalelibrary/yul-dc-camerata/pull/55) ([mark-dce](https://github.com/mark-dce))
 - Update blacklight and managment release versions [\#54](https://github.com/yalelibrary/yul-dc-camerata/pull/54) ([mark-dce](https://github.com/mark-dce))
 - Release candidate 1 [\#53](https://github.com/yalelibrary/yul-dc-camerata/pull/53) ([fnibbit](https://github.com/fnibbit))
 - Prepare for manifest service v.2.0.0 [\#52](https://github.com/yalelibrary/yul-dc-camerata/pull/52) ([fnibbit](https://github.com/fnibbit))
@@ -73,7 +74,6 @@
 - update management app release [\#30](https://github.com/yalelibrary/yul-dc-camerata/pull/30) ([FCRodriguez7](https://github.com/FCRodriguez7))
 - Add info on Management application to readme [\#29](https://github.com/yalelibrary/yul-dc-camerata/pull/29) ([maxkadel](https://github.com/maxkadel))
 - Provide more guidance around semantic versioning [\#28](https://github.com/yalelibrary/yul-dc-camerata/pull/28) ([bess](https://github.com/bess))
-- Bump Blacklight to v1.2.2 [\#23](https://github.com/yalelibrary/yul-dc-camerata/pull/23) ([bess](https://github.com/bess))
 
 ## [v1.2.3](https://github.com/yalelibrary/yul-dc-camerata/tree/v1.2.3) (2020-06-09)
 
@@ -92,6 +92,7 @@
 **Merged pull requests:**
 
 - Bump management to 1.3.0 [\#24](https://github.com/yalelibrary/yul-dc-camerata/pull/24) ([bess](https://github.com/bess))
+- Bump Blacklight to v1.2.2 [\#23](https://github.com/yalelibrary/yul-dc-camerata/pull/23) ([bess](https://github.com/bess))
 - Improve instructions on setting up a new cluster [\#22](https://github.com/yalelibrary/yul-dc-camerata/pull/22) ([bess](https://github.com/bess))
 - Management updates [\#21](https://github.com/yalelibrary/yul-dc-camerata/pull/21) ([maxkadel](https://github.com/maxkadel))
 
