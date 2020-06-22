@@ -1,0 +1,20 @@
+commands:
+jobs:
+  run-tests:
+    docker:
+      - image: yalelibraryit/dc-solr:$SOLR_VERSION
+      - image: yalelibraryit/dc-postgres:$POSTGRES_VERSION
+      - image: yalelibraryit/dc-management:$MANAGEMENT_VERSION
+      - image: yalelibraryit/dc-iiif-manifest:$IIIF_MANIFEST_VERSION
+      - image: yalelibraryit/dc-blacklight:$BLACKLIGHT_VERSION
+      - image: yalelibraryit/dc-iiif-cantaloupe:$IIIF_IMAGE_VERSION
+    executor: docker/docker
+    steps:
+      - setup_remote_docker
+orbs:
+  docker: circleci/docker@1.0.1
+version: 2.1
+workflows:
+  commit:
+    jobs:
+      - run-tests
