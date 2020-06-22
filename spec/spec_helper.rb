@@ -1,4 +1,8 @@
 # frozen_string_literal: true
+require 'openssl'
+require 'byebug'
+require 'json'
+require 'http'
 
 ENV['RAILS_ENV'] ||= 'test'
 

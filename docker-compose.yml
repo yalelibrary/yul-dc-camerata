@@ -4,7 +4,7 @@ services:
   iiif_manifest:
     image: yalelibraryit/dc-iiif-manifest:${IIIF_MANIFEST_VERSION}
     ports:
-      - '80:80'
+      - '8080:80'
 
   solr:
     image: yalelibraryit/dc-solr:${SOLR_VERSION}
