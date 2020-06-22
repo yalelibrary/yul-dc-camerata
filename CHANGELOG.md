@@ -1,5 +1,21 @@
 # Changelog
 
+## [v1.8.0](https://github.com/yalelibrary/yul-dc-camerata/tree/v1.8.0) (2020-06-22)
+
+[Full Changelog](https://github.com/yalelibrary/yul-dc-camerata/compare/v1.7.0...v1.8.0)
+
+**Merged pull requests:**
+
+- Configure camerata to run containers in Rails production mode on ECS [\#57](https://github.com/yalelibrary/yul-dc-camerata/pull/57) ([mark-dce](https://github.com/mark-dce))
+
+## [v1.7.0](https://github.com/yalelibrary/yul-dc-camerata/tree/v1.7.0) (2020-06-22)
+
+[Full Changelog](https://github.com/yalelibrary/yul-dc-camerata/compare/v1.6.0...v1.7.0)
+
+**Merged pull requests:**
+
+- Prep for v1.7.0 release, bump management [\#58](https://github.com/yalelibrary/yul-dc-camerata/pull/58) ([maxkadel](https://github.com/maxkadel))
+
 ## [v1.6.0](https://github.com/yalelibrary/yul-dc-camerata/tree/v1.6.0) (2020-06-22)
 
 [Full Changelog](https://github.com/yalelibrary/yul-dc-camerata/compare/v1.5.0...v1.6.0)
