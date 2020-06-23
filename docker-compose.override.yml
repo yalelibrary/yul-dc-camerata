@@ -44,7 +44,7 @@ services:
     image: "yalelibraryit/dc-iiif-cantaloupe:master"
 
   blacklight:
-    build: "../yul-dc-management"
+    build: "../yul-dc-blacklight"
     image: 'yalelibraryit/dc-blacklight:master'
     environment:
       POSTGRES_DB: blacklight_yul_development
