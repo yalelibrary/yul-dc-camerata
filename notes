@@ -1,0 +1,12 @@
+make docker images use variables
+
+build-and-push:
+  executor: docker/docker
+  steps:
+    - setup_remote_docker
+    - checkout
+    - docker/check
+    - docker/build:
+        image: yalelibraryit/dc-management
+    - docker/push:
+        image: yalelibraryit/dc-management
