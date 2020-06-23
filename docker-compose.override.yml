@@ -46,6 +46,11 @@ services:
   blacklight:
     build: "../yul-dc-blacklight"
     image: 'yalelibraryit/dc-blacklight:master'
+    env_file: ../yul-dc-blacklight/.env
+    env_file: ../yul-dc-blacklight/.env.development
+    command: bash -lc 'RAILS_ENV=development bundle exec rails server -b 0.0.0.0'
+    volumes:
+      - ../yul-dc-blacklight/:/home/app/webapp
     environment:
       POSTGRES_DB: blacklight_yul_development
       POSTGRES_HOST: db
@@ -61,5 +66,3 @@ services:
       - solr
       - iiif_manifest
       - management
-    volumes:
-      - ../yul-dc-blacklight:/home/app/webapp:rw
