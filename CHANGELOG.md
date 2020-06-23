@@ -1,11 +1,39 @@
 # Changelog
 
-## [rc1](https://github.com/yalelibrary/yul-dc-camerata/tree/rc1) (2020-06-18)
+## [v1.8.1](https://github.com/yalelibrary/yul-dc-camerata/tree/v1.8.1) (2020-06-22)
 
-[Full Changelog](https://github.com/yalelibrary/yul-dc-camerata/compare/v1.5.0...rc1)
+[Full Changelog](https://github.com/yalelibrary/yul-dc-camerata/compare/v1.8.0...v1.8.1)
 
 **Merged pull requests:**
 
+- Add environment variables for management app dashboard [\#60](https://github.com/yalelibrary/yul-dc-camerata/pull/60) ([maxkadel](https://github.com/maxkadel))
+
+## [v1.8.0](https://github.com/yalelibrary/yul-dc-camerata/tree/v1.8.0) (2020-06-22)
+
+[Full Changelog](https://github.com/yalelibrary/yul-dc-camerata/compare/v1.7.0...v1.8.0)
+
+**Merged pull requests:**
+
+- bump management, prepare for v1.8.0 release [\#59](https://github.com/yalelibrary/yul-dc-camerata/pull/59) ([maxkadel](https://github.com/maxkadel))
+- Configure camerata to run containers in Rails production mode on ECS [\#57](https://github.com/yalelibrary/yul-dc-camerata/pull/57) ([mark-dce](https://github.com/mark-dce))
+
+## [v1.7.0](https://github.com/yalelibrary/yul-dc-camerata/tree/v1.7.0) (2020-06-22)
+
+[Full Changelog](https://github.com/yalelibrary/yul-dc-camerata/compare/v1.6.0...v1.7.0)
+
+**Merged pull requests:**
+
+- Prep for v1.7.0 release, bump management [\#58](https://github.com/yalelibrary/yul-dc-camerata/pull/58) ([maxkadel](https://github.com/maxkadel))
+
+## [v1.6.0](https://github.com/yalelibrary/yul-dc-camerata/tree/v1.6.0) (2020-06-22)
+
+[Full Changelog](https://github.com/yalelibrary/yul-dc-camerata/compare/v1.5.0...v1.6.0)
+
+**Merged pull requests:**
+
+- Add a changelog for the v1.6.0 release [\#55](https://github.com/yalelibrary/yul-dc-camerata/pull/55) ([mark-dce](https://github.com/mark-dce))
+- Update blacklight and managment release versions [\#54](https://github.com/yalelibrary/yul-dc-camerata/pull/54) ([mark-dce](https://github.com/mark-dce))
+- Release candidate 1 [\#53](https://github.com/yalelibrary/yul-dc-camerata/pull/53) ([fnibbit](https://github.com/fnibbit))
 - Prepare for manifest service v.2.0.0 [\#52](https://github.com/yalelibrary/yul-dc-camerata/pull/52) ([fnibbit](https://github.com/fnibbit))
 
 ## [v1.5.0](https://github.com/yalelibrary/yul-dc-camerata/tree/v1.5.0) (2020-06-17)
@@ -27,7 +55,6 @@
 
 **Merged pull requests:**
 
-- Releasev1.4.3 [\#43](https://github.com/yalelibrary/yul-dc-camerata/pull/43) ([FCRodriguez7](https://github.com/FCRodriguez7))
 - Bump blacklight version [\#42](https://github.com/yalelibrary/yul-dc-camerata/pull/42) ([FCRodriguez7](https://github.com/FCRodriguez7))
 
 ## [v1.4.2](https://github.com/yalelibrary/yul-dc-camerata/tree/v1.4.2) (2020-06-12)
@@ -45,6 +72,7 @@
 
 **Merged pull requests:**
 
+- Releasev1.4.3 [\#43](https://github.com/yalelibrary/yul-dc-camerata/pull/43) ([FCRodriguez7](https://github.com/FCRodriguez7))
 - Bump management, prep for release [\#39](https://github.com/yalelibrary/yul-dc-camerata/pull/39) ([maxkadel](https://github.com/maxkadel))
 - Bump manifests [\#38](https://github.com/yalelibrary/yul-dc-camerata/pull/38) ([bess](https://github.com/bess))
 - WIP Rails in production on ecs [\#37](https://github.com/yalelibrary/yul-dc-camerata/pull/37) ([JzGo](https://github.com/JzGo))

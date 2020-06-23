@@ -19,6 +19,14 @@ services:
         awslogs-region: ${AWS_DEFAULT_REGION}
         awslogs-stream-prefix: iiif_image
 
+  db:
+    logging:
+      driver: awslogs
+      options:
+        awslogs-group: ${CLUSTER_NAME}
+        awslogs-region: ${AWS_DEFAULT_REGION}
+        awslogs-stream-prefix: db
+
   blacklight:
     logging:
       driver: awslogs
