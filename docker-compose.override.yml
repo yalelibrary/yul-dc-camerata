@@ -21,6 +21,7 @@ services:
 
   management:
     image: 'yalelibraryit/dc-management:master'
+    command: bash -c 'RAILS_ENV=development bundle exec rails server -b 0.0.0.0 -p 3001'
     build: "../yul-dc-management"
     env_file:
       - ../yul-dc-management/.env
@@ -48,7 +49,7 @@ services:
     image: 'yalelibraryit/dc-blacklight:master'
     env_file: ../yul-dc-blacklight/.env
     env_file: ../yul-dc-blacklight/.env.development
-    command: bash -lc 'RAILS_ENV=development bundle exec rails server -b 0.0.0.0'
+    command: bash -c 'RAILS_ENV=development bundle exec rails server -b 0.0.0.0'
     volumes:
       - ../yul-dc-blacklight/:/home/app/webapp
     environment:
