@@ -19,22 +19,22 @@ jobs:
       - image: circleci/ruby:2.6.6-node-browsers
         environment:
           BLACKLIGHT_URL: http://blacklight.library.yale.edu:3000
+          BUNDLER_VERSION: 2.1.4
           IIIF_IMAGE_URL: http://cantaloup:8182
           IIIF_MANIFEST_URL: http://iiif-manifest
-          BUNDLER_VERSION: 2.1.4
       - name: blacklight.library.yale.edu
         image: yalelibraryit/dc-blacklight:v1.3.1
         environment:
-          POSTGRES_DB: blacklight_yul_development
-          POSTGRES_HOST: db
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: password
-          SOLR_URL: http://solr:8983/solr/blacklight-test
-          IIIF_MANIFESTS_BASE_URL: http://iiif-manifest/manifests/
-          PASSENGER_APP_ENV: development
+          HTTP_PASSWORD: test
           HTTP_PASSWORD_PROTECT: 'true'
           HTTP_USERNAME: test
-          HTTP_PASSWORD: test
+          IIIF_MANIFESTS_BASE_URL: http://iiif-manifest/manifests/
+          PASSENGER_APP_ENV: development
+          POSTGRES_DB: blacklight_yul_development
+          POSTGRES_HOST: db
+          POSTGRES_PASSWORD: password
+          POSTGRES_USER: postgres
+          SOLR_URL: http://solr:8983/solr/blacklight-test
       - name: iiif-manifest
         image: yalelibraryit/dc-iiif-manifest:v1.1.2
       - name: solr
@@ -55,12 +55,13 @@ jobs:
       - name: management
         image: yalelibraryit/dc-management:v1.4.1
         environment:
-          POSTGRES_HOST: db
+          PASSENGER_APP_ENV: development
           POSTGRES_DB: yul_dc_management_development
-          POSTGRES_USER: postgres
+          POSTGRES_HOST: db
           POSTGRES_PASSWORD: password
-          SOLR_CORE: blacklight-test
+          POSTGRES_USER: postgres
           SOLR_BASE_URL: http://solr:8983/solr
+          SOLR_CORE: blacklight-test
     executor: docker/docker
     steps:
       - setup_remote_docker
