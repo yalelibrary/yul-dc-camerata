@@ -7,7 +7,6 @@ blacklight_url = ENV['BLACKLIGHT_URL'] || 'http://localhost:3000'
 iiif_manifest_url = ENV['IIIF_MANIFEST_URL'] || 'http://localhost:8080'
 iiif_image_url = ENV['IIIF_IMAGE_URL'] || 'http://localhost:8182'
 
-
 RSpec.describe "The cluster at #{blacklight_url}" do
   describe "The blacklight site at #{blacklight_url}" do
     let(:uri) { "#{blacklight_url}/" }
