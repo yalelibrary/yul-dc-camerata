@@ -14,42 +14,42 @@ RSpec.describe "The cluster at #{blacklight_url}" do
       response = HTTP.basic_auth(user: username, pass: password).get(uri)
       expect(response.code).to eq(200)
     end
-    it 'loads home page with a language facet present' do
-      pending 'no data found'
+    it 'loads home page with a language facet present', :ci_pending do
+      # pending 'no data found'
       response = HTTP.basic_auth(user: username, pass: password).get(uri)
       expect(response.code).to eq(200)
-      expect(response.body).to match(/blacklight-language_ssim/)
+      expect(response.body.to_s).to match(/blacklight-language_ssim/)
     end
     describe 'has search results' do
       let(:uri) { "#{blacklight_url}/?search_field=all_fields&q=" }
-      it 'with at least 5 pages' do
-        pending 'no data found'
+      it 'with at least 5 pages', :ci_pending do
+        # pending 'no data found'
         response = HTTP.basic_auth(user: username, pass: password).get(uri)
         expect(response.code).to eq(200)
-        expect(response.body).to match(/aria-label="Go to page 5"/)
+        expect(response.body.to_s).to match(/aria-label="Go to page 5"/)
       end
     end
     describe 'has a public item' do
       let(:uri) { "#{blacklight_url}/catalog/16189097" }
-      it 'that shows Universal Viewer' do
-        pending 'record not found'
+      it 'that shows Universal Viewer', :ci_pending do
+        # pending 'record not found'
         response = HTTP.basic_auth(user: username, pass: password).get(uri)
         expect(response.code).to eq(200)
-        expect(response.body).to match(/universal-viewer-iframe/)
+        expect(response.body.to_s).to match(/universal-viewer-iframe/)
       end
     end
     describe 'has a yale-only item' do
       let(:uri) { URI("#{blacklight_url}/catalog/16189097-yale") }
-      it 'that does not show Universal Viewer' do
-        pending 'record not found'
+      it 'that does not show Universal Viewer', :ci_pending do
+        # pending 'record not found'
         response = HTTP.basic_auth(user: username, pass: password).get(uri)
         expect(response.code).to eq(200)
-        expect(response.body).not_to match(/universal-viewer-iframe/)
+        expect(response.body.to_s).not_to match(/universal-viewer-iframe/)
       end
     end
   end
 
-  describe "The manifest service at #{blacklight_url}" do
+  describe "The manifest service at #{iiif_manifest_url}" do
     let(:uri) { "#{iiif_manifest_url}/manifests/#{oid}\.json" }
     describe 'provides a manifest for item 16686591' do
       let(:oid) { '16685691' }
@@ -72,8 +72,8 @@ RSpec.describe "The cluster at #{blacklight_url}" do
   describe "The iiif service at #{iiif_image_url}" do
     let(:uri) { "#{iiif_image_url}/iiif/2/#{oid}/info.json" }
     let(:oid) { '16854589' }
-    it 'serves an info.json for image 16854589 that has a width/height ratio between 0.75 and 0.8' do
-      pending "needs AWS credentials"
+    it 'serves an info.json for image 16854589 that has a width/height ratio between 0.75 and 0.8', :ci_pending do
+      # pending "needs AWS credentials"
       response = HTTP.get(uri)
       expect(response.code).to eq(200)
       parsed = JSON.parse(response.body)

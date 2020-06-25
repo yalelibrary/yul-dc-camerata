@@ -75,7 +75,7 @@ jobs:
       - run:
           name: rspec
           command:  |
-            HTTP_USERNAME=test HTTP_PASSWORD=test bundle exec rspec
+            HTTP_USERNAME=test HTTP_PASSWORD=test bundle exec rspec --tag "~ci_pending"
 orbs:
   docker: circleci/docker@1.0.1
 version: 2.1
@@ -83,4 +83,4 @@ workflows:
   commit:
     jobs:
       - run-tests:
-          context: yul-dc  
+          context: yul-dc
