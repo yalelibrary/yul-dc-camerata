@@ -61,5 +61,6 @@ services:
       POSTGRES_VERSION:
       BLACKLIGHT_VERSION:
       MANAGEMENT_VERSION:
+      CAMERATA_VERSION:
     ports:
       - "3001:3001"
