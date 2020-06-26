@@ -1,8 +1,29 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
+# Checks for Blacklight http basic auth credentials in ENV
+# Sets to 'test' if none are found
 username = ENV['HTTP_USERNAME'] || 'test'
 password = ENV['HTTP_PASSWORD'] || 'test'
+
+# Set basic auth to .secrets settings if the .secrets file exists
+if File.exist?('.secrets')
+  secrets = File.read('.secrets').split
+
+  secrets.each do |v|
+    username = v.split("=")[1] if v.split("=")[0] == 'HTTP_USERNAME'
+    password = v.split("=")[1] if v.split("=")[0] == 'HTTP_PASSWORD'
+  end
+else
+  puts "No .secrets file found. Test suite is running with default basic auth credentials"
+end
+
+puts "Current Blacklight basic auth settings: " \
+     "\n username: #{username}" \
+     "\n password: #{password}"
+
+# Checks for cluster urls in ENV
+# Sets to local development defaults if none are found
 blacklight_url = ENV['BLACKLIGHT_URL'] || 'http://localhost:3000'
 iiif_manifest_url = ENV['IIIF_MANIFEST_URL'] || 'http://localhost:8080'
 iiif_image_url = ENV['IIIF_IMAGE_URL'] || 'http://localhost:8182'
