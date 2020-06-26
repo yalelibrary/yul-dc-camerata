@@ -142,9 +142,16 @@ bin/deploy-full.sh gobstopper
 
 ## Running the deployment test against a deployed cluster
 
+The deployment testing suite lives in `/spec/deploy_spec.rb` at the root of this repo.
+
+To run it against a deployed cluster:
+
 1. `bundle install`
 2. Set YUL_DC_SERVER to the domain name for your deployed cluster `export YUL_DC_SERVER=collections-test.curationexperts.com`
-3. `rspec spec/deploy_spec.rb`
+3. Set the http basic auth credentials for Blacklight in your environment. The test suite will set its user and password to what is in env vars before defaulting to 'test'.
+   - Set HTTP_USERNAME to the known Blacklight http basic auth username for your deployed cluster `export HTTP_USERNAME=<basic-auth-username>`
+   - Set HTTP_PASSWORD to the known Blacklight http basic auth password for you deployed cluster `export HTTP_PASSWORD=<basic-auth-password>`
+4. `rspec spec/deploy_spec.rb`
 
 ## Releasing a new version
 

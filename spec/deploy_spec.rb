@@ -1,8 +1,13 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
+# Checks for Blacklight http basic auth credentials in ENV
+# Sets to 'test' if none are found
 username = ENV['HTTP_USERNAME'] || 'test'
 password = ENV['HTTP_PASSWORD'] || 'test'
+
+# Checks for cluster urls in ENV
+# Sets to local development defaults if none are found
 blacklight_url = ENV['BLACKLIGHT_URL'] || 'http://localhost:3000'
 iiif_manifest_url = ENV['IIIF_MANIFEST_URL'] || 'http://localhost:8080'
 iiif_image_url = ENV['IIIF_IMAGE_URL'] || 'http://localhost:8182'
