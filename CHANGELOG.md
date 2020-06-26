@@ -6,6 +6,8 @@
 
 **Merged pull requests:**
 
+- Update release process description in README [\#69](https://github.com/yalelibrary/yul-dc-camerata/pull/69) ([mark-dce](https://github.com/mark-dce))
+- Prepare for release v1.9.0 [\#68](https://github.com/yalelibrary/yul-dc-camerata/pull/68) ([mark-dce](https://github.com/mark-dce))
 - Update Blacklight and Management versions [\#67](https://github.com/yalelibrary/yul-dc-camerata/pull/67) ([mark-dce](https://github.com/mark-dce))
 - Pass Honeybadger API Keys to ECS clusters [\#66](https://github.com/yalelibrary/yul-dc-camerata/pull/66) ([mark-dce](https://github.com/mark-dce))
 - Mark pending specs separately for CI [\#65](https://github.com/yalelibrary/yul-dc-camerata/pull/65) ([fnibbit](https://github.com/fnibbit))
