@@ -150,7 +150,8 @@ bin/deploy-full.sh gobstopper
 
 1. Decide on a new version number. We use [semantic versioning](https://github.com/yalelibrary/yul-dc-camerata/wiki/Semantic-Versioning).
 2. Update the version number in `.github_changelog_generator`
-3. `github_changelog_generator --user yalelibrary --project yul-dc-camerata --token $YOUR_GITHUB_TOKEN`
-4. Commit and merge the changes you just made with a message like "Prep for x.y.z release"
-5. Once those changes are merged to the `master` branch, in the github web UI go to `Releases` and tag a new release with the right version number. Paste in the release notes for this version from the changelog you generated. In the release notes, split out `Features`, `Bug Fixes`, and `Other`
-6. Once the CI build has completed for `master`, deploy the camerata application using `bin/deploy-full.sh yul-test`
+3. Update the version number in `.env`
+4. `github_changelog_generator --user yalelibrary --project yul-dc-camerata --token $YOUR_GITHUB_TOKEN`
+5. Commit and merge the changes you just made with a message like "Prep for x.y.z release"
+6. Once those changes are merged to the `master` branch, in the github web UI go to `Releases` and tag a new release with the right version number. Paste in the release notes for this version from the changelog you generated. In the release notes, split out `Features`, `Bug Fixes`, and `Other`
+7. Once the CI build has completed for `master`, deploy the camerata application using `bin/deploy-full.sh yul-test`
