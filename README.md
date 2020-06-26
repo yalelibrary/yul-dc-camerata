@@ -148,7 +148,7 @@ To run it against a deployed cluster:
 
 1. `bundle install`
 2. Set YUL_DC_SERVER to the domain name for your deployed cluster `export YUL_DC_SERVER=collections-test.curationexperts.com`
-3. Set the http basic auth credentials for Blacklight in your environment. The test suite will set its user and password to what is in env vars before defaulting to 'test'.
+3. Ensure http basic auth credentials for Blacklight are set in your `.secrets` file (See [secrets-template](./secrets-template) for an example). Otherwise the test suite will set its user and password to what is in env vars before defaulting to 'test'. To set via env vars:
    - Set HTTP_USERNAME to the known Blacklight http basic auth username for your deployed cluster `export HTTP_USERNAME=<basic-auth-username>`
    - Set HTTP_PASSWORD to the known Blacklight http basic auth password for you deployed cluster `export HTTP_PASSWORD=<basic-auth-password>`
 4. `rspec spec/deploy_spec.rb`
