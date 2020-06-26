@@ -1,24 +1,18 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-
-
 # Checks for Blacklight http basic auth credentials in ENV
 # Sets to 'test' if none are found
 username = ENV['HTTP_USERNAME'] || 'test'
 password = ENV['HTTP_PASSWORD'] || 'test'
 
 # Set basic auth to .secrets settings if the .secrets file exists
-if File.exists?('.secrets')
+if File.exist?('.secrets')
   secrets = File.read('.secrets').split
 
   secrets.each do |v|
-    if v.split("=")[0] == 'HTTP_USERNAME'
-      username = v.split("=")[1]
-    end
-    if v.split("=")[0] == 'HTTP_PASSWORD'
-        password = v.split("=")[1]
-    end
+    username = v.split("=")[1] if v.split("=")[0] == 'HTTP_USERNAME'
+    password = v.split("=")[1] if v.split("=")[0] == 'HTTP_PASSWORD'
   end
 else
   puts "No .secrets file found. Test suite is running with default basic auth credentials"
