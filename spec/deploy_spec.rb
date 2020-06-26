@@ -24,7 +24,9 @@ else
   puts "No .secrets file found. Test suite is running with default basic auth credentials"
 end
 
-puts "user is #{username} and password is #{password}"
+puts "Current Blacklight basic auth settings: " \
+     "\n username: #{username}" \
+     "\n password: #{password}"
 
 # Checks for cluster urls in ENV
 # Sets to local development defaults if none are found
