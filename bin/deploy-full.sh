@@ -3,7 +3,7 @@ set -e
 
 . $(dirname "$0")/shared-checks.sh
 
-if check_profile && check_region && check_cluster $1 && check_params $1 && check_secrets && all_pass
+if check_profile && check_region && check_cluster $1 && check_params $1 && check_secrets && check_master_key && all_pass
 then
   echo "Target cluster: ${1}"
   export CLUSTER_NAME=${1}

@@ -108,7 +108,7 @@ Valid combinations of memory and cpu documented here: <https://docs.aws.amazon.c
 bin/deploy-full.sh $CLUSTER_NAME
 ```
 
-This command deploys the full Yale stack to the named cluster. You must have a valid params file obtained by running `bin/get-params` against your cluster first. You must also create a `.secrets` file with valid S3 credentials and basic auth credentials; see `secrets-template` for the correct format.
+This command deploys the full Yale stack to the named cluster. You must have a valid params file obtained by running `bin/get-params` against your cluster first. You must also create a `.secrets` file with valid S3 credentials and basic auth credentials; see `secrets-template` for the correct format.  For deployments to complete succesfully you also need to set a 16-byte (32 character) RAILS_MASTER_KEY provided by your team lead.
 
 ### Configure a load balancer
 
