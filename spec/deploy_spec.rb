@@ -25,7 +25,7 @@ puts "Current Blacklight basic auth settings: " \
 # Checks for cluster urls in ENV
 # Sets to local development defaults if none are found
 blacklight_url = ENV['BLACKLIGHT_URL'] || 'http://localhost:3000'
-iiif_manifest_url = ENV['IIIF_MANIFEST_URL'] || 'http://localhost:8080'
+iiif_manifest_url = ENV['IIIF_MANIFEST_URL'] || 'http://localhost:80'
 iiif_image_url = ENV['IIIF_IMAGE_URL'] || 'http://localhost:8182'
 
 RSpec.describe "The cluster at #{blacklight_url}" do
