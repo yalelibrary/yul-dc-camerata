@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/yalelibrary/yul-dc-camerata/tree/master.svg?style=svg)](https://circleci.com/gh/yalelibrary/yul-dc-camerata/tree/master)
+
 # yul-dc-camerata
 
 Coordinate services for YUL-DC project
