@@ -108,7 +108,7 @@ Valid combinations of memory and cpu documented here: <https://docs.aws.amazon.c
 bin/deploy-full.sh $CLUSTER_NAME
 ```
 
-This command deploys the full Yale stack to the named cluster. You must have a valid params file obtained by running `bin/get-params` against your cluster first. You must also create a `.secrets` file with valid S3 credentials and basic auth credentials; see `secrets-template` for the correct format.
+This command deploys the full Yale stack to the named cluster. You must have a valid params file obtained by running `bin/get-params` against your cluster first. You must also create a `.secrets` file with valid S3 credentials and basic auth credentials; see `secrets-template` for the correct format.  For deployments to complete succesfully you also need to set a 16-byte (32 character) RAILS_MASTER_KEY provided by your team lead.
 
 ### Configure a load balancer
 
@@ -142,15 +142,23 @@ bin/deploy-full.sh gobstopper
 
 ## Running the deployment test against a deployed cluster
 
+The deployment testing suite lives in `/spec/deploy_spec.rb` at the root of this repo.
+
+To run it against a deployed cluster:
+
 1. `bundle install`
 2. Set YUL_DC_SERVER to the domain name for your deployed cluster `export YUL_DC_SERVER=collections-test.curationexperts.com`
-3. `rspec spec/deploy_spec.rb`
+3. Ensure http basic auth credentials for Blacklight are set in your `.secrets` file (See [secrets-template](./secrets-template) for an example). Otherwise the test suite will set its user and password to what is in env vars before defaulting to 'test'. To set via env vars:
+   - Set HTTP_USERNAME to the known Blacklight http basic auth username for your deployed cluster `export HTTP_USERNAME=<basic-auth-username>`
+   - Set HTTP_PASSWORD to the known Blacklight http basic auth password for you deployed cluster `export HTTP_PASSWORD=<basic-auth-password>`
+4. `rspec spec/deploy_spec.rb`
 
 ## Releasing a new version
 
 1. Decide on a new version number. We use [semantic versioning](https://github.com/yalelibrary/yul-dc-camerata/wiki/Semantic-Versioning).
 2. Update the version number in `.github_changelog_generator`
-3. `github_changelog_generator --user yalelibrary --project yul-dc-camerata --token $YOUR_GITHUB_TOKEN`
-4. Commit and merge the changes you just made with a message like "Prep for x.y.z release"
-5. Once those changes are merged to the `master` branch, in the github web UI go to `Releases` and tag a new release with the right version number. Paste in the release notes for this version from the changelog you generated. In the release notes, split out `Features`, `Bug Fixes`, and `Other`
-6. Once the CI build has completed for `master`, deploy the camerata application using `bin/deploy-full.sh yul-test`
+3. Update the version number in `.env`
+4. `github_changelog_generator --user yalelibrary --project yul-dc-camerata --token $YOUR_GITHUB_TOKEN`
+5. Commit and merge the changes you just made with a message like "Prep for x.y.z release"
+6. Once those changes are merged to the `master` branch, in the github web UI go to `Releases` and tag a new release with the right version number. Paste in the release notes for this version from the changelog you generated. In the release notes, split out `Features`, `Bug Fixes`, and `Other`
+7. Once the CI build has completed for `master`, deploy the camerata application using `bin/deploy-full.sh yul-test`

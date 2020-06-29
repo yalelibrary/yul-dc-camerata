@@ -15,67 +15,44 @@ commands:
           docker tag <<parameters.image>>:<<parameters.from_tag>> <<parameters.image>>:<<parameters.to_tag>>
 jobs:
   run-tests:
-    docker:
-      - image: circleci/ruby:2.6.6-node-browsers
-        environment:
-          BLACKLIGHT_URL: http://blacklight.library.yale.edu:3000
-          BUNDLER_VERSION: 2.1.4
-          IIIF_IMAGE_URL: http://cantaloup:8182
-          IIIF_MANIFEST_URL: http://iiif-manifest
-      - name: blacklight.library.yale.edu
-        image: yalelibraryit/dc-blacklight:v1.3.1
-        environment:
-          HTTP_PASSWORD: test
-          HTTP_PASSWORD_PROTECT: 'true'
-          HTTP_USERNAME: test
-          IIIF_MANIFESTS_BASE_URL: http://iiif-manifest/manifests/
-          PASSENGER_APP_ENV: development
-          POSTGRES_DB: blacklight_yul_development
-          POSTGRES_HOST: db
-          POSTGRES_PASSWORD: password
-          POSTGRES_USER: postgres
-          SOLR_URL: http://solr:8983/solr/blacklight-test
-      - name: iiif-manifest
-        image: yalelibraryit/dc-iiif-manifest:v1.1.2
-      - name: solr
-        image: yalelibraryit/dc-solr:v1.0.0
-        command: bash -c 'precreate-core blacklight-test /opt/config; exec solr -f'
-      - name: cantaloup
-        image: yalelibraryit/dc-iiif-cantaloupe:v1.0.0
-        environment:
-          S3CACHE_BUCKET_NAME: yale-image-samples/cantaloupe/cache #NO TRAILING SLASH!
-          S3_SOURCE_BUCKET_NAME: yale-image-samples
-      - name: db
-        image: yalelibraryit/dc-postgres:v1.0.0
-        environment:
-          POSTGRES_MULTIPLE_DATABASES: blacklight_yul_development,yul_dc_management_development
-          POSTGRES_HOST: db
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: password
-      - name: management
-        image: yalelibraryit/dc-management:v1.4.1
-        environment:
-          PASSENGER_APP_ENV: development
-          POSTGRES_DB: yul_dc_management_development
-          POSTGRES_HOST: db
-          POSTGRES_PASSWORD: password
-          POSTGRES_USER: postgres
-          SOLR_BASE_URL: http://solr:8983/solr
-          SOLR_CORE: blacklight-test
-    executor: docker/docker
+    machine:
+      image: ubuntu-1604:202004-01
     steps:
-      - setup_remote_docker
       - checkout
       - run:
           name: Bundler
-          command: gem install bundler -v 2.1.4 && bundle
+          command: |
+            gem install bundler -v 2.1.4 && bundle
       - run:
           name: Rubocop
-          command: bundle exec rubocop --parallel
+          command: |
+            bundle exec rubocop --parallel
+      - run:
+          name: Setup Secrets
+          command: |
+            echo HTTP_USERNAME=test >> .secrets
+            echo HTTP_PASSWORD=test >> .secrets
+            echo AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} >> .secrets
+            echo AWS_SECRET_KEY=${AWS_SECRET_KEY} >> .secrets
+      - run:
+          name: Docker Compose Up
+          command: |
+            set -x
+            docker-compose up -d
+      - run:
+          name: Wait for services to be fully up
+          command: |
+            wget --tries 10 --retry-connrefused http://localhost:8983/solr/
+            wget --tries 10 --retry-connrefused http://test:test@localhost:3001
+            wget --tries 10 --retry-connrefused http://test:test@localhost:3000
+      - run:
+          name: populate management index
+          command: |
+            docker-compose exec management bundle exec rake yale:index_fixture_data METADATA_SOURCE=ladybird
       - run:
           name: rspec
           command:  |
-            HTTP_USERNAME=test HTTP_PASSWORD=test bundle exec rspec
+            bundle exec rspec
 orbs:
   docker: circleci/docker@1.0.1
 version: 2.1
@@ -83,4 +60,4 @@ workflows:
   commit:
     jobs:
       - run-tests:
-          context: yul-dc  
+          context: yul-dc

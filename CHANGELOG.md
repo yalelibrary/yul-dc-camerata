@@ -1,11 +1,26 @@
 # Changelog
 
+## [v1.9.0](https://github.com/yalelibrary/yul-dc-camerata/tree/v1.9.0) (2020-06-26)
+
+[Full Changelog](https://github.com/yalelibrary/yul-dc-camerata/compare/v1.8.1...v1.9.0)
+
+**Merged pull requests:**
+
+- Update release process description in README [\#69](https://github.com/yalelibrary/yul-dc-camerata/pull/69) ([mark-dce](https://github.com/mark-dce))
+- Prepare for release v1.9.0 [\#68](https://github.com/yalelibrary/yul-dc-camerata/pull/68) ([mark-dce](https://github.com/mark-dce))
+- Update Blacklight and Management versions [\#67](https://github.com/yalelibrary/yul-dc-camerata/pull/67) ([mark-dce](https://github.com/mark-dce))
+- Pass Honeybadger API Keys to ECS clusters [\#66](https://github.com/yalelibrary/yul-dc-camerata/pull/66) ([mark-dce](https://github.com/mark-dce))
+- Mark pending specs separately for CI [\#65](https://github.com/yalelibrary/yul-dc-camerata/pull/65) ([fnibbit](https://github.com/fnibbit))
+- Add Camerata to management dashboard [\#63](https://github.com/yalelibrary/yul-dc-camerata/pull/63) ([maxkadel](https://github.com/maxkadel))
+- Test CI, local or deployed blacklight, management and IIIF [\#62](https://github.com/yalelibrary/yul-dc-camerata/pull/62) ([orangewolf](https://github.com/orangewolf))
+
 ## [v1.8.1](https://github.com/yalelibrary/yul-dc-camerata/tree/v1.8.1) (2020-06-22)
 
 [Full Changelog](https://github.com/yalelibrary/yul-dc-camerata/compare/v1.8.0...v1.8.1)
 
 **Merged pull requests:**
 
+- Prep for release v1.8.1 [\#61](https://github.com/yalelibrary/yul-dc-camerata/pull/61) ([maxkadel](https://github.com/maxkadel))
 - Add environment variables for management app dashboard [\#60](https://github.com/yalelibrary/yul-dc-camerata/pull/60) ([maxkadel](https://github.com/maxkadel))
 
 ## [v1.8.0](https://github.com/yalelibrary/yul-dc-camerata/tree/v1.8.0) (2020-06-22)
@@ -55,6 +70,7 @@
 
 **Merged pull requests:**
 
+- Releasev1.4.3 [\#43](https://github.com/yalelibrary/yul-dc-camerata/pull/43) ([FCRodriguez7](https://github.com/FCRodriguez7))
 - Bump blacklight version [\#42](https://github.com/yalelibrary/yul-dc-camerata/pull/42) ([FCRodriguez7](https://github.com/FCRodriguez7))
 
 ## [v1.4.2](https://github.com/yalelibrary/yul-dc-camerata/tree/v1.4.2) (2020-06-12)
@@ -72,7 +88,6 @@
 
 **Merged pull requests:**
 
-- Releasev1.4.3 [\#43](https://github.com/yalelibrary/yul-dc-camerata/pull/43) ([FCRodriguez7](https://github.com/FCRodriguez7))
 - Bump management, prep for release [\#39](https://github.com/yalelibrary/yul-dc-camerata/pull/39) ([maxkadel](https://github.com/maxkadel))
 - Bump manifests [\#38](https://github.com/yalelibrary/yul-dc-camerata/pull/38) ([bess](https://github.com/bess))
 - WIP Rails in production on ecs [\#37](https://github.com/yalelibrary/yul-dc-camerata/pull/37) ([JzGo](https://github.com/JzGo))
