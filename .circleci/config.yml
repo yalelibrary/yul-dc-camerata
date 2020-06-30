@@ -17,6 +17,8 @@ jobs:
   run-tests:
     machine:
       image: ubuntu-1604:202004-01
+    environment:
+      RAILS_ENV: development
     steps:
       - checkout
       - run:
