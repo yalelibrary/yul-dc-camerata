@@ -17,8 +17,6 @@ jobs:
   run-tests:
     machine:
       image: ubuntu-1604:202004-01
-    environment:
-      RAILS_ENV: development
     steps:
       - checkout
       - run:
@@ -38,6 +36,8 @@ jobs:
             echo AWS_SECRET_KEY=${AWS_SECRET_KEY} >> .secrets
       - run:
           name: Docker Compose Up
+          environment:
+            RAILS_ENV: development
           command: |
             set -x
             bin/localup up -d
