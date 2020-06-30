@@ -41,7 +41,7 @@ jobs:
           command: |
             set -x
             echo $RAILS_ENV foo
-            docker-compose -f docker-compose.yml -f solr-compose.yml -f psql-compose.yml -f local.override.yml up -d
+            docker-compose -f docker-compose.yml -f solr-compose.yml -f psql-compose.yml -f local.override.yml up
             docker-compose ps
             wget --tries 10 --retry-connrefused http://localhost:8983/solr/
             wget --tries 10 --retry-connrefused http://test:test@localhost:3001
