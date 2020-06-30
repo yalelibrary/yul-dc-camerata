@@ -41,7 +41,7 @@ jobs:
           command: |
             set -x
             echo $RAILS_ENV foo
-            bin/localup up -d
+            docker-compose -f docker-compose.yml -f solr-compose.yml -f psql-compose.yml -f local.override.yml up -d
       - run:
           name: Wait for services to be fully up
           command: |
