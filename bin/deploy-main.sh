@@ -44,6 +44,7 @@ then
   yq m -x docker-compose.yml docker-compose.ecs.yml > docker-compose-merged.yml
 
   # Launch the service and register containers with the loadbalancer
+  # The $2 here can be anything, but is usually --enable-service-discovery
   ecs-cli compose  \
     --region $AWS_DEFAULT_REGION \
     --project-name ${CLUSTER_NAME}-main \

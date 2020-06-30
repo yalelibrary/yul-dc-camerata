@@ -2,8 +2,8 @@
 
 . $(dirname "$0")/shared-checks.sh
 . $(dirname "$0")/efs-fun.sh
-CLUSTER_NAME=$1
-export CLUSTER_NAME
+export CLUSTER_NAME=${1}
+
 if check_profile && check_region && check_cluster $1 && check_params $1 && check_secrets && all_pass
 then
   echo "Target cluster: ${CLUSTER_NAME}"
@@ -22,5 +22,5 @@ then
     $2 \
     --force-deployment \
     --create-log-groups \
-    --cluster ${CLUSTER_NAME} 
+    --cluster ${CLUSTER_NAME}
 fi

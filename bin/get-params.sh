@@ -4,14 +4,14 @@ CLUSTER_NAME=$1
 
 if [[ -z $2 ]]
 then
-  memory='4GB'
+  memory='8GB'
 else
   memory=$2
 fi
 
 if [[ -z $3 ]]
 then
-  cpu='512'
+  cpu='2048'
 else
   cpu=$3
 fi
