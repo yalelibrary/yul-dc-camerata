@@ -44,7 +44,7 @@ jobs:
             sudo chown 999:999 dbdata
             mkdir -p solrdata
             sudo chown 8983:8983 solrdata
-            docker-compose -f docker-compose.yml -f solr-compose.yml -f psql-compose.yml -f local.override.yml up -d
+            bin/localup up -d
       - run:
           name: Wait for services to be fully up
           command: |
