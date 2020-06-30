@@ -38,7 +38,7 @@ jobs:
           name: Docker Compose Up
           command: |
             set -x
-            docker-compose up -d
+            /bin/localup -d up
       - run:
           name: Wait for services to be fully up
           command: |
