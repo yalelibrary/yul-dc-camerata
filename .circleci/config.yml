@@ -42,6 +42,9 @@ jobs:
             set -x
             echo $RAILS_ENV foo
             docker-compose -f docker-compose.yml -f solr-compose.yml -f psql-compose.yml -f local.override.yml up -d
+            wget --tries 10 --retry-connrefused http://localhost:8983/solr/
+            wget --tries 10 --retry-connrefused http://test:test@localhost:3001
+            wget --tries 10 --retry-connrefused http://test:test@localhost:3000
       - run:
           name: Wait for services to be fully up
           command: |
