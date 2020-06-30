@@ -38,7 +38,7 @@ jobs:
           name: Docker Compose Up
           command: |
             set -x
-            RAILS_ENV=development bin/localup up -d
+            bin/localup up -d
       - run:
           name: Wait for services to be fully up
           command: |
