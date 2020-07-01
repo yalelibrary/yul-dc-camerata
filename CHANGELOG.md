@@ -1,11 +1,24 @@
 # Changelog
 
+## [v1.9.0](https://github.com/yalelibrary/yul-dc-camerata/tree/v1.9.0) (2020-07-01)
+
+[Full Changelog](https://github.com/yalelibrary/yul-dc-camerata/compare/v1.9.0...v1.9.0)
+
+**Merged pull requests:**
+
+- Add badge for circleci to README [\#74](https://github.com/yalelibrary/yul-dc-camerata/pull/74) ([orangewolf](https://github.com/orangewolf))
+- Move CircleCI to be DockerCompose Based To Mimic Local Smoke Test Runs [\#73](https://github.com/yalelibrary/yul-dc-camerata/pull/73) ([orangewolf](https://github.com/orangewolf))
+- Add a deployment check for the RAILS\_MASTER\_KEY [\#72](https://github.com/yalelibrary/yul-dc-camerata/pull/72) ([mark-dce](https://github.com/mark-dce))
+- Improve password management for tests [\#71](https://github.com/yalelibrary/yul-dc-camerata/pull/71) ([JzGo](https://github.com/JzGo))
+- Bump rack from 2.2.2 to 2.2.3 [\#64](https://github.com/yalelibrary/yul-dc-camerata/pull/64) ([dependabot[bot]](https://github.com/apps/dependabot))
+
 ## [v1.9.0](https://github.com/yalelibrary/yul-dc-camerata/tree/v1.9.0) (2020-06-26)
 
 [Full Changelog](https://github.com/yalelibrary/yul-dc-camerata/compare/v1.8.1...v1.9.0)
 
 **Merged pull requests:**
 
+- Regenerate changelog for release v1.9.0 [\#70](https://github.com/yalelibrary/yul-dc-camerata/pull/70) ([mark-dce](https://github.com/mark-dce))
 - Update release process description in README [\#69](https://github.com/yalelibrary/yul-dc-camerata/pull/69) ([mark-dce](https://github.com/mark-dce))
 - Prepare for release v1.9.0 [\#68](https://github.com/yalelibrary/yul-dc-camerata/pull/68) ([mark-dce](https://github.com/mark-dce))
 - Update Blacklight and Management versions [\#67](https://github.com/yalelibrary/yul-dc-camerata/pull/67) ([mark-dce](https://github.com/mark-dce))
