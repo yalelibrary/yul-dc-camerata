@@ -1,5 +1,4 @@
-#!/bin/sh
-set -e
+#!/bin/bash -e
 
 . $(dirname "$0")/shared-checks.sh
 
@@ -8,7 +7,7 @@ then
   echo "Target cluster: ${1}"
   echo "Using AWS_PROFILE=${AWS_PROFILE}";
   echo "      AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}";
-  ecs-cli compose --region $AWS_DEFAULT_REGION --project-name ${1}-project service ps --cluster ${1}
+  ecs-cli compose --region $AWS_DEFAULT_REGION --project-name ${1}-${2} service ps --cluster ${1}
 else
   echo "\nUSAGE: bin/cluster-ps.sh \$CLUSTER_NAME\n" # Parameters not set correctly
 fi

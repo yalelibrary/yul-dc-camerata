@@ -1,8 +1,0 @@
-# Place configuration unique to running in local docker here
-version: '3'
-
-services:
-
-  db:
-    volumes:
-      - "db:/var/lib/postgresql/data"

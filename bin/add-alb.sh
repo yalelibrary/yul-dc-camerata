@@ -1,11 +1,11 @@
-#!/bin/sh
-set -e
+#!/bin/bash -e
 
 . $(dirname "$0")/shared-checks.sh
 
 if check_profile && check_region && check_cluster $1 && all_pass
 then
-  echo "Target cluster: ${1}"
+  CLUSTER_NAME=${1}
+  echo "Target cluster: ${CLUSTER_NAME}"
   echo "Using AWS_PROFILE=${AWS_PROFILE}"
   echo "      AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}"
   echo

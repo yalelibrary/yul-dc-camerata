@@ -1,6 +1,10 @@
 git/
+solrdata
+dbdata
 ecs-params.yml
 *-ecs-params.yml
 .secrets
 cluster-ids.txt
 docker-compose-merged.yml
+*-psql-params.yml
+*-solr-params.yml

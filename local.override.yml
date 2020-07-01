@@ -1,0 +1,27 @@
+# Place configuration unique to running in local docker here
+version: '3'
+
+services:
+  solr:
+    volumes:
+      - ./solrdata:/var/solr/data/blacklight-core
+    logging:
+      driver: json-file
+
+  db:
+    volumes:
+      - ./dbdata:/var/lib/postgresql/data
+    logging:
+      driver: json-file
+
+  management:
+    command: bash -c 'RAILS_ENV=${RAILS_ENV:-development} bundle exec rake db:migrate && bundle exec rails server -b 0.0.0.0 -p 3001'
+
+  blacklight:
+    command: bash -c 'RAILS_ENV=${RAILS_ENV:-development} bundle exec rake db:migrate &&  bundle exec rails server -b 0.0.0.0'
+    depends_on:
+      - db
+      - solr
+      - iiif_manifest
+      - iiif_image
+      - management

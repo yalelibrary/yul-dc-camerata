@@ -36,9 +36,15 @@ jobs:
             echo AWS_SECRET_KEY=${AWS_SECRET_KEY} >> .secrets
       - run:
           name: Docker Compose Up
+          environment:
+            RAILS_ENV: development
           command: |
             set -x
-            docker-compose up -d
+            mkdir -p dbdata
+            sudo chown 999:999 dbdata
+            mkdir -p solrdata
+            sudo chown 8983:8983 solrdata
+            bin/localup up -d
       - run:
           name: Wait for services to be fully up
           command: |

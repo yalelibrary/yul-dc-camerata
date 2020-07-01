@@ -9,16 +9,6 @@ services:
       IIIF_MANIFESTS_BASE_URL: http://localhost/manifests/
       IIIF_IMAGE_BASE_URL: http://localhost:8182/iiif
 
-  solr:
-    image: yalelibraryit/dc-solr:${SOLR_VERSION}
-    environment:
-      SOLR_CORE: blacklight-core
-      SOLR_VERSION:
-    ports:
-      - "8983:8983"
-    command: bash -c 'precreate-core $${SOLR_CORE} /opt/config; exec solr -f'
-    volumes:
-      - solr_efs:/var/solr/data/$${SOLR_CORE}
 
   iiif_image:
     image: yalelibraryit/dc-iiif-cantaloupe:${IIIF_IMAGE_VERSION}
@@ -31,29 +21,18 @@ services:
     ports:
       - "8182:8182"
 
-  db:
-    image: yalelibraryit/dc-postgres:${POSTGRES_VERSION}
-    environment:
-      POSTGRES_MULTIPLE_DATABASES: blacklight_yul_production,yul_dc_management_production
-      POSTGRES_HOST: db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-    ports:
-      - "5432:5432"
-    volumes:
-      - "db:/var/lib/postgresql/data"
 
   blacklight:
     image: yalelibraryit/dc-blacklight:${BLACKLIGHT_VERSION}
-    command: bash -c "echo $$(date -u +%FT%TZ) > DEPLOYED_AT && /sbin/my_init"
+    command: bash -c "echo $$(date -u +%FT%TZ) > DEPLOYED_AT && sleep 30 && /sbin/my_init"
     environment:
       POSTGRES_HOST: db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
       SOLR_URL: http://solr:8983/solr/blacklight-core
       IIIF_MANIFESTS_BASE_URL: http://localhost/manifests/
-      PASSENGER_APP_ENV: production
-      RAILS_ENV: production
+      PASSENGER_APP_ENV: ${RAILS_ENV:-production}
+      RAILS_ENV: ${RAILS_ENV:-production}
       HTTP_PASSWORD_PROTECT: 'true'
       BLACKLIGHT_VERSION:
       HONEYBADGER_API_KEY: ${HONEYBADGER_API_KEY_BLACKLIGHT}
@@ -63,13 +42,6 @@ services:
       - .secrets
     ports:
       - "3000:3000"
-    volumes:
-      - blacklight:/home/app/webapp
-    depends_on:
-      - db
-      - solr
-      - iiif_manifest
-      - management
 
   management:
     image: yalelibraryit/dc-management:${MANAGEMENT_VERSION}
@@ -82,7 +54,7 @@ services:
       SOLR_BASE_URL: http://solr:8983/solr
       SOLR_CORE: blacklight-core
       PASSENGER_APP_ENV: production
-      RAILS_ENV: production
+      RAILS_ENV: ${RAILS_ENV:-production}
       HONEYBADGER_API_KEY: ${HONEYBADGER_API_KEY_MANAGEMENT}
       # Set the master key in your local environment to pass through to ECS
       RAILS_MASTER_KEY:
@@ -96,11 +68,3 @@ services:
       CAMERATA_VERSION:
     ports:
       - "3001:3001"
-    depends_on:
-      - db
-      - solr
-
-volumes:
-  blacklight:
-  db:
-  solr_efs:

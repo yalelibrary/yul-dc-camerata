@@ -1,15 +1,14 @@
-#!/bin/sh
-set -e
+#!/bin/bash -e
 
 . $(dirname "$0")/shared-checks.sh
-
+. $(dirname "$0")/efs-fun.sh
+CLUSTER_NAME=$1
 if check_profile && check_region && check_cluster $1 && all_pass
 then
-  echo "Target cluster: ${1}"
+  echo "Target cluster: ${CLUSTER_NAME}"
   echo "Using AWS_PROFILE=${AWS_PROFILE}";
   echo "      AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}";
-#  ecs-cli compose --project-name ${1}-project --file docker-compose-simple.yml --ecs-params ${1}-ecs-params.yml service up --cluster ${1}
-  ecs-cli up --cluster ${1} --launch-type FARGATE --region $AWS_DEFAULT_REGION | tee cluster-ids.txt
+  ecs-cli up --force --cluster ${CLUSTER_NAME} --launch-type FARGATE --region $AWS_DEFAULT_REGION | tee cluster-ids.txt
 
   echo "Extracting vpc & subnet IDs"
   VPC_ID=`sed -n 's/VPC created: \(.*\)/\1/p' < cluster-ids.txt`
@@ -18,43 +17,16 @@ then
   echo "  $VPC_ID"
   echo "  $SUBNET0"
   echo "  $SUBNET1"
-
   echo "Setup ingress security group"
-  SG_ID=`aws ec2 describe-security-groups --filters \
-    Name=vpc-id,Values=$VPC_ID --region=$AWS_DEFAULT_REGION | grep -Eo -m 1 'sg-\w+'`
+  SG_ID=`aws ec2 describe-security-groups --filters Name=vpc-id,Values=$VPC_ID --region=$AWS_DEFAULT_REGION | jq -r ".SecurityGroups[0].GroupId"`
   echo "  $SG_ID"
-  aws ec2 authorize-security-group-ingress --group-id $SG_ID \
-    --protocol tcp --port 80 \
-    --cidr 0.0.0.0/0 \
-    --region=$AWS_DEFAULT_REGION
-  aws ec2 authorize-security-group-ingress --group-id $SG_ID \
-    --protocol tcp --port 3000 \
-    --cidr 0.0.0.0/0 \
-    --region=$AWS_DEFAULT_REGION
-  aws ec2 authorize-security-group-ingress --group-id $SG_ID \
-    --protocol tcp --port 8983 \
-    --cidr 0.0.0.0/0 \
-    --region=$AWS_DEFAULT_REGION
-  aws ec2 authorize-security-group-ingress --group-id $SG_ID \
-    --protocol tcp --port 8182 \
-    --cidr 0.0.0.0/0 \
-    --region=$AWS_DEFAULT_REGION
 
-  aws ec2 authorize-security-group-ingress --group-id $SG_ID \
-    --protocol tcp --port 3001 \
-    --cidr 0.0.0.0/0 \
-    --region=$AWS_DEFAULT_REGION
-
-  SOLR_FS_ID=`aws efs create-file-system \
-    --creation-token ${1}-solr-efs \
-    --performance-mode generalPurpose \
-    --throughput-mode bursting \
-    --region $AWS_DEFAULT_REGION \
-    --tags Key=Name,Value="${1}-solr" \
-      | grep -Eo -m 1 '\"fs-\w+' | sed s/\"//`
-
-
-  cat <<ECS_PARAMS > ${1}-ecs-params.yml
+  create_fs $CLUSTER_NAME $AWS_DEFAULT_REGION
+  put_policy
+  create_mount_target $SUBNET0
+  create_mount_target $SUBNET1
+  create_access_point "solr" "8983" "8983" "755" 
+cat <<-SOLR_PARAMS > $CLUSTER_NAME-solr-params.yml
 version: 1
 task_definition:
   task_execution_role: ecsTaskExecutionRole
@@ -63,11 +35,12 @@ task_definition:
     mem_limit: 8GB
     cpu_limit: 2048
   efs_volumes:
-      - name: "solr_efs"
-        filesystem_id: $SOLR_FS_ID
-        root_directory: /
-        transit_encryption: DISABLED
-        iam: DISABLE
+    - name: "solr_efs"
+      filesystem_id: $EFS_FS_ID
+      access_point: $ACCESS_POINT_ID
+      transit_encryption: ENABLED
+      transit_encryption_port: 4181
+      iam: DISABLED
 run_params:
   network_configuration:
     awsvpc_configuration:
@@ -77,6 +50,66 @@ run_params:
       SG_IDs:
         - $SG_ID
       assign_public_ip: ENABLED
+  service_discovery:
+    container_name: solr
+    private_dns_namespace:
+      name: local
+      vpc: $VPC_ID
+SOLR_PARAMS
+
+  create_access_point "psql" "999" "999" "755" 
+cat <<-PSQL_PARAMS > $CLUSTER_NAME-psql-params.yml
+version: 1
+task_definition:
+  task_execution_role: ecsTaskExecutionRole
+  ecs_network_mode: awsvpc
+  task_size:
+    mem_limit: 8GB
+    cpu_limit: 2048
+  efs_volumes:
+      - name: "psql_efs"
+        filesystem_id: $EFS_FS_ID
+        access_point: $ACCESS_POINT_ID
+        transit_encryption: ENABLED
+        transit_encryption_port: 4182
+        iam: DISABLED
+run_params:
+  network_configuration:
+    awsvpc_configuration:
+      subnets:
+        - $SUBNET0
+        - $SUBNET1
+      SG_IDs:
+        - $SG_ID
+      assign_public_ip: ENABLED
+  service_discovery:
+    container_name: db
+    private_dns_namespace:
+      name: local
+      vpc: $VPC_ID
+PSQL_PARAMS
+
+cat <<ECS_PARAMS > ${CLUSTER_NAME}-ecs-params.yml
+version: 1
+task_definition:
+  task_execution_role: ecsTaskExecutionRole
+  ecs_network_mode: awsvpc
+  task_size:
+    mem_limit: 8GB
+    cpu_limit: 2048
+run_params:
+  network_configuration:
+    awsvpc_configuration:
+      subnets:
+        - $SUBNET0
+        - $SUBNET1
+      security_groups:
+        - $SG_ID
+      assign_public_ip: ENABLED
+  service_discovery:
+    private_dns_namespace:
+      name: local
+      vpc: $VPC_ID
 ECS_PARAMS
 
 fi
