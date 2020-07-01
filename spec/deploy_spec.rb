@@ -36,8 +36,8 @@ else
 end
 
 # use this SSLContext to use https URLs without verifying certificates
-#@ssl_context = OpenSSL::SSL::SSLContext.new
-#@ssl_context.verify_mode = OpenSSL::SSL::VERIFY_NONE
+# @ssl_context = OpenSSL::SSL::SSLContext.new
+# @ssl_context.verify_mode = OpenSSL::SSL::VERIFY_NONE
 ssl_context = OpenSSL::SSL::SSLContext.new
 ssl_context.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
@@ -50,13 +50,13 @@ RSpec.describe "The cluster at #{blacklight_url}" do
     let(:uri) { "#{blacklight_url}/" }
     it 'accepts the provided HTTP_PASSWORD and HTTP_USERNAME' do
       response = HTTP.basic_auth(user: username,
-        pass: password).get(uri, ssl_context:ssl_context)
+                                 pass: password).get(uri, ssl_context: ssl_context)
       expect(response.code).to eq(200)
     end
     it 'loads home page with a language facet present', :ci_pending do
       # pending 'no data found'
       response = HTTP.basic_auth(user: username,
-        pass: password).get(uri, ssl_context:ssl_context)
+                                 pass: password).get(uri, ssl_context: ssl_context)
       expect(response.code).to eq(200)
       expect(response.body.to_s).to match(/blacklight-language_ssim/)
     end
@@ -65,7 +65,7 @@ RSpec.describe "The cluster at #{blacklight_url}" do
       it 'with at least 5 pages', :ci_pending do
         # pending 'no data found'
         response = HTTP.basic_auth(user: username,
-          pass: password).get(uri, ssl_context:ssl_context)
+                                   pass: password).get(uri, ssl_context: ssl_context)
         expect(response.code).to eq(200)
         expect(response.body.to_s).to match(/aria-label="Go to page 5"/)
       end
@@ -75,7 +75,7 @@ RSpec.describe "The cluster at #{blacklight_url}" do
       it 'that shows Universal Viewer', :ci_pending do
         # pending 'record not found'
         response = HTTP.basic_auth(user: username,
-          pass: password).get(uri, ssl_context:ssl_context)
+                                   pass: password).get(uri, ssl_context: ssl_context)
         expect(response.code).to eq(200)
         expect(response.body.to_s).to match(/universal-viewer-iframe/)
       end
@@ -84,7 +84,7 @@ RSpec.describe "The cluster at #{blacklight_url}" do
       let(:uri) { URI("#{blacklight_url}/catalog/16189097-yale") }
       it 'that does not show Universal Viewer' do
         response = HTTP.basic_auth(user: username,
-          pass: password).get(uri, ssl_context:ssl_context)
+                                   pass: password).get(uri, ssl_context: ssl_context)
         expect(response.code).to eq(200)
         expect(response.body.to_s).not_to match(/universal-viewer-iframe/)
       end
@@ -97,7 +97,7 @@ RSpec.describe "The cluster at #{blacklight_url}" do
       let(:oid) { '16685691' }
       it 'serves a manifest for item 16685691 with a sequence containing one canvas' do
         response = HTTP.basic_auth(user: username,
-          pass: password).get(uri, ssl_context:ssl_context)
+                                   pass: password).get(uri, ssl_context: ssl_context)
         expect(JSON.parse(response.body)['sequences'][0]['canvases'].length).to eq(1)
       end
     end
@@ -105,7 +105,7 @@ RSpec.describe "The cluster at #{blacklight_url}" do
       let(:oid) { '16854582' }
       it 'has a sequence with nine canvases' do
         response = HTTP.basic_auth(user: username,
-          pass: password).get(uri, ssl_context:ssl_context)
+                                   pass: password).get(uri, ssl_context: ssl_context)
         expect(JSON.parse(response.body)['sequences'][0]['canvases'].length).to eq(9)
       end
     end
@@ -117,7 +117,7 @@ RSpec.describe "The cluster at #{blacklight_url}" do
     it 'serves an info.json for image 16854589 that has a width/height ratio between 0.75 and 0.8', :ci_pending do
       # pending "needs AWS credentials"
       response = HTTP.basic_auth(user: username,
-        pass: password).get(uri, ssl_context:ssl_context)
+                                 pass: password).get(uri, ssl_context: ssl_context)
       expect(response.code).to eq(200)
       parsed = JSON.parse(response.body)
       expect(parsed['width'].to_f / parsed['height'].to_f).to be_between(0.75, 0.8).inclusive
