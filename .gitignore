@@ -4,3 +4,6 @@ ecs-params.yml
 .secrets
 cluster-ids.txt
 docker-compose-merged.yml
+dbdata/
+solrdata/
+.byebug_history
