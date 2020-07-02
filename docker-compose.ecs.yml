@@ -57,3 +57,4 @@ services:
     environment:
       SOLR_BASE_URL: http://localhost:8983/solr
       POSTGRES_HOST: localhost
+      RAILS_RELATIVE_URL_ROOT: /management

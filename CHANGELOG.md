@@ -1,11 +1,22 @@
 # Changelog
 
-## [v1.9.0](https://github.com/yalelibrary/yul-dc-camerata/tree/v1.9.0) (2020-07-01)
+## [v1.9.2](https://github.com/yalelibrary/yul-dc-camerata/tree/v1.9.2) (2020-07-02)
 
-[Full Changelog](https://github.com/yalelibrary/yul-dc-camerata/compare/v1.9.0...v1.9.0)
+[Full Changelog](https://github.com/yalelibrary/yul-dc-camerata/compare/v1.9.1...v1.9.2)
 
 **Merged pull requests:**
 
+- Make DB naming for Management consistent with Blacklight [\#77](https://github.com/yalelibrary/yul-dc-camerata/pull/77) ([maxkadel](https://github.com/maxkadel))
+- Run deploy tests against clusters without verifiable certificates [\#76](https://github.com/yalelibrary/yul-dc-camerata/pull/76) ([fnibbit](https://github.com/fnibbit))
+- WIP Efs mounts [\#17](https://github.com/yalelibrary/yul-dc-camerata/pull/17) ([mlooney](https://github.com/mlooney))
+
+## [v1.9.1](https://github.com/yalelibrary/yul-dc-camerata/tree/v1.9.1) (2020-07-01)
+
+[Full Changelog](https://github.com/yalelibrary/yul-dc-camerata/compare/v1.9.0...v1.9.1)
+
+**Merged pull requests:**
+
+- Prep for release 1.9.1 [\#75](https://github.com/yalelibrary/yul-dc-camerata/pull/75) ([fnibbit](https://github.com/fnibbit))
 - Add badge for circleci to README [\#74](https://github.com/yalelibrary/yul-dc-camerata/pull/74) ([orangewolf](https://github.com/orangewolf))
 - Move CircleCI to be DockerCompose Based To Mimic Local Smoke Test Runs [\#73](https://github.com/yalelibrary/yul-dc-camerata/pull/73) ([orangewolf](https://github.com/orangewolf))
 - Add a deployment check for the RAILS\_MASTER\_KEY [\#72](https://github.com/yalelibrary/yul-dc-camerata/pull/72) ([mark-dce](https://github.com/mark-dce))
