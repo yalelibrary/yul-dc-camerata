@@ -9,7 +9,7 @@ services:
         awslogs-stream-prefix: psql
     image: yalelibraryit/dc-postgres:${POSTGRES_VERSION}
     environment:
-      POSTGRES_MULTIPLE_DATABASES: blacklight_yul_${RAILS_ENV:-production},yul_dc_management_${RAILS_ENV:-production}
+      POSTGRES_MULTIPLE_DATABASES: blacklight_yul_${RAILS_ENV:-production},management_yul_${RAILS_ENV:-production}
       POSTGRES_HOST: db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
