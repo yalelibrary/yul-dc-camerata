@@ -34,7 +34,7 @@ services:
   db:
     image: yalelibraryit/dc-postgres:${POSTGRES_VERSION}
     environment:
-      POSTGRES_MULTIPLE_DATABASES: blacklight_yul_production,yul_dc_management_production
+      POSTGRES_MULTIPLE_DATABASES: blacklight_yul_production,management_yul_production
       POSTGRES_HOST: db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
