@@ -1,14 +1,24 @@
 # Changelog
 
+## [v1.9.3](https://github.com/yalelibrary/yul-dc-camerata/tree/v1.9.3) (2020-07-06)
+
+[Full Changelog](https://github.com/yalelibrary/yul-dc-camerata/compare/v1.9.2...v1.9.3)
+
+**Merged pull requests:**
+
+- bump mft version to 2.0.1 [\#80](https://github.com/yalelibrary/yul-dc-camerata/pull/80) ([mlooney](https://github.com/mlooney))
+- Make DB naming for Management consistent with Blacklight [\#77](https://github.com/yalelibrary/yul-dc-camerata/pull/77) ([maxkadel](https://github.com/maxkadel))
+- Run deploy tests against clusters without verifiable certificates [\#76](https://github.com/yalelibrary/yul-dc-camerata/pull/76) ([fnibbit](https://github.com/fnibbit))
+- WIP Efs mounts [\#17](https://github.com/yalelibrary/yul-dc-camerata/pull/17) ([mlooney](https://github.com/mlooney))
+
 ## [v1.9.2](https://github.com/yalelibrary/yul-dc-camerata/tree/v1.9.2) (2020-07-02)
 
 [Full Changelog](https://github.com/yalelibrary/yul-dc-camerata/compare/v1.9.1...v1.9.2)
 
 **Merged pull requests:**
 
-- Make DB naming for Management consistent with Blacklight [\#77](https://github.com/yalelibrary/yul-dc-camerata/pull/77) ([maxkadel](https://github.com/maxkadel))
-- Run deploy tests against clusters without verifiable certificates [\#76](https://github.com/yalelibrary/yul-dc-camerata/pull/76) ([fnibbit](https://github.com/fnibbit))
-- WIP Efs mounts [\#17](https://github.com/yalelibrary/yul-dc-camerata/pull/17) ([mlooney](https://github.com/mlooney))
+- Prepare for v1.9.2 [\#79](https://github.com/yalelibrary/yul-dc-camerata/pull/79) ([fnibbit](https://github.com/fnibbit))
+- Normalize management DB name with Blacklight [\#78](https://github.com/yalelibrary/yul-dc-camerata/pull/78) ([maxkadel](https://github.com/maxkadel))
 
 ## [v1.9.1](https://github.com/yalelibrary/yul-dc-camerata/tree/v1.9.1) (2020-07-01)
 
