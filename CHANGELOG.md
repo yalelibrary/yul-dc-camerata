@@ -1,11 +1,42 @@
 # Changelog
 
-## [v1.9.0](https://github.com/yalelibrary/yul-dc-camerata/tree/v1.9.0) (2020-07-01)
+## [v2.0.0](https://github.com/yalelibrary/yul-dc-camerata/tree/v2.0.0) (2020-07-07)
 
-[Full Changelog](https://github.com/yalelibrary/yul-dc-camerata/compare/v1.9.0...v1.9.0)
+[Full Changelog](https://github.com/yalelibrary/yul-dc-camerata/compare/v1.9.3...v2.0.0)
 
 **Merged pull requests:**
 
+- Use same service versions as camerata 1.9.3 [\#83](https://github.com/yalelibrary/yul-dc-camerata/pull/83) ([fnibbit](https://github.com/fnibbit))
+- bump mft version to 2.0.1 [\#80](https://github.com/yalelibrary/yul-dc-camerata/pull/80) ([mlooney](https://github.com/mlooney))
+- Make DB naming for Management consistent with Blacklight [\#77](https://github.com/yalelibrary/yul-dc-camerata/pull/77) ([maxkadel](https://github.com/maxkadel))
+- Run deploy tests against clusters without verifiable certificates [\#76](https://github.com/yalelibrary/yul-dc-camerata/pull/76) ([fnibbit](https://github.com/fnibbit))
+- WIP Efs mounts [\#17](https://github.com/yalelibrary/yul-dc-camerata/pull/17) ([mlooney](https://github.com/mlooney))
+
+## [v1.9.3](https://github.com/yalelibrary/yul-dc-camerata/tree/v1.9.3) (2020-07-06)
+
+[Full Changelog](https://github.com/yalelibrary/yul-dc-camerata/compare/v1.9.2...v1.9.3)
+
+**Merged pull requests:**
+
+- Prepare for camerata 1.9.3 release [\#82](https://github.com/yalelibrary/yul-dc-camerata/pull/82) ([fnibbit](https://github.com/fnibbit))
+- Bump blacklight to v1.6.2 [\#81](https://github.com/yalelibrary/yul-dc-camerata/pull/81) ([bess](https://github.com/bess))
+
+## [v1.9.2](https://github.com/yalelibrary/yul-dc-camerata/tree/v1.9.2) (2020-07-02)
+
+[Full Changelog](https://github.com/yalelibrary/yul-dc-camerata/compare/v1.9.1...v1.9.2)
+
+**Merged pull requests:**
+
+- Prepare for v1.9.2 [\#79](https://github.com/yalelibrary/yul-dc-camerata/pull/79) ([fnibbit](https://github.com/fnibbit))
+- Normalize management DB name with Blacklight [\#78](https://github.com/yalelibrary/yul-dc-camerata/pull/78) ([maxkadel](https://github.com/maxkadel))
+
+## [v1.9.1](https://github.com/yalelibrary/yul-dc-camerata/tree/v1.9.1) (2020-07-01)
+
+[Full Changelog](https://github.com/yalelibrary/yul-dc-camerata/compare/v1.9.0...v1.9.1)
+
+**Merged pull requests:**
+
+- Prep for release 1.9.1 [\#75](https://github.com/yalelibrary/yul-dc-camerata/pull/75) ([fnibbit](https://github.com/fnibbit))
 - Add badge for circleci to README [\#74](https://github.com/yalelibrary/yul-dc-camerata/pull/74) ([orangewolf](https://github.com/orangewolf))
 - Move CircleCI to be DockerCompose Based To Mimic Local Smoke Test Runs [\#73](https://github.com/yalelibrary/yul-dc-camerata/pull/73) ([orangewolf](https://github.com/orangewolf))
 - Add a deployment check for the RAILS\_MASTER\_KEY [\#72](https://github.com/yalelibrary/yul-dc-camerata/pull/72) ([mark-dce](https://github.com/mark-dce))
