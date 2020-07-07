@@ -56,6 +56,8 @@ services:
       PASSENGER_APP_ENV: production
       RAILS_ENV: ${RAILS_ENV:-production}
       HONEYBADGER_API_KEY: ${HONEYBADGER_API_KEY_MANAGEMENT}
+      RAILS_LOG_TO_STDOUT: true
+      RAILS_RELATIVE_URL_ROOT: /management
       # Set the master key in your local environment to pass through to ECS
       RAILS_MASTER_KEY:
       # The management app needs the versions for all the applications for the dashboard
