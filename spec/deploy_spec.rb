@@ -53,8 +53,12 @@ RSpec.describe "The cluster at #{blacklight_url}" do
                                  pass: password).get(uri, ssl_context: ssl_context)
       expect(response.code).to eq(200)
     end
-    it 'loads home page with a language facet present', :ci_pending do
-      # pending 'no data found'
+    it 'is local or has a valid SSL certificate' do
+      response = HTTP.basic_auth(user: username,
+                                 pass: password).get(uri)
+      expect(response.code).to eq(200)
+    end
+    it 'loads home page with a language facet present' do
       response = HTTP.basic_auth(user: username,
                                  pass: password).get(uri, ssl_context: ssl_context)
       expect(response.code).to eq(200)
@@ -62,8 +66,7 @@ RSpec.describe "The cluster at #{blacklight_url}" do
     end
     describe 'has search results' do
       let(:uri) { "#{blacklight_url}/?search_field=all_fields&q=" }
-      it 'with at least 5 pages', :ci_pending do
-        # pending 'no data found'
+      it 'with at least 5 pages' do
         response = HTTP.basic_auth(user: username,
                                    pass: password).get(uri, ssl_context: ssl_context)
         expect(response.code).to eq(200)
@@ -72,8 +75,7 @@ RSpec.describe "The cluster at #{blacklight_url}" do
     end
     describe 'has a public item' do
       let(:uri) { "#{blacklight_url}/catalog/16189097" }
-      it 'that shows Universal Viewer', :ci_pending do
-        # pending 'record not found'
+      it 'that shows Universal Viewer' do
         response = HTTP.basic_auth(user: username,
                                    pass: password).get(uri, ssl_context: ssl_context)
         expect(response.code).to eq(200)
@@ -114,8 +116,7 @@ RSpec.describe "The cluster at #{blacklight_url}" do
   describe "The iiif service at #{iiif_image_url}" do
     let(:uri) { "#{iiif_image_url}/iiif/2/#{oid}/info.json" }
     let(:oid) { '16854589' }
-    it 'serves an info.json for image 16854589 that has a width/height ratio between 0.75 and 0.8', :ci_pending do
-      # pending "needs AWS credentials"
+    it 'serves an info.json for image 16854589 that has a width/height ratio between 0.75 and 0.8' do
       response = HTTP.basic_auth(user: username,
                                  pass: password).get(uri, ssl_context: ssl_context)
       expect(response.code).to eq(200)
