@@ -110,6 +110,7 @@ then
     --vpc-id $VPC_ID \
     --health-check-interval-seconds 90 \
     --health-check-timeout-seconds 75 \
+    --health-check-path /management \
       | grep -Eo -m 1 'arn:aws:elasticloadbalancing[^\"]*'`
 
   # Create an HTTP listener on port 80that redirects all traffice to HTTPS (port 443)
