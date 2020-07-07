@@ -87,14 +87,17 @@ to set the appropriate environment variables if they are missing.
 ### List Running Containers
 
 ```
-bin/cluster-ps.sh $CLUSTER_NAME
+bin/cluster-ps.sh $CLUSTER_NAME main
+bin/cluster-ps.sh $CLUSTER_NAME psql
+bin/cluster-ps.sh $CLUSTER_NAME solr
 ```
 
-TODO: This one isn't working quite right...  This command encapsulates
+This command encapsulates
 [ecs-cli compose service
 ps](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/cmd-ecs-cli-compose-service-ps.html)
-and implements the above naming conventions. The command has one
-required parameter which is the name of the target cluster.
+and implements the above naming conventions. The command has two
+required parameters: the name of the cluster and the name of the
+task.
 
 ### Get ECS Parameter for a Cluster
 
@@ -197,7 +200,7 @@ To run it against a deployed cluster:
 1. `bundle install`
 
 2. Set YUL_DC_SERVER to the domain name for your deployed cluster
-`export YUL_DC_SERVER=collections-test.curationexperts.com` 
+`export YUL_DC_SERVER=collections-test.curationexperts.com`
 
 3. Ensure http basic auth credentials for Blacklight are set in your
 `.secrets` file (See [secrets-template](./secrets-template) for an
