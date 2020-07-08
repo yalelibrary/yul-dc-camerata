@@ -24,13 +24,13 @@ puts "Current Blacklight basic auth settings: " \
 
 # Checked for a deployed cluster host in the environment
 if ENV['YUL_DC_SERVER']
-  blacklight_url = "https://#{ENV['YUL_DC_SERVER']}"
+  blacklight_url = "https://#{username}:#{password}@#{ENV['YUL_DC_SERVER']}"
   iiif_manifest_url = "https://#{ENV['YUL_DC_SERVER']}"
   iiif_image_url = "https://#{ENV['YUL_DC_SERVER']}"
 else
   # Checks for cluster urls in ENV
   # Sets to local development defaults if none are found
-  blacklight_url = ENV['BLACKLIGHT_URL'] || 'http://localhost:3000'
+  blacklight_url = ENV['BLACKLIGHT_URL'] || "http://#{username}:#{password}@localhost:3000"
   iiif_manifest_url = ENV['IIIF_MANIFEST_URL'] || 'http://localhost:80'
   iiif_image_url = ENV['IIIF_IMAGE_URL'] || 'http://localhost:8182'
 end
@@ -41,54 +41,41 @@ end
 ssl_context = OpenSSL::SSL::SSLContext.new
 ssl_context.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
-def load_page(uri)
-  HTTP.basic_auth(user: username, pass: password).get(uri)
-end
-
-RSpec.describe "The cluster at #{blacklight_url}" do
+RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
   describe "The blacklight site at #{blacklight_url}" do
     let(:uri) { "#{blacklight_url}/" }
-    it 'accepts the provided HTTP_PASSWORD and HTTP_USERNAME' do
-      response = HTTP.basic_auth(user: username,
-                                 pass: password).get(uri, ssl_context: ssl_context)
-      expect(response.code).to eq(200)
+    it 'loads the home page with a language facet present' do
+      visit uri
+      expect(page).to have_selector(".blacklight-catalog")
+      expect(page).to have_selector(".blacklight-language_ssim")
     end
     it 'is local or has a valid SSL certificate' do
+      # this method is using the HTTP gem instead of capybara because
+      # capybara.rb is configured to accept insecure certs to allow testing
+      # deploys to ephemeral clusters
       response = HTTP.basic_auth(user: username,
                                  pass: password).get(uri)
       expect(response.code).to eq(200)
     end
-    it 'loads home page with a language facet present' do
-      response = HTTP.basic_auth(user: username,
-                                 pass: password).get(uri, ssl_context: ssl_context)
-      expect(response.code).to eq(200)
-      expect(response.body.to_s).to match(/blacklight-language_ssim/)
-    end
     describe 'has search results' do
       let(:uri) { "#{blacklight_url}/?search_field=all_fields&q=" }
       it 'with at least 5 pages' do
-        response = HTTP.basic_auth(user: username,
-                                   pass: password).get(uri, ssl_context: ssl_context)
-        expect(response.code).to eq(200)
-        expect(response.body.to_s).to match(/aria-label="Go to page 5"/)
+        visit uri
+        expect(page).to have_selector("[aria-label]", text: "5")
       end
     end
     describe 'has a public item' do
       let(:uri) { "#{blacklight_url}/catalog/16189097" }
       it 'that shows Universal Viewer' do
-        response = HTTP.basic_auth(user: username,
-                                   pass: password).get(uri, ssl_context: ssl_context)
-        expect(response.code).to eq(200)
-        expect(response.body.to_s).to match(/universal-viewer-iframe/)
+        visit uri
+        expect(page).to have_selector(".universal-viewer-iframe")
       end
     end
     describe 'has a yale-only item' do
       let(:uri) { URI("#{blacklight_url}/catalog/16189097-yale") }
       it 'that does not show Universal Viewer' do
-        response = HTTP.basic_auth(user: username,
-                                   pass: password).get(uri, ssl_context: ssl_context)
-        expect(response.code).to eq(200)
-        expect(response.body.to_s).not_to match(/universal-viewer-iframe/)
+        visit uri
+        expect(page).not_to have_selector(".universal-viewer-iframe")
       end
     end
   end
