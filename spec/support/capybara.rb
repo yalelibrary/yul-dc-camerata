@@ -2,7 +2,6 @@
 Capybara.configure do |config|
   config.run_server = false
   config.default_driver = :chrome_headless
-  config.app_host = 'https://www.google.com' # change url
 end
 
 Capybara.register_driver :chrome_headless do |app|
