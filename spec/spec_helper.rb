@@ -1,10 +1,14 @@
 # frozen_string_literal: true
 require 'byebug'
+require 'capybara/rspec'
 require 'http'
 require 'json'
 require 'openssl'
+require 'selenium/webdriver'
 
 ENV['RAILS_ENV'] ||= 'test'
+
+Dir['./spec/support/**/*.rb'].each { |f| require f }
 
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|
