@@ -15,6 +15,14 @@ then
     bin/get-params.sh ${1}
   fi
 
+  if [[ $(aws ecs describe-services --cluster $1 --services $1-psql) = *MISSING* ]]
+  then
+    discovery="--enable-service-discovery"
+    log="--create-log-groups"
+  else
+    discovery=""
+    log=""
+  fi
   # Launch the service and register containers with the loadbalancer
   ecs-cli compose  \
     --region $AWS_DEFAULT_REGION \
@@ -22,8 +30,7 @@ then
     --file psql-compose.yml \
     --ecs-params ${CLUSTER_NAME}-psql-params.yml \
     service up \
-    $2 \
+    $discovery $log \
     --force-deployment \
-    --create-log-groups \
     --cluster ${CLUSTER_NAME}
 fi
