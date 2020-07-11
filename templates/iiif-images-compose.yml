@@ -1,0 +1,11 @@
+version: '3'
+services:
+  iiif_image:
+    image: yalelibraryit/dc-iiif-cantaloupe:${IIIF_IMAGE_VERSION:-latest}
+    environment:
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_KEY: ${AWS_SECRET_ACCESS_KEY}
+      S3CACHE_BUCKET_NAME: yale-image-samples/cantaloupe/cache #NO TRAILING SLASH!
+      S3_SOURCE_BUCKET_NAME: yale-image-samples
+    ports:
+      - '8182:8182'

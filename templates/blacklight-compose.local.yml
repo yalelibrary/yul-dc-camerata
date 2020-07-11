@@ -1,0 +1,39 @@
+version: '3'
+services:
+  blacklight:
+    <%- if in_blacklight? -%>
+    build: .
+    <%- end -%>
+    environment:
+      IIIF_MANIFESTS_BASE_URL: ${IIIF_MANIFESTS_BASE_URL:-http://localhost/manifests/}
+      PASSENGER_APP_ENV: development
+      POSTGRES_DB: blacklight_yul_development
+    <%- if in_blacklight? -%>
+    volumes:
+      - .:/home/app/webapp:cached
+      - blacklight_node_modules:/home/app/webapp/node_modules
+      - blacklight_rails_cache:/home/app/webapp/tmp/cache
+    <% end %>
+    stdin_open: true
+    tty: true
+    depends_on:
+      <%- unless without.match(/db/) -%>
+      - db
+      <%- end -%>
+      <%- unless without.match(/solr/) -%>
+      - solr
+      <%- end -%>
+      <%- unless without.match(/iiif_manifest/) -%>
+      - iiif_manifest
+      <%- end -%>
+      <%- unless without.match(/iiif_image/) -%>
+      - iiif_image
+      <%- end -%>
+      <%- unless without.match(/management/) -%>
+      - management
+      <%- end -%>
+<%- if in_blacklight? -%>
+volumes:
+  blacklight_node_modules:
+  blacklight_rails_cache:
+<%- end -%>

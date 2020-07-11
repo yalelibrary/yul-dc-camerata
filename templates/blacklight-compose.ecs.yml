@@ -1,0 +1,22 @@
+version: '3'
+services:
+  blacklight:
+    image: yalelibraryit/dc-blacklight:${BLACKLIGHT_VERSION}
+    environment:
+      HONEYBADGER_API_KEY: ${HONEYBADGER_API_KEY_BLACKLIGHT}
+      HTTP_PASSWORD: ${HTTP_PASSWORD}
+      HTTP_PASSWORD_PROTECT: 'true'
+      HTTP_USERNAME: ${HTTP_USERNAME}
+      IIIF_MANIFESTS_BASE_URL: /manifests/
+      PASSENGER_APP_ENV: ${RAILS_ENV:-production}
+      POSTGRES_HOST: ${CLUSTER_NAME}-psql.local
+      RAILS_ENV: ${RAILS_ENV:-production}
+      RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
+      SOLR_URL: http://${CLUSTER_NAME}-solr.local:8983/solr/blacklight-core
+    command: bash -c "echo $$(date -u +%FT%TZ) > DEPLOYED_AT && sleep 30 && /sbin/my_init" # server
+    logging:
+      driver: awslogs
+      options:
+        awslogs-group: ${CLUSTER_NAME}
+        awslogs-region: ${AWS_DEFAULT_REGION}
+        awslogs-stream-prefix: blacklight
