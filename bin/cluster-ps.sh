@@ -9,6 +9,5 @@ then
   echo "      AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}";
   ecs-cli compose --region $AWS_DEFAULT_REGION --project-name ${1}-${2} service ps --cluster ${1}
 else
-  echo "\nUSAGE: bin/cluster-ps.sh \$CLUSTER_NAME\n" # Parameters not set correctly
+  echo "\nUSAGE: bin/cluster-ps.sh \$CLUSTER_NAME \$TASK_NAME\n" # Parameters not set correctly
 fi
-
