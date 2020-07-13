@@ -1,11 +1,35 @@
 # Changelog
 
+## [v2.1.0](https://github.com/yalelibrary/yul-dc-camerata/tree/v2.1.0) (2020-07-13)
+
+[Full Changelog](https://github.com/yalelibrary/yul-dc-camerata/compare/v2.0.1...v2.1.0)
+
+**Merged pull requests:**
+
+- Bump management app to v2.4.0 [\#95](https://github.com/yalelibrary/yul-dc-camerata/pull/95) ([bess](https://github.com/bess))
+- Use solr 1.0.1, blacklight 1.6.3, management 2.3.0 [\#93](https://github.com/yalelibrary/yul-dc-camerata/pull/93) ([fnibbit](https://github.com/fnibbit))
+- Automate retrieving ECS parameters [\#91](https://github.com/yalelibrary/yul-dc-camerata/pull/91) ([fnibbit](https://github.com/fnibbit))
+- Match usage note in cluster-ps to current arguments [\#90](https://github.com/yalelibrary/yul-dc-camerata/pull/90) ([fnibbit](https://github.com/fnibbit))
+-  Test that blacklight, manifests, and images connect [\#89](https://github.com/yalelibrary/yul-dc-camerata/pull/89) ([fnibbit](https://github.com/fnibbit))
+- Updated solr image version to 1.0.1 [\#88](https://github.com/yalelibrary/yul-dc-camerata/pull/88) ([mlooney](https://github.com/mlooney))
+
+## [v2.0.1](https://github.com/yalelibrary/yul-dc-camerata/tree/v2.0.1) (2020-07-08)
+
+[Full Changelog](https://github.com/yalelibrary/yul-dc-camerata/compare/v2.0.0...v2.0.1)
+
+**Merged pull requests:**
+
+- Management 2 2, move management app to /management [\#87](https://github.com/yalelibrary/yul-dc-camerata/pull/87) ([orangewolf](https://github.com/orangewolf))
+- Document changed arguments for bin/cluster-ps [\#86](https://github.com/yalelibrary/yul-dc-camerata/pull/86) ([fnibbit](https://github.com/fnibbit))
+- Test for valid ssl certificate on non-local environments [\#85](https://github.com/yalelibrary/yul-dc-camerata/pull/85) ([fnibbit](https://github.com/fnibbit))
+
 ## [v2.0.0](https://github.com/yalelibrary/yul-dc-camerata/tree/v2.0.0) (2020-07-07)
 
 [Full Changelog](https://github.com/yalelibrary/yul-dc-camerata/compare/v1.9.3...v2.0.0)
 
 **Merged pull requests:**
 
+- Prepare to tag 2.0.0 release [\#84](https://github.com/yalelibrary/yul-dc-camerata/pull/84) ([fnibbit](https://github.com/fnibbit))
 - Use same service versions as camerata 1.9.3 [\#83](https://github.com/yalelibrary/yul-dc-camerata/pull/83) ([fnibbit](https://github.com/fnibbit))
 - bump mft version to 2.0.1 [\#80](https://github.com/yalelibrary/yul-dc-camerata/pull/80) ([mlooney](https://github.com/mlooney))
 - Make DB naming for Management consistent with Blacklight [\#77](https://github.com/yalelibrary/yul-dc-camerata/pull/77) ([maxkadel](https://github.com/maxkadel))
