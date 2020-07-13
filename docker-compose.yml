@@ -16,6 +16,7 @@ services:
       S3CACHE_BUCKET_NAME: yale-image-samples/cantaloupe/cache #NO TRAILING SLASH!
       S3_SOURCE_BUCKET_NAME: yale-image-samples
       IIIF_IMAGE_VERSION:
+      HONEYBADGER_API_KEY_IMAGESERVER: 
     env_file:
       - .secrets
     ports:
