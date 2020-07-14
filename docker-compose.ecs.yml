@@ -18,6 +18,8 @@ services:
         awslogs-group: ${CLUSTER_NAME}
         awslogs-region: ${AWS_DEFAULT_REGION}
         awslogs-stream-prefix: iiif_image
+    environment:
+      HONEYBADGER_API_KEY_IMAGESERVER: dfb3b5d2
 
   blacklight:
     logging:
@@ -30,6 +32,8 @@ services:
       SOLR_URL: http://${CLUSTER_NAME}-solr.local:8983/solr/blacklight-core
       POSTGRES_HOST: ${CLUSTER_NAME}-psql.local
       IIIF_MANIFESTS_BASE_URL: /manifests/
+      HONEYBADGER_API_KEY: 1979eb78
+      HONEYBADGER_API_KEY_BLACKLIGHT: 1979eb78
 
   management:
     logging:
@@ -41,3 +45,5 @@ services:
     environment:
       SOLR_BASE_URL: http://${CLUSTER_NAME}-solr.local:8983/solr
       POSTGRES_HOST: ${CLUSTER_NAME}-psql.local
+      HONEYBADGER_API_KEY: 057e1879
+      HONEYBADGER_API_KEY_MANAGEMENT: 057e1879
