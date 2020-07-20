@@ -13,21 +13,33 @@ then
   # TODO: check that the cluster name is valid and configured before running all the other commands
 
   # Get the basic VPC and networking config for our cluster
-  SUBNET0=`aws cloudformation list-stack-resources \
-    --stack-name amazon-ecs-cli-setup-${1} \
-      --query "(StackResourceSummaries[?LogicalResourceId=='PubSubnetAz1'].PhysicalResourceId)[0]" \
-        | sed -e 's/^"//' -e 's/"$//' `
-  SUBNET1=`aws cloudformation list-stack-resources \
-    --stack-name amazon-ecs-cli-setup-${1} \
-      --query "(StackResourceSummaries[?LogicalResourceId=='PubSubnetAz2'].PhysicalResourceId)[0]" \
-        | sed -e 's/^"//' -e 's/"$//' `
-  VPC_ID=`aws cloudformation list-stack-resources \
-    --stack-name amazon-ecs-cli-setup-${1} \
-        --query "(StackResourceSummaries[?LogicalResourceId=='Vpc'].PhysicalResourceId)[0]" \
-        | sed -e 's/^"//' -e 's/"$//' `
+  if [ -z "$SUBNET0" ]
+  then
+    SUBNET0=`aws cloudformation list-stack-resources \
+      --stack-name amazon-ecs-cli-setup-${1} \
+        --query "(StackResourceSummaries[?LogicalResourceId=='PubSubnetAz1'].PhysicalResourceId)[0]" \
+          | sed -e 's/^"//' -e 's/"$//' `
+  fi
+
+  if [ -z "$SUBNET1" ]
+  then
+    SUBNET1=`aws cloudformation list-stack-resources \
+      --stack-name amazon-ecs-cli-setup-${1} \
+        --query "(StackResourceSummaries[?LogicalResourceId=='PubSubnetAz2'].PhysicalResourceId)[0]" \
+          | sed -e 's/^"//' -e 's/"$//' `
+  fi
+
+  if [ -z "$VPC_ID" ]
+  then
+    VPC_ID=`aws cloudformation list-stack-resources \
+      --stack-name amazon-ecs-cli-setup-${1} \
+          --query "(StackResourceSummaries[?LogicalResourceId=='Vpc'].PhysicalResourceId)[0]" \
+          | sed -e 's/^"//' -e 's/"$//' `
+  fi
+
   DEFAULT_VPC_SG=`aws ec2 describe-security-groups \
     --filters Name=vpc-id,Values=$VPC_ID \
-      --query "(SecurityGroups[?GroupName=='default'])[0].GroupId" \
+      --query "(SecurityGroups[?GroupName=='$CLUSTER_NAME-sg'])[0].GroupId" \
         | grep -Eo -m 1 'sg-\w+'`
 
   echo "Extracting existing configuration"
@@ -90,6 +102,8 @@ then
     --protocol HTTP \
     --port 8182 \
     --vpc-id $VPC_ID \
+    --health-check-interval-seconds 90 \
+    --health-check-timeout-seconds 75 \
       | grep -Eo -m 1 'arn:aws:elasticloadbalancing[^\"]*'`
 
   # Create a target group to associate the MANIFEST listener to clusters
@@ -123,7 +137,7 @@ then
 
   # Look up the ARN for the curationexperts.com wildcard and save it for later reference
   CERT_ARN=`aws acm list-certificates \
-    --query "CertificateSummaryList[?DomainName=='*.curationexperts.com']" \
+    --query "CertificateSummaryList[?DomainName=='$DOMAIN_NAME']" \
       | grep -Eo -m 1 'arn:aws:acm[^\"]*'`
 
   # Create a HTTPS listener on port 443 that defaults traffic to the BLACKLIGHT target group,

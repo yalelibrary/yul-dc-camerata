@@ -52,6 +52,7 @@ then
     --ecs-params ${CLUSTER_NAME}-ecs-params.yml \
     service up \
     $2 \
+    --launch-type FARGATE \
     --create-log-groups \
     --cluster ${CLUSTER_NAME} \
     --target-groups targetGroupArn=$BL_TG_ARN,containerName=blacklight,containerPort=3000 \

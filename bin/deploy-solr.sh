@@ -21,6 +21,7 @@ then
     --ecs-params ${CLUSTER_NAME}-solr-params.yml \
     service up \
     $2 \
+    --launch-type FARGATE \
     --force-deployment \
     --create-log-groups \
     --cluster ${CLUSTER_NAME}
