@@ -37,9 +37,9 @@ used to bring the development stack up and down locally, interact with the
 docker containers, deploy, run the smoke tests and otherwise do development 
 tasks common to the various applications in the yul-dc application stack.
 
-All build in commands can be listed with `cam help` and individual usage 
+All buildin commands can be listed with `cam help` and individual usage 
 information is available with `cam help COMMAND`.  Please note that deployment 
-commands (found in the `./bin` directory) are pass through and are there for not 
+commands (found in the `./bin` directory) are pass through and are therefor not 
 listed by the help command.  See th usage for those below. 
 
 To start the application stack, run `cam up`. This is the equivalent of running 
@@ -264,7 +264,7 @@ To run it against a deployed cluster:
 2. Set the version variable to the new version with `cam release APP_NAME VERSION_NUMBER`
 3. Start the applications with the new version and run the smoke test
 4. Deploy the applications (see deployment above) Example:
-`cam deploy-main.sh yul-test`
+`cam deploy-main yul-test`
 
 
 ## Releasing a version of Camerata
