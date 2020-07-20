@@ -1,11 +1,13 @@
 # Changelog
 
-## [v2.1.0](https://github.com/yalelibrary/yul-dc-camerata/tree/v2.1.0) (2020-07-13)
+## [v2.1.0](https://github.com/yalelibrary/yul-dc-camerata/tree/v2.1.0) (2020-07-20)
 
 [Full Changelog](https://github.com/yalelibrary/yul-dc-camerata/compare/v2.0.1...v2.1.0)
 
 **Merged pull requests:**
 
+- Pass honeybadger keys to apps \(temporary\) [\#97](https://github.com/yalelibrary/yul-dc-camerata/pull/97) ([fnibbit](https://github.com/fnibbit))
+- Prep for v2.1.0 release [\#96](https://github.com/yalelibrary/yul-dc-camerata/pull/96) ([bess](https://github.com/bess))
 - Bump management app to v2.4.0 [\#95](https://github.com/yalelibrary/yul-dc-camerata/pull/95) ([bess](https://github.com/bess))
 - Use solr 1.0.1, blacklight 1.6.3, management 2.3.0 [\#93](https://github.com/yalelibrary/yul-dc-camerata/pull/93) ([fnibbit](https://github.com/fnibbit))
 - Automate retrieving ECS parameters [\#91](https://github.com/yalelibrary/yul-dc-camerata/pull/91) ([fnibbit](https://github.com/fnibbit))
