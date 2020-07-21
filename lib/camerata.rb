@@ -42,7 +42,7 @@ module Camerata
     desc "restart", "restarts the specified running service, defaults to all"
     def restart(*args)
       ensure_env
-      run_with_exti("#{docker_compose} restart #{args.join(' ')}")
+      run_with_exit("#{docker_compose} restart #{args.join(' ')}")
     end
 
     desc "down", "complete down, removes containers, volumes and orphans"
