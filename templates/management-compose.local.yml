@@ -1,0 +1,31 @@
+version: '3'
+services:
+  management:
+    <%- if in_management? -%>
+    build: .
+    <%- end -%>
+    environment:
+      SOLR_TEST_CORE: blacklight-test
+      PASSENGER_APP_ENV: development
+      POSTGRES_MULTIPLE_DATABASES: management_yul_development
+    <%- if in_management? -%>
+    volumes:
+      - .:/home/app/webapp:cached
+      - management_node_modules:/home/app/webapp/node_modules
+      - management_rails_cache:/home/app/webapp/tmp/cache
+    <%- end -%>
+    stdin_open: true
+    tty: true
+    depends_on:
+      <%- unless without.match(/db/) -%>
+      - db
+      <%- end -%>
+      <%- unless without.match(/solr/) -%>
+      - solr
+      <%- end -%>
+
+<%- if in_management? -%>
+volumes:
+  management_node_modules:
+  management_rails_cache:
+<%- end %>

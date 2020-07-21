@@ -34,17 +34,16 @@ jobs:
             echo HTTP_PASSWORD=test >> .secrets
             echo AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} >> .secrets
             echo AWS_SECRET_KEY=${AWS_SECRET_KEY} >> .secrets
+            mkdir -p ~/.aws
+            echo ${AWS_PROFILE_VALUE} | base64 -d > ~/.aws/credentials
       - run:
           name: Docker Compose Up
           environment:
             RAILS_ENV: development
           command: |
             set -x
-            mkdir -p dbdata
-            sudo chown 999:999 dbdata
-            mkdir -p solrdata
-            sudo chown 8983:8983 solrdata
-            bin/localup up -d
+            ls -l
+            bundle exec ./exe/camerata up -d
       - run:
           name: Wait for services to be fully up
           command: |
@@ -54,11 +53,16 @@ jobs:
       - run:
           name: populate management index
           command: |
-            docker-compose exec management bundle exec rake yale:index_fixture_data METADATA_SOURCE=ladybird
+            bundle exec ./exe/camerata exec management bundle exec rake yale:index_fixture_data METADATA_SOURCE=ladybird
       - run:
           name: rspec
           command:  |
             bundle exec rspec
+      - run:
+          name: smoke specs
+          command:  |
+            bundle exec rspec smoke_spec
+
 orbs:
   docker: circleci/docker@1.0.1
 version: 2.1

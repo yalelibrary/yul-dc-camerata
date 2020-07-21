@@ -1,0 +1,13 @@
+version: '3'
+services:
+  solr:
+    image: yalelibraryit/dc-solr:${SOLR_VERSION}
+    ports:
+      - '8983:8983'
+    volumes:
+      # think this may need to be changed to /var/solr/data
+      - solr:/opt/solr/server/solr/mycores
+    command: bash -c 'precreate-core blacklight-core /opt/config; precreate-core blacklight-test /opt/config; exec solr -f'
+
+volumes:
+  solr:

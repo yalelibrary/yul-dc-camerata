@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require 'spec_helper'
+require_relative './spec_helper'
 
 # Checks for Blacklight http basic auth credentials in ENV
 # Sets to 'test' if none are found

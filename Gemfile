@@ -3,11 +3,11 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-gem 'capybara'
+# Specify your gem's dependencies in camerata.gemspec
+gemspec
+
 gem 'github_changelog_generator'
-gem 'http'
-gem 'rspec'
-gem 'selenium-webdriver'
+gem 'rake'
 
 group :development, :test do
   gem 'bixby'

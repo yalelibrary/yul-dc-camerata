@@ -1,0 +1,17 @@
+version: '3'
+services:
+  solr:
+    logging:
+      driver: awslogs
+      options:
+        awslogs-group: ${CLUSTER_NAME}
+        awslogs-region: ${AWS_DEFAULT_REGION}
+        awslogs-stream-prefix: solr
+    volumes:
+      - solr_efs:/var/solr/data/blacklight-core #this appears to not support variable expansion :/
+    command: bash -c 'cp -rn /opt/config/ /var/solr/data/$${SOLR_CORE}/conf && touch /var/solr/data/$${SOLR_CORE}/core.properties && exec solr -f'
+    environment:
+      SOLR_CORE: blacklight-core
+
+volumes:
+  solr_efs:

@@ -1,0 +1,16 @@
+version: '3'
+services:
+  db:
+    environment:
+      POSTGRES_MULTIPLE_DATABASES: blacklight_yul_${RAILS_ENV:-production},management_yul_${RAILS_ENV:-production}
+    logging:
+      driver: awslogs
+      options:
+        awslogs-group: ${CLUSTER_NAME}
+        awslogs-region: ${AWS_DEFAULT_REGION}
+        awslogs-stream-prefix: psql
+    volumes:
+      - "psql_efs:/var/lib/postgresql/data"
+
+volumes:
+  psql_efs:
