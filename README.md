@@ -8,14 +8,52 @@ Coordinate services for YUL-DC project
 
 - Download [Docker Desktop](https://www.docker.com/products/docker-desktop) and log in
 
-## Starting the services
 
-- Start all the services locally for development
+## Install
 
-  ```bash
-  export RAILS_ENV=development
-  bin/localup up
-  ```
+Download the yul-dc-camerata repo and install the gem.
+
+```bash
+git clone git@github.com:yalelibrary/yul-dc-camerata.git
+cd yul-dc-camerata
+rake install
+```
+
+## Updates
+
+You can get the latest version at any point by updating the code and reinstalling
+
+```bash
+cd yul-dc-camerata
+git pull origin master
+rake install
+```
+
+## General Use
+
+Once camerata is installed on your system, interactions happen through the 
+camerata command-line tool or through its alias `cam`.  The camerata tool can be 
+used to bring the development stack up and down locally, interact with the 
+docker containers, deploy, run the smoke tests and otherwise do development 
+tasks common to the various applications in the yul-dc application stack.
+
+All buildin commands can be listed with `cam help` and individual usage 
+information is available with `cam help COMMAND`.  Please note that deployment 
+commands (found in the `./bin` directory) are pass through and are therefor not 
+listed by the help command.  See th usage for those below. 
+
+To start the application stack, run `cam up`. This is the equivalent of running 
+`docker-compose up blacklight`. This starts all of the applications as they are 
+all dependencies of yul-blacklight. Camerata is smart. If you start `cam up` from 
+a blacklight code check out it will mount that code for local development 
+(changes to the outside code will affect the inside container). If you start the 
+`cam up` from the management application you will get the management code mounted
+for local development and the blacklight code will run as it is in the downloaded 
+image. You can also start the two applications both mounted for development by 
+starting the blacklight application with `--without management` and the 
+management application `--without solr --withouth db` each from their respective 
+code checkouts.
+
 
 - Access the blacklight app at `http://localhost:3000`
 
@@ -27,6 +65,14 @@ Coordinate services for YUL-DC project
 
 - Access the management app at `http://localhost:3001/management`
 
+## Why not in the Gemfile
+
+The reason we don't add camerata to the Gemfile is that we need camerata to start
+the docker containers, but we do not otherwise need to bundle our application 
+locally.  The bundle can live with in the container. Requiring camerata to be in 
+the bundle means requiring that a full dev environment both inside and outside 
+the container, which is a requirement we are trying to avoid.
+
 ## Local Development vs. ECS Deployment
 
 The files here are designed to follow the principles of the [12-factor
@@ -36,16 +82,18 @@ particular, we are making an effort to maintain a high degree of
 
 To achieve this we use a common set of docker base files with
 overrides for any values that are required to differ for local vs.
-deployment environments. The file naming convention assumed here
-is:
+deployment environments. We create 3 files for each service in the templates
+directory. One for the base, then a local override and a ecs override. These 
+files are composed together to create the compose file used for development or
+deploment as needed.
 
-file                          | contents
------------------------------ | ----------------------------------------------------------------------------------------------------
-`docker-compose.yml`          | compose definitions that are shared between all environments
-`local.override.yml`          | compose definitions required exclusively in a local docker environment
-`docker-compose.ecs.yml`      | compose definitions required for deployment to AWS ECS
-`.env`                        | environment variables injected into the compose file, but not automatically visible in containers
-`.secrets`                    | secure information not to be added to source control
+file                              | contents
+--------------------------------- | ----------------------------------------------------------------------------------------------------
+`blacklight-compose.yml`          | compose definitions that are shared between all environments
+`blacklight-compose.local.yml`    | compose definitions required exclusively in a local docker environment
+`blacklight-compose.ecs.yml`      | compose definitions required for deployment to AWS ECS
+`.env`                            | No longer used. All env should be in Amazon SSM 
+`.secrets`                        | No longer used. All secrets should be in Amazon SSM 
 
 For more detail on multiple compose files see
 <https://docs.docker.com/compose/extends/#multiple-compose-files>.
@@ -57,8 +105,8 @@ and <https://docs.docker.com/compose/environment-variables/>
 
 ## ECS Tools
 
-This repo contains prototype tooling to streamline ECS cluster
-management.
+This repo contains prototype tooling to streamline ECS cluster management. These
+shell scripts are available both locally and via the camerata command line interface.
 
 ### Conventions
 
@@ -87,9 +135,9 @@ to set the appropriate environment variables if they are missing.
 ### List Running Containers
 
 ```
-bin/cluster-ps.sh $CLUSTER_NAME main
-bin/cluster-ps.sh $CLUSTER_NAME psql
-bin/cluster-ps.sh $CLUSTER_NAME solr
+cam cluster-ps $CLUSTER_NAME main
+cam cluster-ps $CLUSTER_NAME psql
+cam cluster-ps $CLUSTER_NAME solr
 ```
 
 This command encapsulates
@@ -102,20 +150,19 @@ task.
 ### Get ECS Parameter for a Cluster
 
 ```
-bin/get-params.sh $CLUSTER_NAME [Memory] [CPU]
+cam get-params $CLUSTER_NAME [Memory] [CPU]
 ```
 
 This command fetches the subnets and security group for an existing
-cluster and builds the `*-params.yml` required by the ECS CLI
-tool to deploy containers. It is run automatically by the deploy
-scripts if the files are absent.  The cluster-specific params file
+cluster and builds the `ecs-params.yml` required by the ECS CLI
+tool to deploy a new compose file. The cluster-specific params file
 will be prefixed with the cluster name - e.g. `panicle-ecs-params.yml`.
 Second and third parameters, if present, set the memory and cpu
 size for the task (defaults to 8GB and 2048) -- decreased memory
 example
 
 ```
-bin/get-params.sh $CLUSTER_NAME 4GB 2048
+cam get-params $CLUSTER_NAME 4GB 2048
 ```
 
 Valid combinations of memory and cpu documented here:
@@ -124,8 +171,8 @@ Valid combinations of memory and cpu documented here:
 ### Deploy the Postgres and Solr servers
 
 ```
-bin/deploy-psql.sh $CLUSTER_NAME
-bin/deploy-solr.sh $CLUSTER_NAME
+cam deploy-psql $CLUSTER_NAME
+cam deploy-solr $CLUSTER_NAME
 ```
 These servers have significant persistent state; an existing cluster
 will not usually need these re-deployed.  More info about how to
@@ -134,13 +181,13 @@ safely take down, restart, or update these servers to come.
 ### Deploy the Yale stack
 
 ```
-bin/deploy-main.sh $CLUSTER_NAME
+cam deploy-main $CLUSTER_NAME
 ```
 
 This command deploys the rest of the Yale stack to the named cluster.
 This includes the management and blacklight Rails apps and the IIIF
 image and manifest servers. You must have a valid params file
-obtained by running `bin/get-params` against your cluster first.
+obtained by running `cam get-params` against your cluster first.
 You must also create a `.secrets` file with valid S3, basic auth,
 and Honeybadger credentials; see `secrets-template` for the correct
 format.  For deployments to complete succesfully you also need to
@@ -150,7 +197,7 @@ lead.
 ### Configure a load balancer
 
 ```
-bin/add-alb.sh $CLUSTER_NAME
+cam add-alb $CLUSTER_NAME
 ```
 
 This command configures an application load balancer for the cluster
@@ -171,13 +218,15 @@ clusters, and re-using names leads to unexpected conflicts in
 resource allocation.
 
 1. `export CLUSTER_NAME=YOUR_NEW_CLUSTER_NAME_HERE`
-1. `bin/build-cluster.sh $CLUSTER_NAME` to build the cluster
-1. `bin/add-alb.sh $CLUSTER_NAME` add a
+1. `cam build-cluster $CLUSTER_NAME` to build the cluster
+1. (optional) `cam get-params $CLUSTER_NAME` to read the
+configuration data for your new cluster
+1. `cam add-alb $CLUSTER_NAME` add a
 load balancer for your new cluster (NOTE: This has to happen _before_
 you will be able to deploy)
-1. `bin/deploy-solr.sh $CLUSTER_NAME --enable-service-discovery`
-1. `bin/deploy-psql.sh $CLUSTER_NAME --enable-service-discovery`
-1. `bin/deploy-main.sh $CLUSTER_NAME --enable-service-discovery`
+1. `cam deploy-solr $CLUSTER_NAME --enable-service-discovery`
+1. `cam deploy-psql $CLUSTER_NAME --enable-service-discovery`
+1. `cam deploy-main $CLUSTER_NAME --enable-service-discovery`
 to deploy the application
 
 You should now be able to use the AWS web console to get the DNS
@@ -196,25 +245,29 @@ root of this repo.
 
 To run it against a deployed cluster:
 
-1. `bundle install`
-
-2. Set YUL_DC_SERVER to the domain name for your deployed cluster
+1. Set YUL_DC_SERVER to the domain name for your deployed cluster
 `export YUL_DC_SERVER=collections-test.curationexperts.com`
 
-3. Ensure http basic auth credentials for Blacklight are set in your
-`.secrets` file (See [secrets-template](./secrets-template) for an
-example). Otherwise the test suite will set its user and password
-to what is in env vars before defaulting to 'test'. To set via env
-vars:
+2. Set the HTTP loging vars:
    - Set HTTP_USERNAME to the known Blacklight http basic auth
    username for your deployed cluster `export
-   HTTP_USERNAME=<basic-auth-username>` - Set HTTP_PASSWORD to the
+   HTTP_USERNAME=<basic-auth-username>` 
+   - Set HTTP_PASSWORD to the
    known Blacklight http basic auth password for you deployed cluster
    `export HTTP_PASSWORD=<basic-auth-password>`
-4. `rspec spec/deploy_spec.rb`
 
-## Releasing a new Camerata version
+3. `cam smoke`
 
+## Releasing a new dependency version
+
+1. Follow the release process laid out in the application README through to completion
+2. Set the version variable to the new version with `cam release APP_NAME VERSION_NUMBER`
+3. Start the applications with the new version and run the smoke test
+4. Deploy the applications (see deployment above) Example:
+`cam deploy-main yul-test`
+
+
+## Releasing a version of Camerata
 1. Decide on a new version number. We use [semantic
 versioning](https://github.com/yalelibrary/yul-dc-camerata/wiki/Semantic-Versioning).
 2. Update the version number in `.github_changelog_generator`
@@ -227,6 +280,3 @@ github web UI go to `Releases` and tag a new release with the right
 version number. Paste in the release notes for this version from
 the changelog you generated. In the release notes, split out
 `Features`, `Bug Fixes`, and `Other`
-7. Once the CI build has completed for `master`, deploy the updated
-components to staging using the appropriate deploy scripts.  Example:
-`bin/deploy-main.sh yul-test`

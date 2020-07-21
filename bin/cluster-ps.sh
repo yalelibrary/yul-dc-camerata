@@ -2,7 +2,7 @@
 
 . $(dirname "$0")/shared-checks.sh
 
-if check_profile && check_region && check_cluster $1 && all_pass
+if check_compose && check_profile && check_region && check_cluster $1 && all_pass
 then
   echo "Target cluster: ${1}"
   echo "Using AWS_PROFILE=${AWS_PROFILE}";

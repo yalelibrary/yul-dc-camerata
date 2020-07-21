@@ -51,6 +51,12 @@ check_master_key() {
   fi
 }
 
+check_compose() {
+  if [[ -z $COMPOSE_FILE ]]
+   then
+    export COMPOSE_FILE=./docker-compose.yml
+  fi
+}
 
 all_pass() {
   if [[ -z "$errors" ]]

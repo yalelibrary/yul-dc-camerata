@@ -1,13 +1,18 @@
-inherit_gem:
-  bixby: bixby_default.yml
-
-Metrics/BlockLength:
-  Exclude:
-    - spec/deploy_spec.rb
+inherit_from:
+  - .bixby.yml
 
 RSpec/DescribeClass:
   Exclude:
-    - spec/deploy_spec.rb
+    - smoke_spec/deploy_spec.rb
+
+Metrics/BlockLength:
+  Max: 38
+  Exclude:
+    - 'spec/**/*.rb'
+    - 'smoke_spec/**/*.rb'
 
 RSpec/ExampleLength:
-  Enabled: false
+  Exclude:
+    - 'spec/**/*.rb'
+    - 'smoke_spec/**/*.rb'
+

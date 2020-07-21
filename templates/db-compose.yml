@@ -1,0 +1,11 @@
+version: '3'
+services:
+  db:
+    image: yalelibraryit/dc-postgres:${POSTGRES_VERSION}
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_MULTIPLE_DATABASES: blacklight_yul_development,management_yul_development
+    ports:
+      - "5432:5432"
