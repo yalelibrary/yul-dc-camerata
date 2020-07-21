@@ -8,3 +8,6 @@ Metrics/BlockLength:
 RSpec/DescribeClass:
   Exclude:
     - spec/deploy_spec.rb
+
+RSpec/ExampleLength:
+  Enabled: false

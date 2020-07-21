@@ -106,8 +106,9 @@ bin/get-params.sh $CLUSTER_NAME [Memory] [CPU]
 ```
 
 This command fetches the subnets and security group for an existing
-cluster and builds the `ecs-params.yml` required by the ECS CLI
-tool to deploy a new compose file. The cluster-specific params file
+cluster and builds the `*-params.yml` required by the ECS CLI
+tool to deploy containers. It is run automatically by the deploy
+scripts if the files are absent.  The cluster-specific params file
 will be prefixed with the cluster name - e.g. `panicle-ecs-params.yml`.
 Second and third parameters, if present, set the memory and cpu
 size for the task (defaults to 8GB and 2048) -- decreased memory
@@ -171,8 +172,6 @@ resource allocation.
 
 1. `export CLUSTER_NAME=YOUR_NEW_CLUSTER_NAME_HERE`
 1. `bin/build-cluster.sh $CLUSTER_NAME` to build the cluster
-1. (optional) `bin/get-params.sh $CLUSTER_NAME` to read the
-configuration data for your new cluster
 1. `bin/add-alb.sh $CLUSTER_NAME` add a
 load balancer for your new cluster (NOTE: This has to happen _before_
 you will be able to deploy)
@@ -214,7 +213,7 @@ vars:
    `export HTTP_PASSWORD=<basic-auth-password>`
 4. `rspec spec/deploy_spec.rb`
 
-## Releasing a new version
+## Releasing a new Camerata version
 
 1. Decide on a new version number. We use [semantic
 versioning](https://github.com/yalelibrary/yul-dc-camerata/wiki/Semantic-Versioning).
