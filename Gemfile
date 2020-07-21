@@ -6,12 +6,8 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 # Specify your gem's dependencies in camerata.gemspec
 gemspec
 
-gem 'capybara'
 gem 'github_changelog_generator'
-gem 'http'
 gem 'rake'
-gem 'rspec'
-gem 'selenium-webdriver'
 
 group :development, :test do
   gem 'bixby'

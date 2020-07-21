@@ -3,6 +3,10 @@ PATH
   specs:
     camerata (0.1.0)
       activesupport (~> 6.0.0)
+      capybara (~> 3.33.0)
+      http (~> 4.4.1)
+      rspec (~> 3.0)
+      selenium-webdriver (~> 3.142)
       thor (~> 1.0.1)
 
 GEM
@@ -145,12 +149,8 @@ DEPENDENCIES
   bixby
   byebug
   camerata!
-  capybara
   github_changelog_generator
-  http
   rake
-  rspec
-  selenium-webdriver
 
 BUNDLED WITH
    2.1.4
