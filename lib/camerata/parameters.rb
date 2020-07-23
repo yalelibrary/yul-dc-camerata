@@ -37,8 +37,9 @@ module Camerata
 
     def self.load_env
       get_all.each do |k, v|
-        ENV[k] = v
+        ENV[k] = v unless ENV[k] && !ENV[k].empty?
       end
+      ENV
     end
 
     def self.write_dot_file(file_path)
