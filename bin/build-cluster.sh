@@ -3,6 +3,22 @@
 . $(dirname "$0")/shared-checks.sh
 . $(dirname "$0")/efs-fun.sh
 CLUSTER_NAME=$1
+
+# Check to if you're using and existing VPC
+if [ "$VPC_ID" ]
+then
+  VPC="--vpc $VPC_ID"
+
+  if [ -z "$SUBNET0" ] | [ -z "$SUBNET1" ]
+  then
+    echo "If using VPC set SUBNET0 and SUBNET1..."
+    exit 1
+  fi
+
+  SUBNETS="--subnets ${SUBNET0} ${SUBNET1}"
+
+fi
+
 if check_profile && check_region && check_cluster $1 && all_pass
 then
   echo "Target cluster: ${CLUSTER_NAME}"
@@ -10,23 +26,14 @@ then
   echo "      AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}";
   ecs-cli up --force --cluster ${CLUSTER_NAME} --launch-type FARGATE \
     --region $AWS_DEFAULT_REGION \
-    --vpc $VPC_ID \
-    --subnets $SUBNET0 $SUBNET1 \
+    $VPC \
+    $SUBNETS \
     --no-associate-public-ip-address | tee cluster-ids.txt
 
-  echo "Extracting vpc & subnet IDs"
   if [ -z "$VPC_ID" ]
   then
     VPC_ID=`sed -n 's/VPC created: \(.*\)/\1/p' < cluster-ids.txt`
-  fi
-
-  if [ -z "$SUBNET0" ]
-  then
     SUBNET0=`grep -Eo "subnet-\w+$" cluster-ids.txt | sed -n '1p'`
-  fi
-
-  if [ -z "$SUBNET1"]
-  then
     SUBNET1=`grep -Eo "subnet-\w+$" cluster-ids.txt | sed -n '2p'`
   fi
 
