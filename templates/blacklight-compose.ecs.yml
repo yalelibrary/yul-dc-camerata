@@ -1,7 +1,6 @@
 version: '3'
 services:
   blacklight:
-    image: yalelibraryit/dc-blacklight:${BLACKLIGHT_VERSION}
     environment:
       HONEYBADGER_API_KEY: ${HONEYBADGER_API_KEY_BLACKLIGHT}
       HTTP_PASSWORD: ${HTTP_PASSWORD}

@@ -3,6 +3,7 @@ services:
   management:
     <%- if in_management? -%>
     build: .
+    image: yalelibraryit/dc-management:master
     <%- end -%>
     environment:
       SOLR_TEST_CORE: blacklight-test
