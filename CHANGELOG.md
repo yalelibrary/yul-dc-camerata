@@ -10,6 +10,7 @@
 
 **Merged pull requests:**
 
+- Use the released versions except in the case of local development [\#104](https://github.com/yalelibrary/yul-dc-camerata/pull/104) ([orangewolf](https://github.com/orangewolf))
 - Allow outside environment to override ssm set values [\#101](https://github.com/yalelibrary/yul-dc-camerata/pull/101) ([orangewolf](https://github.com/orangewolf))
 - Bump blacklight to v1.7.1 [\#100](https://github.com/yalelibrary/yul-dc-camerata/pull/100) ([bess](https://github.com/bess))
 - Remove development artifact [\#99](https://github.com/yalelibrary/yul-dc-camerata/pull/99) ([maxkadel](https://github.com/maxkadel))
@@ -147,7 +148,7 @@
 - Use Yale postgres image [\#47](https://github.com/yalelibrary/yul-dc-camerata/pull/47) ([maxkadel](https://github.com/maxkadel))
 - Bump to base docker image to v1, no code changes [\#46](https://github.com/yalelibrary/yul-dc-camerata/pull/46) ([orangewolf](https://github.com/orangewolf))
 - Test local or deployed blacklight [\#45](https://github.com/yalelibrary/yul-dc-camerata/pull/45) ([fnibbit](https://github.com/fnibbit))
-- Bump management, prep for release [\#39](https://github.com/yalelibrary/yul-dc-camerata/pull/39) ([maxkadel](https://github.com/maxkadel))
+- Add Yul-base Dockerfile to coordinate a base across projects [\#44](https://github.com/yalelibrary/yul-dc-camerata/pull/44) ([orangewolf](https://github.com/orangewolf))
 
 ## [v1.4.3](https://github.com/yalelibrary/yul-dc-camerata/tree/v1.4.3) (2020-06-12)
 
@@ -155,7 +156,6 @@
 
 **Merged pull requests:**
 
-- Add Yul-base Dockerfile to coordinate a base across projects [\#44](https://github.com/yalelibrary/yul-dc-camerata/pull/44) ([orangewolf](https://github.com/orangewolf))
 - Releasev1.4.3 [\#43](https://github.com/yalelibrary/yul-dc-camerata/pull/43) ([FCRodriguez7](https://github.com/FCRodriguez7))
 - Bump blacklight version [\#42](https://github.com/yalelibrary/yul-dc-camerata/pull/42) ([FCRodriguez7](https://github.com/FCRodriguez7))
 
@@ -174,6 +174,7 @@
 
 **Merged pull requests:**
 
+- Bump management, prep for release [\#39](https://github.com/yalelibrary/yul-dc-camerata/pull/39) ([maxkadel](https://github.com/maxkadel))
 - Bump manifests [\#38](https://github.com/yalelibrary/yul-dc-camerata/pull/38) ([bess](https://github.com/bess))
 - WIP Rails in production on ecs [\#37](https://github.com/yalelibrary/yul-dc-camerata/pull/37) ([JzGo](https://github.com/JzGo))
 - Extract repetitive error checks to a shared function script [\#34](https://github.com/yalelibrary/yul-dc-camerata/pull/34) ([mark-dce](https://github.com/mark-dce))
@@ -208,8 +209,6 @@
 
 - Document release process [\#27](https://github.com/yalelibrary/yul-dc-camerata/pull/27) ([bess](https://github.com/bess))
 - Remove obsolete & duplicated config settings [\#26](https://github.com/yalelibrary/yul-dc-camerata/pull/26) ([mark-dce](https://github.com/mark-dce))
-- Update all shell scripts to exit immediately on failed commands [\#25](https://github.com/yalelibrary/yul-dc-camerata/pull/25) ([mark-dce](https://github.com/mark-dce))
-- Bump management to 1.3.0 [\#24](https://github.com/yalelibrary/yul-dc-camerata/pull/24) ([bess](https://github.com/bess))
 
 ## [v1.2.2](https://github.com/yalelibrary/yul-dc-camerata/tree/v1.2.2) (2020-06-08)
 
@@ -217,6 +216,8 @@
 
 **Merged pull requests:**
 
+- Update all shell scripts to exit immediately on failed commands [\#25](https://github.com/yalelibrary/yul-dc-camerata/pull/25) ([mark-dce](https://github.com/mark-dce))
+- Bump management to 1.3.0 [\#24](https://github.com/yalelibrary/yul-dc-camerata/pull/24) ([bess](https://github.com/bess))
 - Bump Blacklight to v1.2.2 [\#23](https://github.com/yalelibrary/yul-dc-camerata/pull/23) ([bess](https://github.com/bess))
 - Improve instructions on setting up a new cluster [\#22](https://github.com/yalelibrary/yul-dc-camerata/pull/22) ([bess](https://github.com/bess))
 - Management updates [\#21](https://github.com/yalelibrary/yul-dc-camerata/pull/21) ([maxkadel](https://github.com/maxkadel))
