@@ -1,7 +1,6 @@
 version: '3'
 services:
   management:
-    image: yalelibraryit/dc-management:${MANAGEMENT_VERSION}
     environment:
       HTTP_USERNAME: ${HTTP_USERNAME}
       HTTP_PASSWORD: ${HTTP_PASSWORD}

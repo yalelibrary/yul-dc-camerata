@@ -1,7 +1,7 @@
 version: '3'
 services:
   blacklight:
-    image: yalelibraryit/dc-blacklight:master
+    image: yalelibraryit/dc-blacklight:${BLACKLIGHT_VERSION}
     environment:
       POSTGRES_HOST: db
       POSTGRES_PASSWORD: password

@@ -1,7 +1,7 @@
 version: '3'
 services:
   management:
-    image: yalelibraryit/dc-management:master
+    image: yalelibraryit/dc-management:${MANAGEMENT_VERSION}
     environment:
       PASSENGER_APP_ENV: development # development
       POSTGRES_DB: management_yul_development
