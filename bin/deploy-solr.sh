@@ -30,6 +30,8 @@ then
     --file solr-compose.yml \
     --ecs-params ${CLUSTER_NAME}-solr-params.yml \
     service up \
+    $2 \
+    --launch-type FARGATE \
     $discovery $log\
     --force-deployment \
     --cluster ${CLUSTER_NAME}

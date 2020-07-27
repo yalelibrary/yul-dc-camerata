@@ -237,6 +237,25 @@ those who don't have console access)
 
 Example:
 
+### Build a new cluster in an existins VPC
+
+1. Choose a cluster name that has not been used before. AWS seems
+to have an imperfect system for cleaning up resources allocated for
+clusters, and re-using names leads to unexpected conflicts in
+resource allocation.
+1. You'll need to make note of your VPC ID and your private and public subnet 
+ids inside of the VPC
+1. `export CLUSTER_NAME=YOUR_NEW_CLUSTER_NAME_HERE`
+1. `VPC_ID=<vpc_id> SUBNET0=<private_subnet0_id> SUBNET1=<private_subnet1_id> cam build-cluster $CLUSTER_NAME` to build the cluster
+configuration data for your new cluster
+1. `SUBNET0=<public_subnet0_id> SUBNET1=<public_subnet1_id> cam add-alb $CLUSTER_NAME` add a
+load balancer for your new cluster into your VPC public subnets (NOTE: This has to happen _before_
+you will be able to deploy)
+1. `cam deploy-solr $CLUSTER_NAME --enable-service-discovery`
+1. `cam deploy-psql $CLUSTER_NAME --enable-service-discovery`
+1. `cam deploy-main $CLUSTER_NAME --enable-service-discovery`
+to deploy the application
+
 ## Running the deployment test against a deployed cluster
 
 The deployment testing suite lives in `/spec/deploy_spec.rb` at the

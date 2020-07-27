@@ -35,7 +35,8 @@ put_policy() {
 create_mount_target() {
   aws efs create-mount-target \
   --file-system-id $EFS_FS_ID \
-  --subnet-id  $1
+  --subnet-id  $1 \
+  --security-groups $2
 }
 
 # app name, owner id, group id, permissions
