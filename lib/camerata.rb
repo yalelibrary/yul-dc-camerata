@@ -146,6 +146,7 @@ module Camerata
       bin_path = bin_path_for_method(meth)
       if bin_exists?(meth)
         ensure_env('ecs')
+        check_for_special_compose(meth)
         cmd = (["COMPOSE_FILE=#{compose_path}", bin_path] + args).join(' ')
         run(cmd)
       else
@@ -159,9 +160,38 @@ module Camerata
 
     private
 
+    def check_for_special_compose(meth)
+      method_name = method_for(meth)
+      case method_name
+      when 'deploy-psql'
+        db_only_compose
+      when 'deploy-solr'
+        solr_only_compose
+      end
+    end
+
+    def db_only_compose
+      build_files = [
+        "db-compose.yml",
+        "db-compose.ecs.yml"
+      ]
+      merge_compose(compose_path, *build_files)
+    end
+
+    def solr_only_compose
+      build_files = [
+        "solr-compose.yml",
+        "solr-compose.ecs.yml"
+      ]
+      merge_compose(compose_path, *build_files)
+    end
+
+    def method_for(meth)
+      meth.to_s.gsub(/.sh$/, '')
+    end
+
     def bin_path_for_method(meth)
-      method = meth.to_s.gsub(/.sh$/, '')
-      File.expand_path(File.join(__dir__, '..', 'bin', "#{method}.sh"))
+      File.expand_path(File.join(__dir__, '..', 'bin', "#{method_for(meth)}.sh"))
     end
 
     def bin_exists?(meth)
