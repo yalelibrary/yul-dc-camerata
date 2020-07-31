@@ -1,6 +1,6 @@
 # Changelog
 
-## [v2.2.0](https://github.com/yalelibrary/yul-dc-camerata/tree/v2.2.0) (2020-07-24)
+## [v2.2.0](https://github.com/yalelibrary/yul-dc-camerata/tree/v2.2.0) (2020-07-31)
 
 [Full Changelog](https://github.com/yalelibrary/yul-dc-camerata/compare/v2.1.0...v2.2.0)
 
@@ -10,7 +10,10 @@
 
 **Merged pull requests:**
 
+- Bump blacklight to v1.7.2 [\#105](https://github.com/yalelibrary/yul-dc-camerata/pull/105) ([bess](https://github.com/bess))
 - Use the released versions except in the case of local development [\#104](https://github.com/yalelibrary/yul-dc-camerata/pull/104) ([orangewolf](https://github.com/orangewolf))
+- Prep for 2.2.0 release [\#103](https://github.com/yalelibrary/yul-dc-camerata/pull/103) ([orangewolf](https://github.com/orangewolf))
+- Yul setup [\#102](https://github.com/yalelibrary/yul-dc-camerata/pull/102) ([kbcarter](https://github.com/kbcarter))
 - Allow outside environment to override ssm set values [\#101](https://github.com/yalelibrary/yul-dc-camerata/pull/101) ([orangewolf](https://github.com/orangewolf))
 - Bump blacklight to v1.7.1 [\#100](https://github.com/yalelibrary/yul-dc-camerata/pull/100) ([bess](https://github.com/bess))
 - Remove development artifact [\#99](https://github.com/yalelibrary/yul-dc-camerata/pull/99) ([maxkadel](https://github.com/maxkadel))
@@ -209,6 +212,7 @@
 
 - Document release process [\#27](https://github.com/yalelibrary/yul-dc-camerata/pull/27) ([bess](https://github.com/bess))
 - Remove obsolete & duplicated config settings [\#26](https://github.com/yalelibrary/yul-dc-camerata/pull/26) ([mark-dce](https://github.com/mark-dce))
+- Update all shell scripts to exit immediately on failed commands [\#25](https://github.com/yalelibrary/yul-dc-camerata/pull/25) ([mark-dce](https://github.com/mark-dce))
 
 ## [v1.2.2](https://github.com/yalelibrary/yul-dc-camerata/tree/v1.2.2) (2020-06-08)
 
@@ -216,7 +220,6 @@
 
 **Merged pull requests:**
 
-- Update all shell scripts to exit immediately on failed commands [\#25](https://github.com/yalelibrary/yul-dc-camerata/pull/25) ([mark-dce](https://github.com/mark-dce))
 - Bump management to 1.3.0 [\#24](https://github.com/yalelibrary/yul-dc-camerata/pull/24) ([bess](https://github.com/bess))
 - Bump Blacklight to v1.2.2 [\#23](https://github.com/yalelibrary/yul-dc-camerata/pull/23) ([bess](https://github.com/bess))
 - Improve instructions on setting up a new cluster [\#22](https://github.com/yalelibrary/yul-dc-camerata/pull/22) ([bess](https://github.com/bess))
