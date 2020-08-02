@@ -6,9 +6,9 @@ services:
     image: yalelibraryit/dc-management:master
     <%- end -%>
     environment:
-      SOLR_TEST_CORE: blacklight-test
       PASSENGER_APP_ENV: development
       POSTGRES_MULTIPLE_DATABASES: management_yul_development
+      SOLR_TEST_CORE: blacklight-test
     <%- if in_management? -%>
     volumes:
       - .:/home/app/webapp:cached

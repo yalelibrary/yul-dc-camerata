@@ -16,6 +16,6 @@ services:
       SAMPLE_BUCKET: yul-development-samples
       SOLR_BASE_URL: http://solr:8983/solr
       SOLR_CORE: blacklight-core
-
+      VPN:
     ports:
       - "3001:3001"
