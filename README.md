@@ -7,15 +7,18 @@ Coordinate services for YUL-DC project
 ## Prerequisites
 
 - Download [Docker Desktop](https://www.docker.com/products/docker-desktop) and log in
-
+- Download [AWS Command Line Interface (CLI)](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
+- Download [ECS Command Line Interface (CLI)](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ECS_CLI_installation.html)
+- Configure your AWS command line credentials & profile (See [Troubleshooting](##Troubleshooting) for help)
 
 ## Install
 
-Download the yul-dc-camerata repo and install the gem.
+Clone the yul-dc-camerata repo and install the gem.
 
 ```bash
 git clone git@github.com:yalelibrary/yul-dc-camerata.git
 cd yul-dc-camerata
+bundle install
 rake install
 ```
 
@@ -26,6 +29,7 @@ You can get the latest version at any point by updating the code and reinstallin
 ```bash
 cd yul-dc-camerata
 git pull origin master
+bundle install
 rake install
 ```
 
@@ -37,12 +41,14 @@ used to bring the development stack up and down locally, interact with the
 docker containers, deploy, run the smoke tests and otherwise do development 
 tasks common to the various applications in the yul-dc application stack.
 
-All buildin commands can be listed with `cam help` and individual usage 
+All builtin commands can be listed with `cam help` and individual usage 
 information is available with `cam help COMMAND`.  Please note that deployment 
-commands (found in the `./bin` directory) are pass through and are therefor not 
-listed by the help command.  See th usage for those below. 
+commands (found in the `./bin` directory) are passed through and are therefore not 
+listed by the help command.  See the usage for those below. 
 
-To start the application stack, run `cam up`. This is the equivalent of running 
+To start the application stack, run `cam up` in the directory you are working in.
+Example: If you are working in the Blacklight repo, run `cam up` inside the 
+yul-dc-blacklight directory. This is the equivalent of running 
 `docker-compose up blacklight`. This starts all of the applications as they are 
 all dependencies of yul-blacklight. Camerata is smart. If you start `cam up` from 
 a blacklight code check out it will mount that code for local development 
@@ -64,6 +70,45 @@ code checkouts.
 - Access the manifests instance at `http://localhost`
 
 - Access the management app at `http://localhost:3001/management`
+
+## Troubleshooting
+
+If you receive a `please set your AWS_PROFILE and AWS_DEFAULT_REGION (RuntimeError)` error when you `cam up`, you will need to set your AWS credentials. Credentials can be set in the `~/.aws/credentials` file in the following format:
+```bash
+[dce-hosting]
+aws_access_key_id=YOUR_ACCESS_KEY
+aws_secret_access_key=YOUR_SECRET_ACCESS_KEY
+```
+
+AWS credentials can also be set from the command line:
+```bash
+aws configure --profile dce-hosting
+# Enter your credentials as follows:
+AWS Access Key ID [None]: YOUR_AWS_ACCESS_KEY_ID
+AWS Secret Access Key [None]: YOUR_AWS_SECRET_ACCESS_KEY
+Default region name [None]: us-east-1
+Default output format [None]: json
+```
+
+After your credentials have been set, you will need to export the following settings via the command line:
+```bash
+export AWS_PROFILE=dce-hosting && export AWS_DEFAULT_REGION=us-east-1
+```
+Note: AWS_PROFILE name needs to match the credentials profile name (`[dce-hosting]`). After you set the credentials, you will need to re-install camerata: `rake install`
+
+Confirm aws-cli and ecs-cli are installed
+```bash
+aws --version
+ecs --version
+```
+Confirm that your aws cli credentials are set correctly
+```bash
+aws iam get-user --profile dce-hosting
+# should return json with your account's user name
+```
+
+If you use rbenv, you must run the following command after installing camerata:
+`rbenv rehash`
 
 ## Why not in the Gemfile
 
