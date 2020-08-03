@@ -11,7 +11,7 @@ then
 
   if [[ ! -f ${1}-ecs-params.yml ]]
   then
-    bin/get-params.sh ${1}
+    $(dirname "$0")/get-params.sh ${1}
   fi
 
   # Get BLACKLIGHT target group ARN so we can connect the new cluster to the existing load balancer
