@@ -23,11 +23,16 @@ then
     discovery=""
     log=""
   fi
+
+  if [ -z ${COMPOSE_FILE} ]
+  then
+    export COMPOSE_FILE=psql-compose.yml
+  fi
+
   # Launch the service and register containers with the loadbalancer
   ecs-cli compose  \
     --region $AWS_DEFAULT_REGION \
     --project-name ${CLUSTER_NAME}-psql\
-    --file psql-compose.yml \
     --ecs-params ${CLUSTER_NAME}-psql-params.yml \
     service up \
     $2 \
