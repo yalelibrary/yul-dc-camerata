@@ -154,5 +154,4 @@ RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
       end
     end
   end
-
 end
