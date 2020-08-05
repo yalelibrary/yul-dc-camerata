@@ -192,27 +192,6 @@ and implements the above naming conventions. The command has two
 required parameters: the name of the cluster and the name of the
 task.
 
-### Get ECS Parameter for a Cluster
-
-```
-cam get-params $CLUSTER_NAME [Memory] [CPU]
-```
-
-This command fetches the subnets and security group for an existing
-cluster and builds the `ecs-params.yml` required by the ECS CLI
-tool to deploy a new compose file. The cluster-specific params file
-will be prefixed with the cluster name - e.g. `panicle-ecs-params.yml`.
-Second and third parameters, if present, set the memory and cpu
-size for the task (defaults to 8GB and 2048) -- decreased memory
-example
-
-```
-cam get-params $CLUSTER_NAME 4GB 2048
-```
-
-Valid combinations of memory and cpu documented here:
-<https://docs.aws.amazon.com/AmazonECS/latest/developerguide/AWS_Fargate.html#fargate-tasks-size>
-
 ### Deploy the Postgres and Solr servers
 
 ```
@@ -321,6 +300,29 @@ To run it against a deployed cluster:
    `export HTTP_PASSWORD=<basic-auth-password>`
 
 3. `cam smoke`
+
+## Editing CPU and Memory on a Cluster
+
+```
+cam get-params $CLUSTER_NAME [Memory] [CPU]
+```
+
+This command fetches the subnets and security group for an existing
+cluster and builds the `ecs-params.yml` required by the ECS CLI
+tool to deploy a new compose file. This file is run automatically when a
+build is called, so only needs to be run manually to set the memory and CPU
+parameters. The cluster-specific params file will be prefixed with the cluster
+name - e.g. `panicle-ecs-params.yml`. Second and third parameters, if present, 
+set the memory and cpu size for the task (defaults to 8GB and 2048) -- decreased memory
+example
+
+```
+cam get-params $CLUSTER_NAME 4GB 2048
+```
+
+Valid combinations of memory and cpu documented here:
+<https://docs.aws.amazon.com/AmazonECS/latest/developerguide/AWS_Fargate.html#fargate-tasks-size>
+
 
 ## Releasing a new dependency version
 
