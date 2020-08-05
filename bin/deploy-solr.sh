@@ -22,12 +22,17 @@ then
     discovery=""
     log=""
   fi
+
+  if [ -z ${COMPOSE_FILE} ]
+  then
+    export COMPOSE_FILE=solr-compose.yml
+  fi
+  
   # Launch the service and register containers with the loadbalancer
   # The $2 here can be anything, but is usually --enable-service-discovery
   ecs-cli compose  \
     --region $AWS_DEFAULT_REGION \
     --project-name ${CLUSTER_NAME}-solr \
-    --file solr-compose.yml \
     --ecs-params ${CLUSTER_NAME}-solr-params.yml \
     service up \
     $2 \
