@@ -206,8 +206,13 @@ Second and third parameters, if present, set the memory and cpu
 size for the task (defaults to 8GB and 2048) -- decreased memory
 example
 
+## Note: In the DCE environment, you should set PUBLIC_IP=ENABLED
+## when fetching parameters (including when running other deploy scripts
+## when you have no parameters present), or you will have a bad
+## time.
+
 ```
-cam get-params $CLUSTER_NAME 4GB 2048
+PUBLIC_IP=ENABLED cam get-params $CLUSTER_NAME 4GB 2048
 ```
 
 Valid combinations of memory and cpu documented here:
@@ -266,7 +271,7 @@ resource allocation.
 1. `cam build-cluster $CLUSTER_NAME` to build the cluster
 1. (optional) `cam get-params $CLUSTER_NAME` to read the
 configuration data for your new cluster
-1. `cam add-alb $CLUSTER_NAME` add a
+1. `DOMAIN_NAME='*.your-domain-name' cam add-alb $CLUSTER_NAME` add a
 load balancer for your new cluster (NOTE: This has to happen _before_
 you will be able to deploy)
 1. `cam deploy-solr $CLUSTER_NAME --enable-service-discovery`

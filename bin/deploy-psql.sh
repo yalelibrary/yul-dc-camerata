@@ -12,6 +12,7 @@ then
 
   if [[ ! -f ${1}-psql-params.yml ]]
   then
+    export PUBLIC_IP
     $(dirname "$0")/get-params.sh ${1}
   fi
 

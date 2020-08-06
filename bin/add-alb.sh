@@ -35,12 +35,16 @@ then
       --stack-name amazon-ecs-cli-setup-${1} \
           --query "(StackResourceSummaries[?LogicalResourceId=='Vpc'].PhysicalResourceId)[0]" \
           | sed -e 's/^"//' -e 's/"$//' `
+    DEFAULT_VPC_SG=`aws ec2 describe-security-groups \
+      --filters Name=vpc-id,Values=$VPC_ID \
+        --query "(SecurityGroups[?GroupName=='default'])[0].GroupId" \
+          | grep -Eo -m 1 'sg-\w+'`
+    else
+      DEFAULT_VPC_SG=`aws ec2 describe-security-groups \
+        --filters Name=vpc-id,Values=$VPC_ID \
+          --query "(SecurityGroups[?GroupName=='$CLUSTER_NAME-sg'])[0].GroupId" \
+            | grep -Eo -m 1 'sg-\w+'`
   fi
-
-  DEFAULT_VPC_SG=`aws ec2 describe-security-groups \
-    --filters Name=vpc-id,Values=$VPC_ID \
-      --query "(SecurityGroups[?GroupName=='$CLUSTER_NAME-sg'])[0].GroupId" \
-        | grep -Eo -m 1 'sg-\w+'`
 
   echo "Extracting existing configuration"
   echo "  $VPC_ID"

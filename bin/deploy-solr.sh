@@ -12,6 +12,7 @@ then
 
   if [[ ! -f ${1}-solr-params.yml ]]
   then
+    export PUBLIC_IP
     $(dirname "$0")/get-params.sh ${1}
   fi
   if [[ $(aws ecs describe-services --cluster $1 --services $1-solr) = *MISSING* ]]

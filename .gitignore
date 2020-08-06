@@ -21,3 +21,4 @@ docker-compose-merged.yml
 
 # rspec failure tracking
 .rspec_status
+vendor
