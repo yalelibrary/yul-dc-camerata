@@ -8,10 +8,10 @@ services:
       HTTP_USERNAME: ${HTTP_USERNAME}
       IIIF_MANIFESTS_BASE_URL: /manifests/
       PASSENGER_APP_ENV: ${RAILS_ENV:-production}
-      POSTGRES_HOST: ${CLUSTER_NAME}-psql.local
+      POSTGRES_HOST: ${CLUSTER_NAME}-psql.${CLUSTER_NAME}
       RAILS_ENV: ${RAILS_ENV:-production}
       RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
-      SOLR_URL: http://${CLUSTER_NAME}-solr.local:8983/solr/blacklight-core
+      SOLR_URL: http://${CLUSTER_NAME}-solr.${CLUSTER_NAME}:8983/solr/blacklight-core
     command: bash -c "echo $$(date -u +%FT%TZ) > DEPLOYED_AT && sleep 30 && /sbin/my_init" # server
     logging:
       driver: awslogs

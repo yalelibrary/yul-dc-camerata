@@ -15,7 +15,7 @@ then
 else
   cpu=$3
 fi
-
+PUBLIC_IP=${PUBLIC_IP:-DISABLED}
 
 if check_profile && check_region && check_cluster $1 && all_pass
 then
@@ -71,11 +71,11 @@ run_params:
         - $SUBNET1
       security_groups:
         - $SG_ID
-      assign_public_ip: ENABLED
+      assign_public_ip: $PUBLIC_IP
   service_discovery:
     container_name: solr
     private_dns_namespace:
-      name: local
+      name: $CLUSTER_NAME
       vpc: $VPC_ID
 
 ECS_PARAMS
@@ -102,11 +102,11 @@ run_params:
         - $SUBNET1
       security_groups:
         - $SG_ID
-      assign_public_ip: ENABLED
+      assign_public_ip: $PUBLIC_IP
   service_discovery:
     container_name: db
     private_dns_namespace:
-      name: local
+      name: $CLUSTER_NAME
       vpc: $VPC_ID
 
 ECS_PARAMS
@@ -127,10 +127,10 @@ run_params:
         - $SUBNET1
       security_groups:
         - $SG_ID
-      assign_public_ip: ENABLED
+      assign_public_ip: $PUBLIC_IP
   service_discovery:
     private_dns_namespace:
-      name: local
+      name: $CLUSTER_NAME
       vpc: $VPC_ID
 ECS_PARAMS
 else
