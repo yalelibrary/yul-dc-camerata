@@ -27,12 +27,14 @@ if ENV['YUL_DC_SERVER']
   blacklight_url = "https://#{username}:#{password}@#{ENV['YUL_DC_SERVER']}"
   iiif_manifest_url = "https://#{ENV['YUL_DC_SERVER']}"
   iiif_image_url = "https://#{ENV['YUL_DC_SERVER']}"
+  management_url = "https://#{ENV['YUL_DC_SERVER']}/management"
 else
   # Checks for cluster urls in ENV
   # Sets to local development defaults if none are found
   blacklight_url = ENV['BLACKLIGHT_URL'] || "http://#{username}:#{password}@localhost:3000"
   iiif_manifest_url = ENV['IIIF_MANIFEST_URL'] || 'http://localhost:80'
   iiif_image_url = ENV['IIIF_IMAGE_URL'] || 'http://localhost:8182'
+  management_url = ENV['MANAGEMENT_URL'] || 'http://localhost:3001/management'
 end
 
 # use this SSLContext to use https URLs without verifying certificates
@@ -48,6 +50,7 @@ RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
       visit uri
       expect(page).to have_selector(".blacklight-catalog"), "not blocked by basic auth"
       expect(page).to have_selector(".blacklight-language_ssim"), "a language facet is present"
+      expect(page).to have_selector(".branch-name", text: /v\d+\.\d+\.\d+/), "with a version number"
       click_on 'search'
       expect(page).to have_selector("[aria-label='Go to page 5']"), "an open search has at least 5 pages"
     end
@@ -117,6 +120,38 @@ RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
       expect(response.code).to eq(200)
       parsed = JSON.parse(response.body)
       expect(parsed['width'].to_f / parsed['height'].to_f).to be_between(0.75, 0.8).inclusive
+    end
+  end
+  describe "The management index page at #{management_url}" do
+    it "has at least six version numbers in the table" do
+      # skipping looking for the first row of the version number table for the
+      # moment -- will add CSS to make this easier in the management app
+      # in a later PR.
+      visit management_url
+      find("tr:nth-child(2)")
+      within("tr:nth-child(2)") do
+        expect(page).to have_content(/v\d+\.\d+\.\d+/)
+      end
+      find("tr:nth-child(3)")
+      within("tr:nth-child(3)") do
+        expect(page).to have_content(/v\d+\.\d+\.\d+/)
+      end
+      find("tr:nth-child(4)")
+      within("tr:nth-child(4)") do
+        expect(page).to have_content(/v\d+\.\d+\.\d+/)
+      end
+      find("tr:nth-child(5)")
+      within("tr:nth-child(5)") do
+        expect(page).to have_content(/v\d+\.\d+\.\d+/)
+      end
+      find("tr:nth-child(6)")
+      within("tr:nth-child(6)") do
+        expect(page).to have_content(/v\d+\.\d+\.\d+/)
+      end
+      find("tr:nth-child(7)")
+      within("tr:nth-child(7)") do
+        expect(page).to have_content(/v\d+\.\d+\.\d+/)
+      end
     end
   end
 end

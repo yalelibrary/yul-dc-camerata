@@ -17,5 +17,13 @@ services:
       SOLR_BASE_URL: http://solr:8983/solr
       SOLR_CORE: blacklight-core
       VPN:
+      # The management app needs the versions for all the applications for the dashboard
+      IIIF_MANIFEST_VERSION:
+      SOLR_VERSION:
+      IIIF_IMAGE_VERSION:
+      POSTGRES_VERSION:
+      BLACKLIGHT_VERSION:
+      MANAGEMENT_VERSION:
+      CAMERATA_VERSION:
     ports:
       - "3001:3001"

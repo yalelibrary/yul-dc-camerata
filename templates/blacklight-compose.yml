@@ -7,5 +7,6 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_USER: postgres
       SOLR_URL: http://solr:8983/solr/blacklight-core
+      BLACKLIGHT_VERSION:
     ports:
       - '3000:3000'

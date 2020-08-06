@@ -7,3 +7,4 @@ services:
     environment:
       IIIF_MANIFESTS_BASE_URL: http://localhost/manifests/
       IIIF_IMAGE_BASE_URL: http://localhost:8182/iiif
+      IIIF_MANIFEST_VERSION:
