@@ -79,6 +79,13 @@ module Camerata
     end
     map status: :ps
 
+    desc "logs ARGS", "wraps docker-compose logs"
+    def logs(*args)
+      ensure_env
+      run_with_exit("#{docker_compose} logs #{args.join(' ')}")
+    end
+    map log: :logs
+
     desc "bundle SERVICE", "runs bundle inside the running container, specify the serivce as blacklight or management"
     def bundle(service = 'blacklight')
       ensure_env
@@ -252,12 +259,12 @@ module Camerata
 
     def in_blacklight?
       file = File.join('config', 'application.rb')
-      File.exist?(file) && File.open(file).grep('BlacklightYul')
+      File.exist?(file) && !File.open(file).grep(/BlacklightYul/).empty?
     end
 
     def in_management?
       file = File.join('config', 'application.rb')
-      File.exist?(file) && File.open(file).grep('YulDcManagement')
+      File.exist?(file) && !File.open(file).grep(/YulDcManagement/).empty?
     end
 
     def without

@@ -16,7 +16,11 @@ then
   fi
 
   SUBNETS="--subnets ${SUBNET0} ${SUBNET1}"
-
+  PIPFLAG="--no-associate-public-ip-address"
+  PUBLIC_IPS=DISABLED
+else
+  NOTYALE=1
+  PUBLIC_IPS=ENABLED
 fi
 
 if check_profile && check_region && check_cluster $1 && all_pass
@@ -27,8 +31,7 @@ then
   ecs-cli up --force --cluster ${CLUSTER_NAME} --launch-type FARGATE \
     --region $AWS_DEFAULT_REGION \
     $VPC \
-    $SUBNETS \
-    --no-associate-public-ip-address | tee cluster-ids.txt
+    $SUBNETS $PIPFLAG | tee cluster-ids.txt
 
   if [ -z "$VPC_ID" ]
   then
@@ -40,12 +43,17 @@ then
   echo "  $VPC_ID"
   echo "  $SUBNET0"
   echo "  $SUBNET1"
-  echo "Setup ingress security group"
 
-  SG_ID=`aws ec2 create-security-group \
-  --description "$CLUSTER_NAME Cluster applications" \
-  --group-name $CLUSTER_NAME-sg \
-  --vpc-id $VPC_ID | jq -r ".GroupId"`
+
+  if [ "$NOTYALE" = "1" ]; then
+    SG_ID=`aws ec2 describe-security-groups --filters Name=vpc-id,Values=$VPC_ID --region=$AWS_DEFAULT_REGION | jq -r ".SecurityGroups[0].GroupId"`
+  else
+    echo "Setup ingress security group"
+    SG_ID=`aws ec2 create-security-group \
+    --description "$CLUSTER_NAME Cluster applications" \
+    --group-name $CLUSTER_NAME-sg \
+    --vpc-id $VPC_ID | jq -r ".GroupId"`
+    fi
 
   echo "  $SG_ID"
 
@@ -77,11 +85,11 @@ run_params:
         - $SUBNET1
       security_groups:
         - $SG_ID
-      assign_public_ip: DISABLED
+      assign_public_ip: $PUBLIC_IPS
   service_discovery:
     container_name: solr
     private_dns_namespace:
-      name: local
+      name: $CLUSTER_NAME
       vpc: $VPC_ID
 SOLR_PARAMS
 
@@ -109,11 +117,11 @@ run_params:
         - $SUBNET1
       security_groups:
         - $SG_ID
-      assign_public_ip: DISABLED
+      assign_public_ip: $PUBLIC_IPS
   service_discovery:
     container_name: db
     private_dns_namespace:
-      name: local
+      name: $CLUSTER_NAME
       vpc: $VPC_ID
 PSQL_PARAMS
 
@@ -133,10 +141,10 @@ run_params:
         - $SUBNET1
       security_groups:
         - $SG_ID
-      assign_public_ip: DISABLED
+      assign_public_ip: $PUBLIC_IPS
   service_discovery:
     private_dns_namespace:
-      name: local
+      name: $CLUSTER_NAME
       vpc: $VPC_ID
 ECS_PARAMS
 
