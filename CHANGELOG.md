@@ -1,8 +1,8 @@
 # Changelog
 
-## [v2.2.0](https://github.com/yalelibrary/yul-dc-camerata/tree/v2.2.0) (2020-07-31)
+## [v2.4.0](https://github.com/yalelibrary/yul-dc-camerata/tree/v2.4.0) (2020-08-10)
 
-[Full Changelog](https://github.com/yalelibrary/yul-dc-camerata/compare/v2.1.0...v2.2.0)
+[Full Changelog](https://github.com/yalelibrary/yul-dc-camerata/compare/v2.1.0...v2.4.0)
 
 **Implemented enhancements:**
 
@@ -10,6 +10,14 @@
 
 **Merged pull requests:**
 
+- Updates to merge Yale & DCE deployments [\#114](https://github.com/yalelibrary/yul-dc-camerata/pull/114) ([mlooney](https://github.com/mlooney))
+- Fixed the logging and code mounting issues [\#113](https://github.com/yalelibrary/yul-dc-camerata/pull/113) ([alishaevn](https://github.com/alishaevn))
+- Provide version numbers to containers through gem [\#112](https://github.com/yalelibrary/yul-dc-camerata/pull/112) ([fnibbit](https://github.com/fnibbit))
+- Update management version to most recent release [\#110](https://github.com/yalelibrary/yul-dc-camerata/pull/110) ([dylansalay](https://github.com/dylansalay))
+- Add S3 credentials for management to build aws images [\#109](https://github.com/yalelibrary/yul-dc-camerata/pull/109) ([orangewolf](https://github.com/orangewolf))
+- Prep 2.3 Release [\#108](https://github.com/yalelibrary/yul-dc-camerata/pull/108) ([orangewolf](https://github.com/orangewolf))
+- updated setup instructions on readme [\#107](https://github.com/yalelibrary/yul-dc-camerata/pull/107) ([jpengst](https://github.com/jpengst))
+- Make deploy-psql and deploy-solr work through cam [\#106](https://github.com/yalelibrary/yul-dc-camerata/pull/106) ([orangewolf](https://github.com/orangewolf))
 - Bump blacklight to v1.7.2 [\#105](https://github.com/yalelibrary/yul-dc-camerata/pull/105) ([bess](https://github.com/bess))
 - Use the released versions except in the case of local development [\#104](https://github.com/yalelibrary/yul-dc-camerata/pull/104) ([orangewolf](https://github.com/orangewolf))
 - Prep for 2.2.0 release [\#103](https://github.com/yalelibrary/yul-dc-camerata/pull/103) ([orangewolf](https://github.com/orangewolf))
