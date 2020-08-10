@@ -5,6 +5,7 @@ services:
       HTTP_USERNAME: ${HTTP_USERNAME}
       HTTP_PASSWORD: ${HTTP_PASSWORD}
       IIIF_IMAGE_BASE_URL: 'https://$$host/iiif'
+      IIIF_MANIFESTS_BASE_URL: 'https://$$host/manifests/'
       RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
       HONEYBADGER_API_KEY: ${HONEYBADGER_API_KEY_MANAGEMENT}
       POSTGRES_DB: management_yul_production
