@@ -51,10 +51,6 @@ jobs:
             wget --tries 10 --retry-connrefused http://test:test@localhost:3001
             wget --tries 10 --retry-connrefused http://test:test@localhost:3000
       - run:
-          name: populate management index
-          command: |
-            bundle exec ./exe/camerata exec management bundle exec rake yale:index_fixture_data METADATA_SOURCE=ladybird
-      - run:
           name: rspec
           command:  |
             bundle exec rspec
