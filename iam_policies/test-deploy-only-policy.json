@@ -31,7 +31,7 @@
                 "ecs:ListTasks",
                 "ecs:ListTaskDefinitions"
             ],
-            "Resource": "arn:aws:ecs:us-east-1:229792048549:cluster/bacon"
+            "Resource": "<test-cluster-arn>"
         },
         {
             "Effect": "Allow",
