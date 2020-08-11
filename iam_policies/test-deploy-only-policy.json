@@ -21,7 +21,6 @@
         {
             "Effect": "Allow",
             "Action": [
-                "ecs:CreateService",
                 "ecs:DescribeTaskDefinition",
                 "ecs:DescribeClusters",
                 "ecs:DescribeContainerInstances",
@@ -30,11 +29,14 @@
                 "ecs:ListAccountSettings",
                 "ecs:ListClusters",
                 "ecs:ListTasks",
-                "ecs:ListTaskDefinitions",
-                "ecs:RegisterTaskDefinition",
-                "ecs:UpdateService"
+                "ecs:ListTaskDefinitions"
             ],
             "Resource": "arn:aws:ecs:us-east-1:229792048549:cluster/bacon"
+        },
+        {
+            "Effect": "Allow",
+            "Action": "ecs:RegisterTaskDefinition",
+            "Resource": "*"
         },
         {
             "Effect": "Allow",
@@ -47,12 +49,13 @@
                 "ecs:StartTask",
                 "ecs:StopTask",
                 "ecs:RunTask",
-                "ecs:RegisterTaskDefinition"
+                "ecs:RegisterTaskDefinition",
+                "ecs:UpdateService"
             ],
             "Resource": "*",
             "Condition": {
                 "ArnEquals": {
-                    "ecs:cluster": "arn:aws:ecs:us-east-1:229792048549:cluster/bacon"
+                    "ecs:cluster": "<test-cluster-arn>"
                 }
             }
         },
