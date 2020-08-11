@@ -21,7 +21,6 @@
         {
             "Effect": "Allow",
             "Action": [
-                "ecs:CreateService",
                 "ecs:DescribeTaskDefinition",
                 "ecs:DescribeClusters",
                 "ecs:DescribeContainerInstances",
