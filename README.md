@@ -35,29 +35,29 @@ rake install
 
 ## General Use
 
-Once camerata is installed on your system, interactions happen through the 
-camerata command-line tool or through its alias `cam`.  The camerata tool can be 
-used to bring the development stack up and down locally, interact with the 
-docker containers, deploy, run the smoke tests and otherwise do development 
+Once camerata is installed on your system, interactions happen through the
+camerata command-line tool or through its alias `cam`.  The camerata tool can be
+used to bring the development stack up and down locally, interact with the
+docker containers, deploy, run the smoke tests and otherwise do development
 tasks common to the various applications in the yul-dc application stack.
 
-All builtin commands can be listed with `cam help` and individual usage 
-information is available with `cam help COMMAND`.  Please note that deployment 
-commands (found in the `./bin` directory) are passed through and are therefore not 
-listed by the help command.  See the usage for those below. 
+All builtin commands can be listed with `cam help` and individual usage
+information is available with `cam help COMMAND`.  Please note that deployment
+commands (found in the `./bin` directory) are passed through and are therefore not
+listed by the help command.  See the usage for those below.
 
 To start the application stack, run `cam up` in the directory you are working in.
-Example: If you are working in the Blacklight repo, run `cam up` inside the 
-yul-dc-blacklight directory. This is the equivalent of running 
-`docker-compose up blacklight`. This starts all of the applications as they are 
-all dependencies of yul-blacklight. Camerata is smart. If you start `cam up` from 
-a blacklight code check out it will mount that code for local development 
-(changes to the outside code will affect the inside container). If you start the 
+Example: If you are working in the Blacklight repo, run `cam up` inside the
+yul-dc-blacklight directory. This is the equivalent of running
+`docker-compose up blacklight`. This starts all of the applications as they are
+all dependencies of yul-blacklight. Camerata is smart. If you start `cam up` from
+a blacklight code check out it will mount that code for local development
+(changes to the outside code will affect the inside container). If you start the
 `cam up` from the management application you will get the management code mounted
-for local development and the blacklight code will run as it is in the downloaded 
-image. You can also start the two applications both mounted for development by 
-starting the blacklight application with `--without management` and the 
-management application `--without solr --withouth db` each from their respective 
+for local development and the blacklight code will run as it is in the downloaded
+image. You can also start the two applications both mounted for development by
+starting the blacklight application with `--without management` and the
+management application `--without solr --without db` each from their respective
 code checkouts.
 
 
@@ -99,7 +99,7 @@ Note: AWS_PROFILE name needs to match the credentials profile name (`[dce-hostin
 Confirm aws-cli and ecs-cli are installed
 ```bash
 aws --version
-ecs --version
+ecs-cli --version
 ```
 Confirm that your aws cli credentials are set correctly
 ```bash
@@ -113,9 +113,9 @@ If you use rbenv, you must run the following command after installing camerata:
 ## Why not in the Gemfile
 
 The reason we don't add camerata to the Gemfile is that we need camerata to start
-the docker containers, but we do not otherwise need to bundle our application 
-locally.  The bundle can live with in the container. Requiring camerata to be in 
-the bundle means requiring that a full dev environment both inside and outside 
+the docker containers, but we do not otherwise need to bundle our application
+locally.  The bundle can live with in the container. Requiring camerata to be in
+the bundle means requiring that a full dev environment both inside and outside
 the container, which is a requirement we are trying to avoid.
 
 ## Local Development vs. ECS Deployment
@@ -128,17 +128,17 @@ particular, we are making an effort to maintain a high degree of
 To achieve this we use a common set of docker base files with
 overrides for any values that are required to differ for local vs.
 deployment environments. We create 3 files for each service in the templates
-directory. One for the base, then a local override and a ecs override. These 
+directory. One for the base, then a local override and an ecs override. These
 files are composed together to create the compose file used for development or
-deploment as needed.
+deployment as needed.
 
 file                              | contents
 --------------------------------- | ----------------------------------------------------------------------------------------------------
 `blacklight-compose.yml`          | compose definitions that are shared between all environments
 `blacklight-compose.local.yml`    | compose definitions required exclusively in a local docker environment
 `blacklight-compose.ecs.yml`      | compose definitions required for deployment to AWS ECS
-`.env`                            | No longer used. All env should be in Amazon SSM 
-`.secrets`                        | No longer used. All secrets should be in Amazon SSM 
+`.env`                            | No longer used. All env should be in Amazon SSM
+`.secrets`                        | No longer used. All secrets should be in Amazon SSM
 
 For more detail on multiple compose files see
 <https://docs.docker.com/compose/extends/#multiple-compose-files>.
@@ -287,13 +287,13 @@ those who don't have console access)
 
 Example:
 
-### Build a new cluster in an existins VPC
+### Build a new cluster in an existing VPC
 
 1. Choose a cluster name that has not been used before. AWS seems
 to have an imperfect system for cleaning up resources allocated for
 clusters, and re-using names leads to unexpected conflicts in
 resource allocation.
-1. You'll need to make note of your VPC ID and your private and public subnet 
+1. You'll need to make note of your VPC ID and your private and public subnet
 ids inside of the VPC
 1. `export CLUSTER_NAME=YOUR_NEW_CLUSTER_NAME_HERE`
 1. `VPC_ID=<vpc_id> SUBNET0=<private_subnet0_id> SUBNET1=<private_subnet1_id> cam build-cluster $CLUSTER_NAME` to build the cluster
@@ -320,7 +320,7 @@ To run it against a deployed cluster:
 2. Set the HTTP loging vars:
    - Set HTTP_USERNAME to the known Blacklight http basic auth
    username for your deployed cluster `export
-   HTTP_USERNAME=<basic-auth-username>` 
+   HTTP_USERNAME=<basic-auth-username>`
    - Set HTTP_PASSWORD to the
    known Blacklight http basic auth password for you deployed cluster
    `export HTTP_PASSWORD=<basic-auth-password>`
@@ -349,3 +349,4 @@ github web UI go to `Releases` and tag a new release with the right
 version number. Paste in the release notes for this version from
 the changelog you generated. In the release notes, split out
 `Features`, `Bug Fixes`, and `Other`
+7. Move any tickets that were included in this release from `For Release` to `Ready for Acceptance`
