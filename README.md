@@ -349,3 +349,4 @@ github web UI go to `Releases` and tag a new release with the right
 version number. Paste in the release notes for this version from
 the changelog you generated. In the release notes, split out
 `Features`, `Bug Fixes`, and `Other`
+7. Move any tickets that were included in this release from `For Release` to `Ready for Acceptance`
