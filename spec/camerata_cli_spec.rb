@@ -22,6 +22,13 @@ RSpec.describe Camerata::CLI do
     end
   end
 
+  context 'release' do
+    let(:output) { capture(:stdout) { cli.release(:camerata, Camerata::VERSION) } }
+    xit "allows releasing Camerata" do
+      expect(output).not_to match("Did not find matching version string for camerata")
+    end
+  end
+
   context 'bin contents' do
     before do
       ENV['AWS_PROFILE'] = nil # make sure we can't actually hit aws
