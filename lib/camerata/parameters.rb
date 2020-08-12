@@ -5,8 +5,12 @@ module Camerata
     def self.get(key)
       raise 'please set your AWS_PROFILE and AWS_DEFAULT_REGION' unless ENV['AWS_DEFAULT_REGION'] && ENV['AWS_PROFILE']
       key = "\"#{key}\"" unless key.match?('"')
-      result = `aws ssm get-parameters --names #{key}`
+      result = call_aws_ssm(key)
       JSON.parse(result) if result && !result.empty?
+    end
+
+    def self.call_aws_ssm(key)
+      `aws ssm get-parameters --names #{key}`
     end
 
     # rubocop:disable Naming/AccessorMethodName

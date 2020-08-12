@@ -1,0 +1,14 @@
+{
+    "Parameters": [
+        {
+            "Name": "CAMERATA_VERSION",
+            "Type": "String",
+            "Value": "v2.4.0",
+            "Version": 3,
+            "LastModifiedDate": "2020-08-11T09:33:49.410000-04:00",
+            "ARN": "arn:aws:ssm:us-east-1:000000000000:parameter/CAMERATA_VERSION",
+            "DataType": "text"
+        }
+    ],
+    "InvalidParameters": []
+}

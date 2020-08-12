@@ -9,6 +9,7 @@ module Camerata
         MANAGEMENT_VERSION
         POSTGRES_VERSION
         SOLR_VERSION
+        CAMERATA_VERSION
       ]
     end
   end
