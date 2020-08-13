@@ -171,7 +171,7 @@ module Camerata
 
     private
 
-    def check_and_run_bin(meth, args = nil)
+    def check_and_run_bin(meth, args = [])
       bin_path = bin_path_for_method(meth)
       return unless bin_exists?(meth)
       ensure_env('ecs')
