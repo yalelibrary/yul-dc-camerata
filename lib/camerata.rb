@@ -148,17 +148,21 @@ module Camerata
       say "Camerata Version: #{Camerata::VERSION}"
     end
 
+    desc 'deploy_solr CLUSTER_NAME', 'deploy solr to your specified cluster'
+    def deploy_solr(*args)
+      solr_stopped = ask('You must stop solr before you can redeploy it. Have you stopped your running solr? (y/n)')
+      if prep_answer(solr_stopped) != 'y'
+        error("Cowardly refusing to continue. You must stop solr before redeploying. Try cam stop-solr CLUSTER_NAME")
+        exit(1)
+      end
+      meth = 'deploy-solr'
+      exit(1) unless check_and_run_bin(meth, args)
+    end
+    map 'deploy-solr' => :deploy_solr
+
     def method_missing(meth, *args) # rubocop:disable Style/MethodMissingSuper
       # Check if a .sh script exists for this command
-      bin_path = bin_path_for_method(meth)
-      if bin_exists?(meth)
-        ensure_env('ecs')
-        check_for_special_compose(meth)
-        cmd = (["COMPOSE_FILE=#{compose_path}", bin_path] + args).join(' ')
-        run(cmd)
-      else
-        super(meth, args)
-      end
+      super(meth, args) unless check_and_run_bin(meth)
     end
 
     def respond_to_missing?(method_name, include_private = false)
@@ -166,6 +170,15 @@ module Camerata
     end
 
     private
+
+    def check_and_run_bin(meth, args = nil)
+      bin_path = bin_path_for_method(meth)
+      return unless bin_exists?(meth)
+      ensure_env('ecs')
+      check_for_special_compose(meth)
+      cmd = (["COMPOSE_FILE=#{compose_path}", bin_path] + args).join(' ')
+      run(cmd)
+    end
 
     def check_for_special_compose(meth)
       method_name = method_for(meth)
@@ -298,6 +311,10 @@ module Camerata
 
     def docker_compose
       "docker-compose --project-directory . -f #{compose_path}"
+    end
+
+    def prep_answer(answer)
+      answer.to_s.downcase.strip
     end
 
     def default_options(args, output = [])
