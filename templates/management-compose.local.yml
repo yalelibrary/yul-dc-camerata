@@ -43,8 +43,6 @@ services:
       - management_node_modules:/home/app/webapp/node_modules
       - management_rails_cache:/home/app/webapp/tmp/cache
     <%- end -%>
-    stdin_open: true
-    tty: true
 
 <%- if in_management? -%>
 volumes:
