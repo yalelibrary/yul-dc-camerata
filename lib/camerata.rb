@@ -32,20 +32,20 @@ module Camerata
       run_with_exit("#{docker_compose} up #{output.join(' ')}")
     end
 
-    desc "stop", "stops the specified running service, defaults to all"
+    desc "stop", "stops the specified running local service, defaults to all"
     def stop(*args)
       ensure_env
       run("#{docker_compose} stop #{args.join(' ')}")
       run_with_exit("rm -rf tmp/pids/*")
     end
 
-    desc "restart", "restarts the specified running service, defaults to all"
+    desc "restart", "restarts the specified running local service, defaults to all"
     def restart(*args)
       ensure_env
       run_with_exit("#{docker_compose} restart #{args.join(' ')}")
     end
 
-    desc "down", "complete down, removes containers, volumes and orphans"
+    desc "down", "complete local down, removes containers, volumes and orphans"
     def down
       ensure_env
       output = ['--remove-orphans', '-v']
@@ -53,7 +53,7 @@ module Camerata
       run_with_exit("rm -rf tmp/pids/*")
     end
 
-    desc "build", "builds specified service, defaults to blacklight"
+    desc "build", "builds specified local service, defaults to blacklight"
     def build(*args)
       ensure_env
       options = default_options(args)
@@ -152,7 +152,7 @@ module Camerata
     def deploy_solr(*args)
       solr_stopped = ask('You must stop solr before you can redeploy it. Have you stopped your running solr? (y/n)')
       if prep_answer(solr_stopped) != 'y'
-        error("Cowardly refusing to continue. You must stop solr before redeploying. Try cam stop-solr CLUSTER_NAME")
+        error("Exiting without deploying. You must stop solr before redeploying. Try cam stop-solr CLUSTER_NAME")
         exit(1)
       end
       meth = 'deploy-solr'
@@ -160,9 +160,21 @@ module Camerata
     end
     map 'deploy-solr' => :deploy_solr
 
+    desc 'deploy_db CLUSTER_NAME', 'deploy the psql database to your specified cluster'
+    def deploy_db(*args)
+      db_stopped = ask('You must stop the psql database before you can redeploy it.  Have you stopped your running database? (y/n)')
+      if prep_answer(db_stopped) != 'y'
+        error("Exiting without deploying.  Try cam stop-db CLUSTER_NAME")
+        exit(1)
+      end
+      meth = 'deploy-psql'
+      exit(1) unless check_and_run_bin(meth, args)
+    end
+    map 'deploy-psql' => :deploy_db
+
     def method_missing(meth, *args) # rubocop:disable Style/MethodMissingSuper
       # Check if a .sh script exists for this command
-      super(meth, args) unless check_and_run_bin(meth)
+      super(meth, args) unless check_and_run_bin(meth, args)
     end
 
     def respond_to_missing?(method_name, include_private = false)
