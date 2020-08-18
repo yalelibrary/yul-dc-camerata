@@ -71,7 +71,7 @@ RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
     end
     describe 'has a yale-only item' do
       let(:uri) { "#{blacklight_url}/catalog/16189097-yale" }
-      it 'that does not show Universal Viewer' do
+      xit 'that does not show Universal Viewer' do
         visit uri
         expect(page).not_to have_selector(".universal-viewer-iframe")
       end
