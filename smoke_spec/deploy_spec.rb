@@ -54,9 +54,8 @@ RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
       expect(page).to have_selector(".blacklight-language_ssim"), "a language facet is present"
       expect(page).to have_selector(".branch-name", text: /v\d+\.\d+\.\d+/), "with a version number"
       click_on 'search'
-      if deployed
-        expect(page).to have_selector("[aria-label='Go to page 5']"), "an open search has at least 5 pages"
-      end
+      expect(page).to have_selector(".document-position-6"), "an open search has at least six items"
+      expect(page).to have_selector("[aria-label='Go to page 5']"), "an open search has at least 5 pages" if deployed
     end
     it 'is local or has a valid SSL certificate' do
       # this method is using the HTTP gem instead of capybara because
@@ -74,7 +73,7 @@ RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
       end
     end
     describe 'has a yale-only item' do
-      let(:uri) { "#{blacklight_url}/catalog/16189097-yale" }
+      let(:uri) { "#{blacklight_url}/catalog/2000002107188" }
       it 'that does not show Universal Viewer' do
         visit uri
         expect(page).not_to have_selector(".universal-viewer-iframe")
