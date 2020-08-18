@@ -174,7 +174,11 @@ module Camerata
 
     def method_missing(meth, *args) # rubocop:disable Style/MethodMissingSuper
       # Check if a .sh script exists for this command
-      super(meth, args) unless check_and_run_bin(meth, args)
+      if bin_exists?(meth)
+        check_and_run_bin(meth, args)
+      else
+        super(meth, args)
+      end
     end
 
     def respond_to_missing?(method_name, include_private = false)
@@ -185,7 +189,6 @@ module Camerata
 
     def check_and_run_bin(meth, args = [])
       bin_path = bin_path_for_method(meth)
-      return unless bin_exists?(meth)
       ensure_env('ecs')
       check_for_special_compose(meth)
       cmd = (["COMPOSE_FILE=#{compose_path}", bin_path] + args).join(' ')
