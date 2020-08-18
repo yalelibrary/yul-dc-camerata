@@ -42,7 +42,7 @@ RSpec.describe Camerata::CLI do
     end
 
     it 'can run the stop-db script' do
-      output = capture(:stdout) { cli.send('stop-db', 'nowhere')}
+      output = capture(:stdout) { cli.send('stop-db', 'nowhere') }
       expect(output).to match('stop-db.sh')
     end
 
