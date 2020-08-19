@@ -52,6 +52,8 @@ jobs:
             wget --tries 10 --retry-connrefused http://test:test@localhost:3000
       - run:
           name: rspec
+          environment:
+            CHANGELOG_GITHUB_TOKEN: 'fake_token'
           command:  |
             bundle exec rspec
       - run:

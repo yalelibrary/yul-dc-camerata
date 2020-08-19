@@ -12,4 +12,6 @@ gem 'rake'
 group :development, :test do
   gem 'bixby'
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
+  gem 'vcr'
+  gem 'webmock'
 end
