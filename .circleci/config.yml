@@ -45,15 +45,15 @@ jobs:
             ls -l
             bundle exec ./exe/camerata up -d
       - run:
+          name: rspec
+          command:  |
+            bundle exec rspec
+      - run:
           name: Wait for services to be fully up
           command: |
             wget --tries 10 --retry-connrefused http://localhost:8983/solr/
             wget --tries 10 --retry-connrefused http://test:test@localhost:3001
             wget --tries 10 --retry-connrefused http://test:test@localhost:3000
-      - run:
-          name: rspec
-          command:  |
-            bundle exec rspec
       - run:
           name: smoke specs
           command:  |

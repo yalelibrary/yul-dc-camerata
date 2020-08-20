@@ -8,6 +8,7 @@ RSpec.describe Camerata::CLI do
     secrets = class_double('Camerata::Secrets').as_stubbed_const(transfer_nested_constants: true)
     allow(secrets).to receive(:load_env).and_return({})
     allow(secrets).to receive(:get_all).and_return({})
+    allow(described_class).to receive(:exit_on_failure?).and_return(false)
   end
 
   context 'version' do
@@ -38,6 +39,11 @@ RSpec.describe Camerata::CLI do
       output = capture(:stdout) { cli.send('cluster-ps') }
       expect(output).to match('cluster-ps.sh')
       expect(output).to match('run')
+    end
+
+    it 'can run the stop-db script' do
+      output = capture(:stdout) { cli.send('stop-db', 'nowhere') }
+      expect(output).to match('stop-db.sh')
     end
 
     it 'forgives the user for putting .sh on the command' do

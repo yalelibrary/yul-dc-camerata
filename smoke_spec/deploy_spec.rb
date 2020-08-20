@@ -24,6 +24,7 @@ puts "Current Blacklight basic auth settings: " \
 
 # Checked for a deployed cluster host in the environment
 if ENV['YUL_DC_SERVER']
+  deployed = true
   blacklight_url = "https://#{username}:#{password}@#{ENV['YUL_DC_SERVER']}"
   iiif_manifest_url = "https://#{ENV['YUL_DC_SERVER']}"
   iiif_image_url = "https://#{ENV['YUL_DC_SERVER']}"
@@ -35,6 +36,7 @@ else
   iiif_manifest_url = ENV['IIIF_MANIFEST_URL'] || 'http://localhost:80'
   iiif_image_url = ENV['IIIF_IMAGE_URL'] || 'http://localhost:8182'
   management_url = ENV['MANAGEMENT_URL'] || 'http://localhost:3001/management'
+  deployed = false
 end
 
 # use this SSLContext to use https URLs without verifying certificates
@@ -52,7 +54,8 @@ RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
       expect(page).to have_selector(".blacklight-language_ssim"), "a language facet is present"
       expect(page).to have_selector(".branch-name", text: /v\d+\.\d+\.\d+/), "with a version number"
       click_on 'search'
-      expect(page).to have_selector("[aria-label='Go to page 5']"), "an open search has at least 5 pages"
+      expect(page).to have_selector(".document-position-6"), "an open search has at least six items"
+      expect(page).to have_selector("[aria-label='Go to page 5']"), "an open search has at least 5 pages" if deployed
     end
     it 'is local or has a valid SSL certificate' do
       # this method is using the HTTP gem instead of capybara because
@@ -70,7 +73,7 @@ RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
       end
     end
     describe 'has a yale-only item' do
-      let(:uri) { "#{blacklight_url}/catalog/16189097-yale" }
+      let(:uri) { "#{blacklight_url}/catalog/2000002107188" }
       it 'that does not show Universal Viewer' do
         visit uri
         expect(page).not_to have_selector(".universal-viewer-iframe")
