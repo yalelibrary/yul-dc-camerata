@@ -24,7 +24,25 @@ services:
       <%- end -%>
       <%- unless without.match(/solr/) -%>
       - solr
+      - management_worker
       <%- end -%>
+
+  management_worker:
+    <%- if in_management? -%>
+    build: .
+    image: yalelibraryit/dc-management:master
+    <%- end -%>
+    environment:
+      IIIF_MANIFESTS_BASE_URL: ${IIIF_MANIFESTS_BASE_URL:-http://localhost/manifests/}
+      PASSENGER_APP_ENV: development
+      POSTGRES_MULTIPLE_DATABASES: management_yul_development
+      SOLR_TEST_CORE: blacklight-test
+    <%- if in_management? -%>
+    volumes:
+      - .:/home/app/webapp:cached
+      - management_node_modules:/home/app/webapp/node_modules
+      - management_rails_cache:/home/app/webapp/tmp/cache
+    <%- end -%>
 
 <%- if in_management? -%>
 volumes:
