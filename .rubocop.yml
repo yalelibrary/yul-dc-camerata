@@ -11,8 +11,16 @@ Metrics/BlockLength:
     - 'spec/**/*.rb'
     - 'smoke_spec/**/*.rb'
 
+Metrics/ClassLength:
+  Exclude:
+    - lib/camerata/taggable_app.rb
+
+Metrics/MethodLength:
+  Max: 20
+  Exclude:
+    - lib/camerata/taggable_app.rb
+
 RSpec/ExampleLength:
   Exclude:
     - 'spec/**/*.rb'
     - 'smoke_spec/**/*.rb'
-

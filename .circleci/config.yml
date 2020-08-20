@@ -55,6 +55,10 @@ jobs:
             wget --tries 10 --retry-connrefused http://test:test@localhost:3001
             wget --tries 10 --retry-connrefused http://test:test@localhost:3000
       - run:
+          name: rspec
+          command:  |
+            bundle exec rspec
+      - run:
           name: smoke specs
           command:  |
             bundle exec rspec smoke_spec
