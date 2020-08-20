@@ -134,8 +134,8 @@ module Camerata
       run_with_exit("rspec #{smoke_path} #{args.join(' ')}")
     end
 
-    desc "set_version APP VERSION", "Set a new version string for release of an application. For example `cam set_version blacklight v2.5.1`"
-    def set_version(app, version)
+    desc "push_version APP VERSION", "Set a new version string for release of an application. For example `cam push_version blacklight v2.5.1`"
+    def push_version(app, version)
       version_string = Camerata::AppVersions.parameters.detect { |v| v.match(app.upcase) }
       unless version_string
         puts "Did not find matching version string for #{app}"

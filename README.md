@@ -247,7 +247,7 @@ To run it against a deployed cluster:
 ## Releasing a new dependency version
 
 1. Follow the release process laid out in the application README through to completion
-2. Set the version variable to the new version with `cam set_version APP_NAME VERSION_NUMBER`
+2. Set the version variable to the new version with `cam push_version APP_NAME VERSION_NUMBER`
 3. Start the applications with the new version and run the smoke test
 4. Deploy the applications (see deployment above) Example: `cam deploy-main yul-test`
 
