@@ -3,6 +3,11 @@
 # A taggable app is microservice that we know how to make a new release for
 
 RSpec.describe Camerata::TaggableApp, type: :github_api do
+
+  before do
+    ENV['CHANGELOG_GITHUB_TOKEN'] = 'fake_token' if ENV['CI']
+  end
+
   it "has a list of apps it knows how to tag" do
     expect(described_class.known_apps).to eq ["blacklight", "management", "solr", "postgres", "iiif_manifest", "iiif_imageserver"]
   end
