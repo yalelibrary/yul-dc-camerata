@@ -74,8 +74,9 @@ module Camerata
     ##
     # Get the union set of all of the labels of all the PRs in this release
     def union_labels
-      labels = release_prs.map { |a| a[:labels] }.reject!(&:empty?)
+      labels = release_prs.map { |a| a[:labels] }
       union_labels = Set[]
+      return union_labels if labels.empty?
       labels.each { |a| a.each { |b| union_labels.add(b[:name]) } }
       union_labels
     end

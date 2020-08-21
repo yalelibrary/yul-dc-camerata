@@ -29,6 +29,16 @@ RSpec.describe Camerata::TaggableApp, type: :github_api do
       end
     end
 
+    context "#union_labels" do
+      let(:taggable_app) { described_class.new("blacklight") }
+      it "gets the union set of all the labels for this release" do
+        VCR.use_cassette("blacklight_with_three_feature_labels") do
+          expect(taggable_app.union_labels.size).to eq 1
+          expect(taggable_app.union_labels.first).to eq "Feature"
+        end
+      end
+    end
+
     context "#release_needed?" do
       let(:taggable_app) { described_class.new("blacklight") }
       it "tags a new release if there are PRs since the last release" do
