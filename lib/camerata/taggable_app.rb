@@ -180,6 +180,42 @@ module Camerata
     def release
       release_options = { name: new_version_number, body: release_notes }
       @client.create_release("#{@github_user}/#{@github_project}", new_version_number, release_options)
+      increment_camerata_version if @app == 'camerata'
+    end
+
+    ##
+    # Open a PR to update the number in `lib/camerata/version.rb` to the latest version
+    def increment_camerata_version
+      starting_branch = `git rev-parse --abbrev-ref HEAD`
+      starting_branch.chomp
+      temporary_branch = "increment_camerata_version"
+      `git branch -D #{temporary_branch}`
+      `git checkout -b #{temporary_branch}`
+      tfile = make_version_tempfile
+      FileUtils.mv(tfile.path, version_file)
+      pr_message = "Increment camerata version to #{new_version_number}"
+      `git commit #{version_file} -m "#{pr_message}"`
+      `git push --set-upstream origin #{temporary_branch}`
+      @client.create_pull_request("#{@github_user}/#{@github_project}", "master", temporary_branch, pr_message, "")
+      `git checkout #{starting_branch}`
+      `git branch -D #{temporary_branch}`
+    end
+
+    def version_file
+      File.join(__dir__, 'version.rb')
+    end
+
+    def make_version_tempfile
+      tfile = Tempfile.new(File.basename(version_file))
+      tfile.write version_file_contents
+      tfile.close
+      tfile
+    end
+
+    ##
+    # Re-write the version file to update it to the latest version number
+    def version_file_contents
+      "# frozen_string_literal: true\nmodule Camerata\n  VERSION = '#{new_version_number.delete('v')}'\nend\n"
     end
   end
 end

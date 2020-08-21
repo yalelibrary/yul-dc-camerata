@@ -79,6 +79,19 @@ RSpec.describe Camerata::TaggableApp, type: :github_api do
           expect(taggable_app).to respond_to(:release)
         end
       end
+      # Camerata has an additional release step, which is to increment the version number in version.rb
+      context "#increment_camerata_version" do
+        let(:taggable_app) { described_class.new("camerata") }
+        it "writes a temporary version file" do
+          VCR.use_cassette("make_version_tempfile") do
+            tempfile = taggable_app.make_version_tempfile
+            expect(tempfile).to be_instance_of(Tempfile)
+            tempfile.open
+            expect(tempfile.read).to match(taggable_app.new_version_number.delete('v'))
+            tempfile.close
+          end
+        end
+      end
     end
   end
 end
