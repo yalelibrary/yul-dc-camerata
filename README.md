@@ -206,7 +206,9 @@ To build a new cluster and deploy to it, you'll put all of the above commands to
 2. `export CLUSTER_NAME=YOUR_NEW_CLUSTER_NAME_HERE`
 
 3. `cam build-cluster $CLUSTER_NAME` to build the cluster
+
 4. (optional) `cam get-params $CLUSTER_NAME` to read the configuration data for your new cluster
+
 5. `DOMAIN_NAME='*.your-domain-name' cam add-alb $CLUSTER_NAME` add a load balancer for your new cluster (NOTE: This has to happen _before_ you will be able to deploy)
 6. `cam deploy-solr $CLUSTER_NAME --enable-service-discovery`
 7. `cam deploy-psql $CLUSTER_NAME --enable-service-discovery`
@@ -253,10 +255,5 @@ To run it against a deployed cluster:
 
 ## Releasing a version of Camerata
 
-1. Decide on a new version number. We use [semantic versioning](https://github.com/yalelibrary/yul-dc-camerata/wiki/Semantic-Versioning).
-2. Update the version number in `.github_changelog_generator`
-3. Update the version number in `.env`
-4. `github_changelog_generator --user yalelibrary --project yul-dc-camerata --token $YOUR_GITHUB_TOKEN`
-5. Commit and merge the changes you just made with a message like "Prep for x.y.z release"
-6. Once those changes are merged to the `master` branch, in the github web UI go to `Releases` and tag a new release with the right version number. Paste in the release notes for this version from the changelog you generated. In the release notes, split out `Features`, `Bug Fixes`, and `Other`
-7. Move any tickets that were included in this release from `For Release` to `Ready for Acceptance`
+1. Run the release command: `cam release camerata`
+2. Move any tickets that were included in this release from `For Release` to `Ready for Acceptance`
