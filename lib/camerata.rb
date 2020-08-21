@@ -128,6 +128,16 @@ module Camerata
     end
     map rc: :console
 
+    desc "get_env KEY", "get details of a parameter"
+    def get_env(key)
+      Camerata::Secrets.get(key)
+    end
+
+    desc "set_env ARGS", "set the value of a parameter"
+    def set_env(*args)
+      Camerata::Secrets.set(*args)
+    end
+
     desc "smoke ARGS", "Run the smoke tests against a running stack"
     def smoke(*args)
       run_with_exit("rspec #{smoke_path} #{args.join(' ')}")
