@@ -136,6 +136,11 @@ module Camerata
             github_user: 'yalelibrary',
             github_project: 'yul-dc-blacklight'
           },
+        camerata:
+          {
+            github_user: 'yalelibrary',
+            github_project: 'yul-dc-camerata'
+          },
         management:
         {
           github_user: 'yalelibrary',

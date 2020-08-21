@@ -8,7 +8,7 @@ RSpec.describe Camerata::TaggableApp, type: :github_api do
   end
 
   it "has a list of apps it knows how to tag" do
-    expect(described_class.known_apps).to eq ["blacklight", "management", "solr", "postgres", "iiif_manifest", "iiif_imageserver"]
+    expect(described_class.known_apps).to eq ["blacklight", "camerata", "management", "solr", "postgres", "iiif_manifest", "iiif_imageserver"]
   end
 
   context "configuration for a specific app" do
