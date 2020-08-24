@@ -30,11 +30,21 @@ RSpec.describe Camerata::TaggableApp, type: :github_api do
     end
 
     context "#union_labels" do
-      let(:taggable_app) { described_class.new("blacklight") }
-      it "gets the union set of all the labels for this release" do
-        VCR.use_cassette("blacklight_with_three_feature_labels") do
-          expect(taggable_app.union_labels.size).to eq 1
-          expect(taggable_app.union_labels.first).to eq "Feature"
+      context "when there are labels" do
+        let(:taggable_app) { described_class.new("blacklight") }
+        it "gets the union set of all the labels for this release" do
+          VCR.use_cassette("blacklight_with_three_feature_labels") do
+            expect(taggable_app.union_labels.size).to eq 1
+            expect(taggable_app.union_labels.first).to eq "Feature"
+          end
+        end
+      end
+      context "when there are no PR labels" do
+        let(:taggable_app) { described_class.new("management") }
+        it "returns an empty set" do
+          VCR.use_cassette("management_with_no_feature_labels") do
+            expect(taggable_app.union_labels.size).to eq 0
+          end
         end
       end
     end
@@ -46,7 +56,6 @@ RSpec.describe Camerata::TaggableApp, type: :github_api do
           expect(taggable_app.release_needed?).to eq true
         end
       end
-      # We need to record this at some point when management does not have any new PRs
       it "does not tag a new release if there are no PRs since the last release" do
         VCR.use_cassette("release_needed_with_no_new_PRs") do
           expect(taggable_app.release_needed?).to eq false
