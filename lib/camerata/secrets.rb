@@ -16,8 +16,9 @@ module Camerata
       raise 'please set your AWS_PROFILE and AWS_DEFAULT_REGION' unless ENV['AWS_DEFAULT_REGION'] && ENV['AWS_PROFILE']
       key = "\"#{key}\"" unless key.match?('"')
       result = `aws ssm get-parameters --names #{key} --with-decryption`
-      parsed = JSON.parse(result) if result && !result.empty?
-      puts parsed["Parameters"][0]["Value"]
+      JSON.parse(result) if result && !result.empty?
+      # parsed = JSON.parse(result) if result && !result.empty?
+      # puts parsed["Parameters"][0]["Value"]
     end
 
     # rubocop:disable Naming/AccessorMethodName

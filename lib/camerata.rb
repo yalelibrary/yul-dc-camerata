@@ -128,15 +128,21 @@ module Camerata
     end
     map rc: :console
 
-    desc "get_env KEY", "get details of a parameter"
-    def get_env(key)
-      Camerata::Secrets.get(key)
+    desc "set_env FROM TO", "copy params from env to another"
+    def env_copy(from, to)
+      Camerata::Parameters.set(*args)
     end
 
-    desc "set_env ARGS", "set the value of a parameter"
-    def set_env(*args)
-      Camerata::Secrets.set(*args)
+    desc "get_env KEY", "get details of a parameter"
+    def env_get(key)
+      result = Camerata::Secrets.get(key)
+      puts result["Parameters"][0]["Value"]
     end
+
+    # desc "set_env ARGS", "set the value of a parameter"
+    # def env_set(*args)
+    #   Camerata::Parameters.set(*args)
+    # end
 
     desc "smoke ARGS", "Run the smoke tests against a running stack"
     def smoke(*args)
