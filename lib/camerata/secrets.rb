@@ -17,12 +17,10 @@ module Camerata
       key = "\"#{key}\"" unless key.match?('"')
       result = `aws ssm get-parameters --names #{key} --with-decryption`
       JSON.parse(result) if result && !result.empty?
-      # parsed = JSON.parse(result) if result && !result.empty?
-      # puts parsed["Parameters"][0]["Value"]
     end
 
     # rubocop:disable Naming/AccessorMethodName
-    def self.get_all
+    def self.get_all(namespace)
       hash = super
       hash['AWS_SECRET_ACCESS_KEY'] = aws_secret_access_key
       hash['AWS_ACCESS_KEY_ID'] = aws_access_key_id
