@@ -25,18 +25,26 @@ module Camerata
       hash
     end
 
-    def self.get_all
-      parameter_string = parameters.map { |v| "\"#{v}\"" }
+    def self.get_all(namespace)
+      parameter_string = parameters.map do |v|
+        # Pass prefix with namespace if it is provided
+        if namespace.strip.empty?
+          "\"#{v}\""
+        else
+          "\"#{namespace}_#{v}\""
+        end
+      end
       parameter_string = parameter_string.join(" ")
       get_hash(parameter_string)
     end
     # rubocop:enable Naming/AccessorMethodName
 
     def self.set(key, value, secret = false)
-      raise 'please set your AWS_PROFILE and AWS_DEFAULT_REGION' unless ENV['AWS_DEFAULT_REGION'] && ENV['AWS_PROFILE']
-      type = secret ? 'SecureString' : 'String'
-      result = `aws ssm put-parameter --name "#{key}" --type #{type} --value "#{value}" --overwrite`
-      JSON.parse(result) if result && !result.empty?
+      puts "KEY: #{key}, VALUE: #{value}, SECRET: #{secret}"
+      # raise 'please set your AWS_PROFILE and AWS_DEFAULT_REGION' unless ENV['AWS_DEFAULT_REGION'] && ENV['AWS_PROFILE']
+      # type = secret ? 'SecureString' : 'String'
+      # result = `aws ssm put-parameter --name "#{key}" --type #{type} --value "#{value}" --overwrite`
+      # JSON.parse(result) if result && !result.empty?
     end
 
     def self.load_env
