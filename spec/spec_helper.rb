@@ -2,6 +2,7 @@
 require "bundler/setup"
 require "byebug"
 require "camerata"
+require "vcr"
 
 Dir[File.join('spec', 'support', '**', '*.rb')].sort.each { |f| load f }
 
@@ -17,4 +18,11 @@ RSpec.configure do |config|
   end
 
   config.include Capture
+  config.include GithubHygiene
+end
+
+VCR.configure do |config|
+  config.cassette_library_dir = "spec/fixtures/vcr_cassettes"
+  config.hook_into :webmock
+  config.allow_http_connections_when_no_cassette = true
 end

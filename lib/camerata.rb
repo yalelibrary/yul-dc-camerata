@@ -3,6 +3,7 @@ require "camerata/version"
 require "camerata/parameters"
 require "camerata/app_versions"
 require "camerata/secrets"
+require "camerata/taggable_app"
 require 'thor'
 require 'erb'
 require 'json'
@@ -155,14 +156,40 @@ module Camerata
       run_with_exit("rspec #{smoke_path} #{args.join(' ')}")
     end
 
-    desc "release APP VERSION", "Set a new version string for release of an application. For example `cam release blacklight v2.5.1`"
-    def release(app, version)
+    desc "push_version APP VERSION", "Set a new version string for release of an application. For example `cam push_version blacklight v2.5.1`"
+    def push_version(app, version)
       version_string = Camerata::AppVersions.parameters.detect { |v| v.match(app.upcase) }
       unless version_string
         puts "Did not find matching version string for #{app}"
         exit(1)
       end
       Camerata::AppVersions.set(version_string, version)
+    end
+
+    ##
+    # Tag a release of a microservice, E.g., cam release blacklight
+    # This will:
+    # 1. Check for merged PRs not yet in a release
+    # 2. Determine whether any of them are features or breaking changes, and increment the version number accordingly
+    # 3. Auto-generate release notes for the new version
+    # 4. Tag the release in github with the new version number and the release notes
+    desc "release APP", "tag a release of a microservice, e.g., cam release blacklight"
+    def release(app)
+      puts "You must set CHANGELOG_GITHUB_TOKEN. See https://github.com/github-changelog-generator/github-changelog-generator#github-token" unless ENV['CHANGELOG_GITHUB_TOKEN']
+      taggable_apps = Camerata::TaggableApp.known_apps
+      unless taggable_apps.include? app
+        puts "I don't know how to release #{app}."
+        puts "I only know how to release these apps: #{taggable_apps}"
+        exit(1)
+      end
+      taggable_app = Camerata::TaggableApp.new(app)
+      unless taggable_app.release_needed?
+        puts "No new PRs to release for #{app}"
+        exit(0)
+      end
+      puts "New PRs to release: #{taggable_app.release_prs.size}"
+      taggable_app.release
+      puts "Released #{app} #{taggable_app.new_version_number}"
     end
 
     desc 'version', 'print the current version'

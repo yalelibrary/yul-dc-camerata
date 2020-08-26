@@ -24,18 +24,35 @@ then
   echo "      mem_limit=${memory}"
   echo "      cpu_limit=${cpu}\n"
 
-  SUBNET0=`aws cloudformation list-stack-resources \
-    --stack-name amazon-ecs-cli-setup-${1} \
-      --query "(StackResourceSummaries[?LogicalResourceId=='PubSubnetAz1'].PhysicalResourceId)[0]"`
-  SUBNET1=`aws cloudformation list-stack-resources \
-    --stack-name amazon-ecs-cli-setup-${1} \
-      --query "(StackResourceSummaries[?LogicalResourceId=='PubSubnetAz2'].PhysicalResourceId)[0]"`
-  VPC_ID=`aws cloudformation list-stack-resources \
-    --stack-name amazon-ecs-cli-setup-${1} \
-        --query "(StackResourceSummaries[?LogicalResourceId=='Vpc'].PhysicalResourceId)[0]"`
-  SG_ID=`aws ec2 describe-security-groups \
-    --filters Name=vpc-id,Values=$VPC_ID \
-    --query "(SecurityGroups[?GroupName=='default'])[0].GroupId" `
+  if [ "$VPC_ID" ] 
+  then
+    if [ -z "$SUBNET0" ] | [ -z "$SUBNET1" ]
+    then
+      echo "If using VPC set SUBNET0 and SUBNET1..."
+      exit 1
+    fi
+    SG_ID=`aws ec2 describe-security-groups \
+      --filters Name=vpc-id,Values=$VPC_ID \
+      --query "(SecurityGroups[?GroupName=='${CLUSTER_NAME}-sg'])[0].GroupId" `
+  else
+    NOTYALE=1
+  fi
+
+  if [ "$NOTYALE" = "1" ]
+  then
+    SUBNET0=`aws cloudformation list-stack-resources \
+      --stack-name amazon-ecs-cli-setup-${1} \
+        --query "(StackResourceSummaries[?LogicalResourceId=='PubSubnetAz1'].PhysicalResourceId)[0]"`
+    SUBNET1=`aws cloudformation list-stack-resources \
+      --stack-name amazon-ecs-cli-setup-${1} \
+        --query "(StackResourceSummaries[?LogicalResourceId=='PubSubnetAz2'].PhysicalResourceId)[0]"`
+    VPC_ID=`aws cloudformation list-stack-resources \
+      --stack-name amazon-ecs-cli-setup-${1} \
+          --query "(StackResourceSummaries[?LogicalResourceId=='Vpc'].PhysicalResourceId)[0]"`
+    SG_ID=`aws ec2 describe-security-groups \
+      --filters Name=vpc-id,Values=$VPC_ID \
+      --query "(SecurityGroups[?GroupName=='default'])[0].GroupId" `
+  fi
 
   FS_ID=`aws efs describe-file-systems --region $AWS_DEFAULT_REGION  |  jq ".FileSystems[]|select(.Tags[].Value == \"${1}-efs\").FileSystemId"`
   AP_SQL=`aws efs describe-access-points --region $AWS_DEFAULT_REGION | jq ".AccessPoints[]|select(.ClientToken==\"${1}-ap-psql-1\").AccessPointId"`
