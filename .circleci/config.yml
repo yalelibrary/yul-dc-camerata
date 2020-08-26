@@ -83,11 +83,11 @@ workflows:
   hourly:
     triggers:
       - schedule:
-          cron: "0 0 * * *"
+          cron: "5 * * * *"
           filters:
             branches:
               only:
-                - schedule
+                - scheduled
     jobs:
       - just-rubocop:
           context: yul-dc
