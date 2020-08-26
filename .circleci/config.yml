@@ -14,6 +14,19 @@ commands:
       - run: >
           docker tag <<parameters.image>>:<<parameters.from_tag>> <<parameters.image>>:<<parameters.to_tag>>
 jobs:
+  just-rubocop:
+    machine:
+      image: ubuntu-1604:202004-01
+    steps:
+      - checkout
+      - run:
+          name: Bundler
+          command: |
+            gem install bundler -v 2.1.4 && bundle
+      - run:
+          name: Rubocop
+          command: |
+            bundle exec rubocop --parallel
   run-tests:
     machine:
       image: ubuntu-1604:202004-01
@@ -55,10 +68,6 @@ jobs:
             wget --tries 10 --retry-connrefused http://test:test@localhost:3001
             wget --tries 10 --retry-connrefused http://test:test@localhost:3000
       - run:
-          name: rspec
-          command:  |
-            bundle exec rspec
-      - run:
           name: smoke specs
           command:  |
             bundle exec rspec smoke_spec
@@ -70,4 +79,15 @@ workflows:
   commit:
     jobs:
       - run-tests:
+          context: yul-dc
+  hourly:
+    triggers:
+      - schedule:
+          cron: "0 0 * * *"
+          filters:
+            branches:
+              only:
+                - schedule
+    jobs:
+      - just-rubocop:
           context: yul-dc
