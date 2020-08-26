@@ -53,6 +53,20 @@ then
     --description "$CLUSTER_NAME Cluster applications" \
     --group-name $CLUSTER_NAME-sg \
     --vpc-id $VPC_ID | jq -r ".GroupId"`
+
+    # Allow NFS traffic to EFS volumes
+    aws ec2 authorize-security-group-ingress \
+    --group-id $SG_ID \
+    --protocol tcp \
+    --port 2049 \
+    --source-group $SG_ID
+
+    # Allow Postgres traffic to postgres container
+    aws ec2 authorize-security-group-ingress \
+    --group-id $SG_ID \
+    --protocol tcp \
+    --port 5432 \
+    --source-group $SG_ID
     fi
 
   echo "  $SG_ID"
