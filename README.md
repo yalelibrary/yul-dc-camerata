@@ -218,6 +218,38 @@ PUBLIC_IP=ENABLED cam get-params $CLUSTER_NAME 4GB 2048
 Valid combinations of memory and cpu documented here:
 <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/AWS_Fargate.html#fargate-tasks-size>
 
+### Retrieving arbitrary params
+
+Retrieving a parameter from AWS is available through the following command:
+
+```
+cam env_get $PARAM_NAME
+```
+
+This command will log the param value to the console.
+
+### Setting a param
+
+Setting a parameter in AWS is available through the following command:
+
+```
+cam env_get $PARAM_NAME $PARAM_VALUE [Secret Boolean]
+```
+
+This command will update or create an AWS Parameter in the store. The 'Secret Boolean' is optional. Set it to true if the value you are setting is a secret that should be of a `SecureString` type. It can otherwise be left blank.
+
+### Copying params from one namespace to another
+
+Moving forward, parameters will be prefixed to delineate between different deployments.
+
+The following command can be used to copy the params of one 'namespace' to another:
+
+```
+cam env_copy $TARGET_NS [SOURCE_NS]
+```
+
+This command requires a TARGET_NS and uses it as a prefix to all known params and secrets as it sets them. If provided, the SOURCE_NS argument will act as the prefix to the source set of params. If left blank, it defaults to the params as named in /lib/camerata/app_versions.rb and /lib/camerata/secrets.rb.
+
 ### Deploy the Postgres and Solr servers
 
 ```
