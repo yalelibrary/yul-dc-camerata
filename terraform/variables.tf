@@ -1,5 +1,6 @@
 # variables.tf
 
+variable "domain" {}
 variable "cluster_name" {}
 
 variable "versions" {
@@ -60,6 +61,6 @@ variable "fargate_cpu" {
 
 variable "fargate_memory" {
   description = "Fargate instance memory to provision (in MiB)"
-  default     = "8096"
+  default     = "8192"
 }
 

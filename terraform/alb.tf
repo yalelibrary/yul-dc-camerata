@@ -54,7 +54,7 @@ resource "aws_alb_target_group" "blacklight" {
 
   health_check {
     healthy_threshold   = "3"
-    interval            = "30"
+    interval            = "120"
     protocol            = "HTTP"
     matcher             = "200,401"
     timeout             = "60"
@@ -72,7 +72,7 @@ resource "aws_alb_target_group" "mgmt" {
 
   health_check {
     healthy_threshold   = "3"
-    interval            = "30"
+    interval            = "120"
     protocol            = "HTTP"
     matcher             = "200"
     timeout             = "60"
@@ -97,11 +97,19 @@ resource "aws_alb_listener" "http" {
   }
 }
 
+data "aws_acm_certificate" "star_dce" {
+  domain   = var.domain
+  statuses = ["ISSUED"]
+  types    = ["IMPORTED"]
+
+}
+
 # Redirect all traffic from the ALB to the target group
 resource "aws_alb_listener" "https" {
   load_balancer_arn = aws_alb.main.id
   port              = 443
   protocol          = "HTTPS"
+  certificate_arn   = data.aws_acm_certificate.star_dce.arn
 
   default_action {
     target_group_arn = aws_alb_target_group.blacklight.id
@@ -113,12 +121,9 @@ resource "aws_alb_listener_rule" "images_rule" {
   listener_arn = aws_alb_listener.https.arn
   priority     = 70
   action {
-    type = "forward"
-    forward {
-      target_group {
-        arn = aws_alb_target_group.mgmt.arn
-      }
-    }
+    type             = "forward"
+    target_group_arn = aws_alb_target_group.image.arn
+
   }
   condition {
     path_pattern {
@@ -130,12 +135,8 @@ resource "aws_alb_listener_rule" "mft_rule" {
   listener_arn = aws_alb_listener.https.arn
   priority     = 80
   action {
-    type = "forward"
-    forward {
-      target_group {
-        arn = aws_alb_target_group.mgmt.arn
-      }
-    }
+    type             = "forward"
+    target_group_arn = aws_alb_target_group.mft.arn
   }
   condition {
     path_pattern {
@@ -147,12 +148,9 @@ resource "aws_alb_listener_rule" "mgmt" {
   listener_arn = aws_alb_listener.https.arn
   priority     = 90
   action {
-    type = "forward"
-    forward {
-      target_group {
-        arn = aws_alb_target_group.mgmt.arn
-      }
-    }
+    type             = "forward"
+    target_group_arn = aws_alb_target_group.mgmt.arn
+
   }
   condition {
     path_pattern {
@@ -161,14 +159,5 @@ resource "aws_alb_listener_rule" "mgmt" {
   }
 }
 
-resource "alb_listener_certificate" "star_dce" {
-  listener_arn    = aws_alb_listener.https.arn
-  certificate_arn = aws_acm_certificate.star_dce.arn
 
-}
 
-resource "aws_acm_certificate" "star_dce" {
-  statuses = ["ISSUED"]
-  domain   = "*.curationexperts.com"
-
-}

@@ -1,7 +1,7 @@
 [
   {
     "name": "${cluster_name}-${app}",
-    "image": "${app_image}",
+    "image": "yalelibraryit/dc-postgres:${version}",
     "cpu": ${fargate_cpu},
     "memory": ${fargate_memory},
     "networkMode": "awsvpc",
@@ -20,11 +20,10 @@
       }
     ],
     "runParams": {
-      serviceDiscovery: {
-        privateDnsNamespace: {
-          name: "${cluster_name}",
-          vpc: "${vpc_id}"
-
+      "serviceDiscovery": {
+        "privateDnsNamespace": {
+          "name": "${cluster_name}",
+          "vpc": "${vpc_id}"
         }
       }
     }

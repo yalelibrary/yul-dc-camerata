@@ -3,6 +3,29 @@ resource "aws_efs_file_system" "filesystem" {
 
 }
 
+resource "aws_efs_file_system_policy" "rw" {
+  file_system_id = aws_efs_file_system.filesystem.id
+  policy         = <<-POLICY
+  {    
+      "Version": "2012-10-17",                                                 
+      "Id": "allorw",             
+      "Statement": [           
+          {             
+              "Sid": "AllowRW",         
+              "Effect": "Allow",        
+              "Principal": {        
+                  "AWS": "*"    
+              },                
+              "Action": [    
+                  "elasticfilesystem:ClientMount",    
+                  "elasticfilesystem:ClientWrite"     
+              ]                                      
+          }        
+      ]        
+  }
+  POLICY
+}
+
 resource "aws_efs_access_point" "solr" {
   file_system_id = aws_efs_file_system.filesystem.id
   posix_user {
