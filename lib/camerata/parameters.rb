@@ -25,7 +25,7 @@ module Camerata
       hash
     end
 
-    def self.get_all(namespace)
+    def self.get_all(namespace = "")
       parameter_string = parameters.map do |v|
         # Pass prefix with namespace if it is provided
         if namespace.strip.empty?
