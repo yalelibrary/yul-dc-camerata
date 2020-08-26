@@ -14,19 +14,6 @@ commands:
       - run: >
           docker tag <<parameters.image>>:<<parameters.from_tag>> <<parameters.image>>:<<parameters.to_tag>>
 jobs:
-  just-rubocop:
-    machine:
-      image: ubuntu-1604:202004-01
-    steps:
-      - checkout
-      - run:
-          name: Bundler
-          command: |
-            gem install bundler -v 2.1.4 && bundle
-      - run:
-          name: Rubocop
-          command: |
-            bundle exec rubocop --parallel
   run-tests:
     machine:
       image: ubuntu-1604:202004-01
@@ -80,14 +67,14 @@ workflows:
     jobs:
       - run-tests:
           context: yul-dc
-  hourly:
+  every-four-hours:
     triggers:
       - schedule:
-          cron: "5 * * * *"
+          cron: "5 1,5,9,13,17,21 * * *"
           filters:
             branches:
               only:
-                - scheduled
+                - master
     jobs:
-      - just-rubocop:
+      - run-tests:
           context: yul-dc
