@@ -40,11 +40,11 @@ module Camerata
     # rubocop:enable Naming/AccessorMethodName
 
     def self.set(key, value, secret = false)
-      puts "KEY: #{key}, VALUE: #{value}, SECRET: #{secret}"
-      # raise 'please set your AWS_PROFILE and AWS_DEFAULT_REGION' unless ENV['AWS_DEFAULT_REGION'] && ENV['AWS_PROFILE']
-      # type = secret ? 'SecureString' : 'String'
-      # result = `aws ssm put-parameter --name "#{key}" --type #{type} --value "#{value}" --overwrite`
-      # JSON.parse(result) if result && !result.empty?
+      puts "Setting #{key} param value to #{value}. Secret: #{secret}"
+      raise 'please set your AWS_PROFILE and AWS_DEFAULT_REGION' unless ENV['AWS_DEFAULT_REGION'] && ENV['AWS_PROFILE']
+      type = secret ? 'SecureString' : 'String'
+      result = `aws ssm put-parameter --name "#{key}" --type #{type} --value "#{value}" --overwrite`
+      JSON.parse(result) if result && !result.empty?
     end
 
     def self.load_env
