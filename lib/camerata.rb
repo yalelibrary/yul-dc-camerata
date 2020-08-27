@@ -129,12 +129,13 @@ module Camerata
     end
     map rc: :console
 
-    desc "set_env FROM TO", "copy params from env to another"
+    desc "set_env TARGET_NS SOURCE_NS", "copy params from env to another"
     def env_copy(target_ns, source_ns = "")
       app_versions = Camerata::AppVersions.get_all source_ns
       secrets = Camerata::Secrets.get_all source_ns
-      puts "APP VERSIONS: #{app_versions}"
-      puts "SECRETS: #{secrets}"
+      puts "\n Copying following parameters from source to #{target_ns} namespace: " \
+           "\n APP VERSIONS: #{app_versions}" \
+           "\n SECRETS: #{secrets}"
 
       app_versions.each { |app, version| Camerata::Parameters.set("#{target_ns}_#{app}", version) }
       secrets.each { |app, version| Camerata::Parameters.set("#{target_ns}_#{app}", version, true) }
