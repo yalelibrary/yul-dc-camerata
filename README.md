@@ -188,7 +188,7 @@ This command will log the param value to the console.
 Setting a parameter in AWS is available through the following command:
 
 ```
-cam env_get $PARAM_NAME $PARAM_VALUE [Secret Boolean]
+cam env_set $PARAM_NAME $PARAM_VALUE [Secret Boolean]
 ```
 
 This command will update or create an AWS Parameter in the store. The 'Secret Boolean' is optional. Set it to true if the value you are setting is a secret that should be of a `SecureString` type. It can otherwise be left blank.
