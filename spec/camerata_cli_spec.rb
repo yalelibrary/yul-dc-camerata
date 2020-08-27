@@ -66,4 +66,16 @@ RSpec.describe Camerata::CLI do
     it 'should have all the parts needed for the application specified'
     it 'should default to blacklight (aka the whole stack)'
   end
+
+  context 'env_get' do
+    it 'gets the value of a param from the param store'
+  end
+
+  context 'env_set' do
+    it 'sets a param in the param store'
+  end
+
+  context 'env_copy' do
+    it 'copies a set of params over to a new set of namespaced params'
+  end 
 end
