@@ -84,6 +84,8 @@ workflows:
     jobs:
       - run-tests:
           context: yul-dc
+      - deployed-smoke:
+          context: yul-dc
   every-hour:
     triggers:
       - schedule:
