@@ -58,7 +58,24 @@ jobs:
           name: smoke specs
           command:  |
             bundle exec rspec smoke_spec
-
+  deployed-smoke:
+    machine:
+      image: ubuntu-1604:202004-01
+    steps:
+      - checkout
+      - run:
+          name: Bundler
+          command: |
+            gem install bundler -v 2.1.4 && bundle
+      - run:
+          name: Set up aws
+          command: |
+            mkdir -p ~/.aws
+            echo ${AWS_PROFILE_VALUE} | base64 -d > ~/.aws/credentials
+      - run:
+          name: smoke
+          command: |
+            YUL_DC_SERVER=yul-deploy cam smoke
 orbs:
   docker: circleci/docker@1.0.1
 version: 2.1
@@ -67,14 +84,14 @@ workflows:
     jobs:
       - run-tests:
           context: yul-dc
-  every-four-hours:
+  every-hour:
     triggers:
       - schedule:
-          cron: "5 1,5,9,13,17,21 * * *"
+          cron: "50 * * * *"
           filters:
             branches:
               only:
-                - master
+                - schedule-smoke
     jobs:
-      - run-tests:
+      - deployed-smoke:
           context: yul-dc
