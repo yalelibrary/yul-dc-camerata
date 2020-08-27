@@ -75,7 +75,7 @@ jobs:
       - run:
           name: smoke
           command: |
-            YUL_DC_SERVER=yul-deploy cam smoke
+            YUL_DC_SERVER=collections-cd.curationexperts.com bundle exec cam smoke
 orbs:
   docker: circleci/docker@1.0.1
 version: 2.1
