@@ -67,3 +67,14 @@ workflows:
     jobs:
       - run-tests:
           context: yul-dc
+  every-four-hours:
+    triggers:
+      - schedule:
+          cron: "5 1,5,9,13,17,21 * * *"
+          filters:
+            branches:
+              only:
+                - master
+    jobs:
+      - run-tests:
+          context: yul-dc

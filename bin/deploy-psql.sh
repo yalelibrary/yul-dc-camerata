@@ -30,15 +30,18 @@ then
     export COMPOSE_FILE=psql-compose.yml
   fi
 
-  RUN_STATUS=`ecs-cli compose  \
-          --region $AWS_DEFAULT_REGION \
-          --project-name ${CLUSTER_NAME}-psql \
-          service ps -c ${CLUSTER_NAME}`
-
-  if [[ ${RUN_STATUS}] = *RUNNING* ]]
+  if [ -z ${discovery} ]
   then
-    echo "Found running psql database. Please stop db before re-deploying"
-    exit 1
+    RUN_STATUS=`ecs-cli compose  \
+            --region $AWS_DEFAULT_REGION \
+            --project-name ${CLUSTER_NAME}-psql \
+            service ps -c ${CLUSTER_NAME}`
+
+    if [[ ${RUN_STATUS}] = *RUNNING* ]]
+    then
+      echo "Found running psql database. Please stop db before re-deploying"
+      exit 1
+    fi
   fi
   # Launch the service and register containers with the loadbalancer
   ecs-cli compose  \

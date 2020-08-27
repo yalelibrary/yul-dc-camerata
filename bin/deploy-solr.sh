@@ -29,15 +29,18 @@ then
     export COMPOSE_FILE=solr-compose.yml
   fi
 
-  RUN_STATUS=`ecs-cli compose  \
-          --region $AWS_DEFAULT_REGION \
-          --project-name ${CLUSTER_NAME}-solr \
-          service ps -c ${CLUSTER_NAME}`
-
-  if [[ ${RUN_STATUS}] = *RUNNING* ]]
+  if [ -z ${discovery} ]
   then
-    echo "Found running solr. Please stop solr before re-deploying"
-    exit 1
+    RUN_STATUS=`ecs-cli compose  \
+            --region $AWS_DEFAULT_REGION \
+            --project-name ${CLUSTER_NAME}-solr \
+            service ps -c ${CLUSTER_NAME}`
+
+    if [[ ${RUN_STATUS}] = *RUNNING* ]]
+    then
+      echo "Found running solr. Please stop solr before re-deploying"
+      exit 1
+    fi
   fi
 
   # Launch the service and register containers with the loadbalancer
