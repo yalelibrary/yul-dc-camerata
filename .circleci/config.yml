@@ -87,7 +87,7 @@ workflows:
   every-hour:
     triggers:
       - schedule:
-          cron: "50 * * * *"
+          cron: "10 * * * *"
           filters:
             branches:
               only:
