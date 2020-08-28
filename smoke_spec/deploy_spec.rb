@@ -57,7 +57,7 @@ RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
       expect(page).to have_selector(".document-position-6"), "an open search has at least six items"
       expect(page).to have_selector("[aria-label='Go to page 5']"), "an open search has at least 5 pages" if deployed
     end
-    it 'is local or has a valid SSL certificate' do
+    xit 'is local or has a valid SSL certificate' do
       # this method is using the HTTP gem instead of capybara because
       # capybara.rb is configured to accept insecure certs to allow testing
       # deploys to ephemeral clusters
