@@ -68,6 +68,10 @@ jobs:
           command: |
             gem install bundler -v 2.1.4 && bundle
       - run:
+          name: aws-cli
+          command: |
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && unzip awscliv2.zip && sudo ./aws/install
+      - run:
           name: Set up aws
           command: |
             echo AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} >> .secrets
