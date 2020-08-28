@@ -90,7 +90,7 @@ workflows:
     jobs:
       - run-tests:
           context: yul-dc
-  every-hour:
+  every-four-hours:
     triggers:
       - schedule:
           cron: "0 1,5,9,13,17,21 * * *"
