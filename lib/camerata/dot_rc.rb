@@ -5,16 +5,15 @@ module Camerata
 
     def initialize
       @file = find_file
-      if @file
-        say_status :load, @file
-        load(@file)
-      end
+      say_status :load, 'not found', :red && return unless @file
+      say_status :load, @file
+      load(@file)
     end
 
     def find_file
       path = nil
       Pathname(Dir.pwd).ascend do |p|
-        if File.directory?(p) && File.exists?(File.join(p, '.cameratarc'))
+        if File.directory?(p) && File.exist?(File.join(p, '.cameratarc'))
           path = File.join(p, '.cameratarc')
           break
         end
