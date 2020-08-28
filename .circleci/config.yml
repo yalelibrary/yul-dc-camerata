@@ -86,12 +86,10 @@ workflows:
     jobs:
       - run-tests:
           context: yul-dc
-      - deployed-smoke:
-          context: yul-dc
   every-hour:
     triggers:
       - schedule:
-          cron: "10 * * * *"
+          cron: "45 * * * *"
           filters:
             branches:
               only:
