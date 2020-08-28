@@ -93,7 +93,7 @@ workflows:
   every-hour:
     triggers:
       - schedule:
-          cron: "0 * * * *"
+          cron: "20 * * * *"
           filters:
             branches:
               only:
