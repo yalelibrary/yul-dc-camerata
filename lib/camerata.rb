@@ -87,10 +87,12 @@ module Camerata
     end
     map log: :logs
 
+    method_option :user, default: 'app', type: :string, alias: '-u'
     desc "bundle SERVICE", "runs bundle inside the running container, specify the serivce as blacklight or management"
     def bundle(service = 'blacklight')
       ensure_env
-      run_with_exit("#{docker_compose} exec #{service} bundle")
+      user = options.dup.delete(:user)
+      run_with_exit("#{docker_compose} exec -u #{user} #{service} bundle")
     end
 
     desc "walk ARGS", "wraps docker-compose run, 'run' is not an allowed thor command, thus walk"
@@ -100,32 +102,40 @@ module Camerata
       run_with_exit("#{docker_compose} run #{options.join(' ')}")
     end
 
+    method_option :user, default: 'app', type: :string, alias: '-u'
     desc "exec ARGS", "wraps docker-compose exec"
     def exec(*args)
       ensure_env
+      user = options.dup.delete(:user)
       options = default_options(args)
-      run_with_exit("#{docker_compose} exec #{options.join(' ')}")
+      run_with_exit("#{docker_compose} exec -u #{user} #{options.join(' ')}")
     end
     map ex: :exec
 
+    method_option :user, default: 'app', type: :string, alias: '-u'
     desc 'sh ARGS', "launch a shell using docker-compose exec, sets tty properly"
     def sh(*args)
       ensure_env
+      user = options.dup.delete(:user)
       options = default_options(args, ["-e COLUMNS=\"\`tput cols\`\" -e LINES=\"\`tput lines\`\""])
-      run_with_exit("#{docker_compose} exec #{options.join(' ')} bundle exec bash")
+      run_with_exit("#{docker_compose} exec -u #{user} #{options.join(' ')} bundle exec bash")
     end
 
+    method_option :user, default: 'app', type: :string, alias: '-u'
     desc "bundle_exec ARGS", "wraps docker-compose exec SERVICE bundle exec ARGS"
     def bundle_exec(service, *args)
       ensure_env
-      run_with_exit("#{docker_compose} exec #{service} bundle exec #{args.join(' ')}")
+      user = options[:user]
+      run_with_exit("#{docker_compose} exec -u #{user} #{service} bundle exec #{args.join(' ')}")
     end
     map be: :bundle_exec
 
+    method_option :user, default: 'app', type: :string, alias: '-u'
     desc "console ARGS", "shortcut to start rails console"
     def console(service, *args)
       ensure_env
-      run_with_exit("#{docker_compose} exec #{service} bundle exec rails console #{args.join(' ')}")
+      user = options[:user]
+      run_with_exit("#{docker_compose} exec -u #{user} #{service} bundle exec rails console #{args.join(' ')}")
     end
     map rc: :console
 
