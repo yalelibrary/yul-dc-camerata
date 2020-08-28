@@ -93,11 +93,12 @@ workflows:
   every-hour:
     triggers:
       - schedule:
-          cron: "20 * * * *"
+          cron: "0 1,5,9,13,17,21 * * *"
           filters:
             branches:
               only:
-                - schedule_smoke
+                - master
+                - schedule_smoke_2
     jobs:
       - deployed-smoke:
           context: yul-dc
