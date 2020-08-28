@@ -95,7 +95,7 @@ workflows:
           filters:
             branches:
               only:
-                - schedule-smoke
+                - schedule_smoke
     jobs:
       - deployed-smoke:
           context: yul-dc
