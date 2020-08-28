@@ -59,8 +59,8 @@ jobs:
           command:  |
             bundle exec rspec smoke_spec
   deployed-smoke:
-    machine:
-      image: ubuntu-1604:202004-01
+    docker:
+      - image: cimg/ruby:2.6.6-node
     steps:
       - checkout
       - run:
@@ -89,7 +89,7 @@ workflows:
   every-hour:
     triggers:
       - schedule:
-          cron: "45 * * * *"
+          cron: "0 * * * *"
           filters:
             branches:
               only:
