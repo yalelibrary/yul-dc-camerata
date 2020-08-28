@@ -133,6 +133,7 @@ module Camerata
 
     desc "smoke ARGS", "Run the smoke tests against a running stack"
     def smoke(*args)
+      ensure_env
       run_with_exit("rspec #{smoke_path} #{args.join(' ')}")
     end
 
