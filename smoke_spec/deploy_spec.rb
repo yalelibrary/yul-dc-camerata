@@ -66,7 +66,7 @@ RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
       expect(response.code).to eq(200)
     end
     describe 'has a public item' do
-      let(:uri) { "#{blacklight_url}/catalog/16189097" }
+      let(:uri) { "#{blacklight_url}/catalog/16685691" }
       it 'that shows Universal Viewer' do
         visit uri
         expect(page).to have_selector(".universal-viewer-iframe")
