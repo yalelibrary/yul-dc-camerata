@@ -1,15 +1,17 @@
 # frozen_string_literal: true
-require "camerata/version"
-require "camerata/parameters"
-require "camerata/app_versions"
-require "camerata/secrets"
-require "camerata/taggable_app"
 require 'thor'
 require 'erb'
 require 'json'
 require 'active_support'
 require 'yaml'
 require 'byebug'
+
+require "camerata/version"
+require "camerata/dot_rc"
+require "camerata/parameters"
+require "camerata/app_versions"
+require "camerata/secrets"
+require "camerata/taggable_app"
 
 # rubocop:disable Metrics/ClassLength
 module Camerata
@@ -343,6 +345,7 @@ module Camerata
     end
 
     def ensure_env(type = 'local')
+      DotRc.new
       # TODO: remove writing these files once the env is confirmed all in memory
       template(".secrets.erb", secrets_path(type)) unless File.exist?(secrets_path(type))
       template(".env.erb", env_path(type)) unless File.exist?(env_path(type))
