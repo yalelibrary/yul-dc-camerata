@@ -146,7 +146,7 @@ module Camerata
     desc "env_get KEY", "get details of a parameter"
     def env_get(key)
       result = Camerata::Secrets.get(key)
-      if result["Parameters"].blank? 
+      if result["Parameters"].blank?
         puts "The requested #{key} param does not exist"
       else
         result["Parameters"][0]["Value"]
