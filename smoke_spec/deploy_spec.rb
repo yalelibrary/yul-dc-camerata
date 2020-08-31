@@ -66,7 +66,7 @@ RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
       expect(response.code).to eq(200)
     end
     describe 'has a public item' do
-      let(:uri) { "#{blacklight_url}/catalog/16685691" }
+      let(:uri) { "#{blacklight_url}/catalog/2034600" }
       it 'that shows Universal Viewer' do
         visit uri
         expect(page).to have_selector(".universal-viewer-iframe")
@@ -84,8 +84,8 @@ RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
   describe "The manifest service at #{iiif_manifest_url}" do
     let(:blacklight) { "#{blacklight_url}/catalog/#{oid}" }
     let(:uri) { "#{iiif_manifest_url}/manifests/#{oid}\.json" }
-    describe 'provides a manifest for item 16685691' do
-      let(:oid) { '16685691' }
+    describe 'provides a manifest for item 2034600' do
+      let(:oid) { '2034600' }
       it 'links to the manifest from blacklight' do
         visit blacklight
         expect(page).to have_selector("#manifestLink")
@@ -116,13 +116,13 @@ RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
 
   describe "The iiif service at #{iiif_image_url}" do
     let(:uri) { "#{iiif_image_url}/iiif/2/#{oid}/info.json" }
-    let(:oid) { '16854589' }
-    it 'serves an info.json for image 16854589 that has a width/height ratio between 0.75 and 0.8' do
+    let(:oid) { '1030368' }
+    it 'serves an info.json for image 1030368 that has a width/height ratio between 1.5 and 1.7' do
       response = HTTP.basic_auth(user: username,
                                  pass: password).get(uri, ssl_context: ssl_context)
       expect(response.code).to eq(200)
       parsed = JSON.parse(response.body)
-      expect(parsed['width'].to_f / parsed['height'].to_f).to be_between(0.75, 0.8).inclusive
+      expect(parsed['width'].to_f / parsed['height'].to_f).to be_between(1.5, 1.7).inclusive
     end
   end
   describe "The management index page at #{management_url}" do
