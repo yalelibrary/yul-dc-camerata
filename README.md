@@ -33,6 +33,21 @@ bundle install
 rake install
 ```
 
+## Configure
+
+Camerata will read a .cameratarc file in your path. It will traverse up the path
+until it finds the first instance of .cameratarc so `/home/rob/work/yale/yul-camerata`
+will look in yul-camerata, then yale, then work, then rob, then home and finally
+the root, taking only the first file it finds.
+
+This will load any Ruby code it finds in the file, which can be useful for setting
+variables like so:
+
+```ruby
+ENV['AWS_DEFAULT_REGION'] = 'us-east-1'
+ENV['AWS_PROFILE'] = 'dce'
+```
+
 ## General Use
 
 Once camerata is installed on your system, interactions happen through the camerata command-line tool or through its alias `cam`. The camerata tool can be used to bring the development stack up and down locally, interact with the docker containers, deploy, run the smoke tests and otherwise do development tasks common to the various applications in the yul-dc application stack.

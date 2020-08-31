@@ -88,7 +88,7 @@ RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
       let(:oid) { '16685691' }
       it 'links to the manifest from blacklight' do
         visit blacklight
-        expect(page).to have_selector("#manifestLink", text: "Manifest Link")
+        expect(page).to have_selector("#manifestLink")
         # Use HTTP rather than visit to avoid getting HTML on our json
         response = HTTP.basic_auth(user: username,
                                    pass: password)
