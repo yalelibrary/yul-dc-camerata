@@ -159,7 +159,7 @@ module Camerata
       end
     end
 
-    desc "env_get KEY", "get details of a parameter"
+    desc "env_get KEY", "get value of a parameter"
     def env_get(key)
       result = Camerata::Secrets.get(key)
       if result["Parameters"].blank?
