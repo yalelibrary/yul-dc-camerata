@@ -139,8 +139,14 @@ module Camerata
            "\n APP VERSIONS: #{app_versions}" \
            "\n SECRETS: #{secrets}"
 
-      app_versions.each { |app, version| Camerata::Parameters.set("#{target_ns}_#{app}", version) }
-      secrets.each { |app, version| Camerata::Parameters.set("#{target_ns}_#{app}", version, true) }
+      app_versions.each do |app, version|
+        param_base = app.split("#{source_ns}_")[1]
+        Camerata::Parameters.set("#{target_ns}_#{param_base}", version)
+      end
+      secrets.each do |app, version|
+        param_base = app == "AWS_ACCESS_KEY_ID" || app == "AWS_SECRET_ACCESS_KEY" ? app : app.split("#{source_ns}_")[1]
+        Camerata::Parameters.set("#{target_ns}_#{param_base}", version, true)
+      end
     end
 
     desc "env_get KEY", "get details of a parameter"
@@ -149,7 +155,7 @@ module Camerata
       if result["Parameters"].blank?
         puts "The requested #{key} param does not exist"
       else
-        result["Parameters"][0]["Value"]
+        puts result["Parameters"][0]["Value"]
       end
     end
 
