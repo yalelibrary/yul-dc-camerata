@@ -141,6 +141,39 @@ module Camerata
     end
     map rc: :console
 
+    desc "env_copy TARGET_NS SOURCE_NS", "copy params from env to another"
+    def env_copy(target_ns, source_ns = "")
+      app_versions = Camerata::AppVersions.get_all source_ns
+      secrets = Camerata::Secrets.get_all source_ns
+      puts "\n Copying following parameters from source to #{target_ns} namespace: " \
+           "\n APP VERSIONS: #{app_versions}" \
+           "\n SECRETS: #{secrets}"
+
+      app_versions.each do |app, version|
+        param_base = app.split("#{source_ns}_")[1]
+        Camerata::Parameters.set("#{target_ns}_#{param_base}", version)
+      end
+      secrets.each do |app, version|
+        param_base = app == "AWS_ACCESS_KEY_ID" || app == "AWS_SECRET_ACCESS_KEY" ? app : app.split("#{source_ns}_")[1]
+        Camerata::Parameters.set("#{target_ns}_#{param_base}", version, true)
+      end
+    end
+
+    desc "env_get KEY", "get value of a parameter"
+    def env_get(key)
+      result = Camerata::Secrets.get(key)
+      if result["Parameters"].blank?
+        puts "The requested #{key} param does not exist"
+      else
+        puts result["Parameters"][0]["Value"]
+      end
+    end
+
+    desc "env_set ARGS", "set the value of a parameter"
+    def env_set(*args)
+      Camerata::Parameters.set(*args)
+    end
+
     desc "smoke ARGS", "Run the smoke tests against a running stack"
     def smoke(*args)
       ensure_env

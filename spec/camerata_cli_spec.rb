@@ -5,9 +5,12 @@ RSpec.describe Camerata::CLI do
     app_versions = class_double('Camerata::AppVersions').as_stubbed_const(transfer_nested_constants: true)
     allow(app_versions).to receive(:load_env).and_return({})
     allow(app_versions).to receive(:get_all).and_return({})
+    parameters = class_double('Camerata::Parameters').as_stubbed_const(transfer_nested_constants: true)
+    allow(parameters).to receive(:set).and_return("")
     secrets = class_double('Camerata::Secrets').as_stubbed_const(transfer_nested_constants: true)
     allow(secrets).to receive(:load_env).and_return({})
     allow(secrets).to receive(:get_all).and_return({})
+    allow(secrets).to receive(:get).and_return({ "Parameters" => [{ "Name" => "TEST_PARAM", "Type" => "String", "Value" => "TEST_VAL" }] })
     allow(described_class).to receive(:exit_on_failure?).and_return(false)
   end
 
@@ -58,5 +61,35 @@ RSpec.describe Camerata::CLI do
     end
     it 'should have all the parts needed for the application specified'
     it 'should default to blacklight (aka the whole stack)'
+  end
+
+  context 'env_get' do
+    ENV['AWS_PROFILE'] = nil # make sure we can't actually hit aws
+    let(:output) { capture(:stdout) { cli.env_get "TEST_PARAM" } }
+    it 'gets the value of a param from the param store' do
+      expect(output).to match("TEST_VAL")
+    end
+  end
+
+  context 'env_set' do
+    ENV['AWS_PROFILE'] = nil # make sure we can't actually hit aws
+    let(:output) { capture(:stdout) { cli.env_set("TEST_PARAM", "TEST_VALUE", true) } }
+    it 'sets a param in the param store' do
+      expect(output).to match("")
+    end
+  end
+
+  context 'env_copy' do
+    ENV['AWS_PROFILE'] = nil # make sure we can't actually hit aws
+
+    let(:output) { capture(:stdout) { cli.env_copy "TEST_TARGET_NS" } }
+
+    it 'requires a target "namespace"' do
+      expect { capture(:stdout) { cli.env_copy } }.to raise_error(ArgumentError)
+    end
+
+    it 'copies a set of params over to a new set of namespaced params' do
+      expect(output).to match('Copying following parameters from source to TEST_TARGET_NS namespace:')
+    end
   end
 end
