@@ -66,7 +66,7 @@ RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
       expect(response.code).to eq(200)
     end
     describe 'has a public item' do
-      let(:uri) { "#{blacklight_url}/catalog/2034600" }
+      let(:uri) { "#{blacklight_url}/catalog/2005512" }
       it 'that shows Universal Viewer' do
         visit uri
         expect(page).to have_selector(".universal-viewer-iframe")
@@ -84,8 +84,8 @@ RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
   describe "The manifest service at #{iiif_manifest_url}" do
     let(:blacklight) { "#{blacklight_url}/catalog/#{oid}" }
     let(:uri) { "#{iiif_manifest_url}/manifests/#{oid}\.json" }
-    describe 'provides a manifest for item 2034600' do
-      let(:oid) { '2034600' }
+    describe 'provides a manifest for item 2005512' do
+      let(:oid) { '2005512' }
       it 'links to the manifest from blacklight' do
         visit blacklight
         expect(page).to have_selector("#manifestLink")
@@ -94,8 +94,8 @@ RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
                                    pass: password)
                        .get(find_link("manifestLink")[:href],
                        ssl_context: ssl_context)
-        expect(JSON.parse(response.body)['sequences'][0]['canvases'].length).to eq(1),
-          "sequence contains one canvas"
+        expect(JSON.parse(response.body)['sequences'][0]['canvases'].length).to eq(2),
+          "sequence contains two canvases"
       end
     end
     describe 'provides a manifest for item 16371253: ' do
