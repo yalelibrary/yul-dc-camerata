@@ -79,6 +79,10 @@ jobs:
             mkdir -p ~/.aws
             echo ${AWS_PROFILE_VALUE} | base64 -d > ~/.aws/credentials
       - run:
+          name: Deploy the main group of services
+          command: |
+            bundle exec cam deploy-main yul-deploy
+      - run:
           name: smoke
           command: |
             YUL_DC_SERVER=collections-cd.curationexperts.com bundle exec cam smoke
@@ -93,12 +97,12 @@ workflows:
   every-four-hours:
     triggers:
       - schedule:
-          cron: "0 1,5,9,13,17,21 * * *"
+          cron: "27 * * * *"
           filters:
             branches:
               only:
                 - master
-                - schedule_smoke_2
+                - deploy-from-circle
     jobs:
       - deployed-smoke:
           context: yul-dc
