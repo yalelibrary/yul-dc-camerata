@@ -23,7 +23,6 @@ RSpec.describe Camerata::CLI do
     end
   end
 
-
   context 'bin contents' do
     before do
       ENV['AWS_PROFILE'] = nil # make sure we can't actually hit aws
