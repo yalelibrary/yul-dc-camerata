@@ -99,7 +99,7 @@ workflows:
   every-four-hours:
     triggers:
       - schedule:
-          cron: "35 1,5,9,13,17,21 * * *"
+          cron: "40 1,5,9,13,17,21 * * *"
           filters:
             branches:
               only:
@@ -108,5 +108,5 @@ workflows:
     jobs:
       - deploy-smoke:
           context: yul-dc
-      - smoke:
+      - run-tests:
           context: yul-dc
