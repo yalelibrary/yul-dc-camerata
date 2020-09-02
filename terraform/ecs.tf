@@ -42,12 +42,12 @@ resource "aws_ecs_task_definition" "psql" {
 }
 
 resource "aws_ecs_service" "psql" {
-  name            = "${var.cluster_name}-psql"
-  cluster         = aws_ecs_cluster.main.id
-  task_definition = aws_ecs_task_definition.psql.arn
-  desired_count   = "1"
-  launch_type     = "FARGATE"
-  platform_version  = "1.4.0"
+  name             = "${var.cluster_name}-psql"
+  cluster          = aws_ecs_cluster.main.id
+  task_definition  = aws_ecs_task_definition.psql.arn
+  desired_count    = "1"
+  launch_type      = "FARGATE"
+  platform_version = "1.4.0"
 
   network_configuration {
     security_groups  = [aws_security_group.ecs_tasks.id]
@@ -58,3 +58,12 @@ resource "aws_ecs_service" "psql" {
   depends_on = [aws_iam_role_policy_attachment.ecs_task_execution_role]
 }
 
+
+resource "aws_cloudwatch_log_group" "log_group" {
+  name = "logs-${var.cluster_name}"
+
+  tags = {
+    Environment = "terraform"
+    Application = "ecs-${var.cluster_name}"
+  }
+}
