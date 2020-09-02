@@ -58,7 +58,7 @@ jobs:
           name: smoke specs
           command:  |
             bundle exec rspec smoke_spec
-  deployed-smoke:
+  deploy-smoke:
     docker:
       - image: circleci/ruby:2.6-stretch-node-browsers-legacy
     steps:
@@ -99,14 +99,14 @@ workflows:
   every-four-hours:
     triggers:
       - schedule:
-          cron: "30 1,5,9,13,17,21 * * *"
+          cron: "35 1,5,9,13,17,21 * * *"
           filters:
             branches:
               only:
                 - master
                 - deploy-from-circle
     jobs:
-      - deployed-smoke:
+      - deploy-smoke:
           context: yul-dc
       - smoke:
           context: yul-dc
