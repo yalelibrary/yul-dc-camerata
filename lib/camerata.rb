@@ -368,6 +368,11 @@ module Camerata
       File.exist?(file) && !File.open(file).grep(/YulDcManagement/).empty?
     end
 
+    def in_manifest?
+      file = File.join('config', 'application.rb')
+      File.exist?(file) && !File.open(file).grep(/YulDcIiifManifest/).empty?
+    end
+
     def without
       options[:without] || ''
     end

@@ -1,1 +1,23 @@
 version: '3'
+services:
+  management:
+    <%- if in_manifest? -%>
+    build: .
+    image: yalelibraryit/dc-manifest:master
+    <%- end -%>
+    environment:
+      PASSENGER_APP_ENV: development
+    <%- if in_manifest? -%>
+    volumes:
+      - .:/home/app/webapp:cached
+      - management_node_modules:/home/app/webapp/node_modules
+      - management_rails_cache:/home/app/webapp/tmp/cache
+    <%- end -%>
+    stdin_open: true
+    tty: true
+
+<%- if in_manifest? -%>
+volumes:
+  management_node_modules:
+  management_rails_cache:
+<%- end %>

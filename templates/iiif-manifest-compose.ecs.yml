@@ -2,8 +2,11 @@ version: '3'
 services:
   iiif_manifest:
     environment:
-      IIIF_MANIFESTS_BASE_URL: 'https://$$host/manifests/'
+      HONEYBADGER_API_KEY_MANAGEMENT: ${HONEYBADGER_API_KEY_MANIFEST}
       IIIF_IMAGE_BASE_URL: 'https://$$host/iiif'
+      IIIF_MANIFESTS_BASE_URL: 'https://$$host/manifests/'
+      PASSENGER_APP_ENV: ${RAILS_ENV:-production}
+      RAILS_ENV: ${RAILS_ENV:-production}
     logging:
       driver: awslogs
       options:
