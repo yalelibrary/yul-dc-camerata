@@ -43,6 +43,15 @@ resource "aws_efs_access_point" "solr" {
   }
 
 }
+
+resource "aws_efs_mount_target" "private" {
+  subnet_id = aws_subnet.private[0].id
+  file_system_id = aws_efs_file_system.filesystem.id
+}
+resource "aws_efs_mount_target" "public" {
+  subnet_id = aws_subnet.public[1].id
+  file_system_id = aws_efs_file_system.filesystem.id
+}
 resource "aws_efs_access_point" "psql" {
   file_system_id = aws_efs_file_system.filesystem.id
   posix_user {

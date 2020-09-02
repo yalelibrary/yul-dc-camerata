@@ -4,29 +4,61 @@
 data "aws_availability_zones" "available" {
 }
 
+resource "aws_service_discovery_private_dns_namespace" "fargate" {
+  name = var.cluster_name
+  vpc  = aws_vpc.main.id
+  tags = {
+    Name = "cluster-${var.cluster_name}-ns"
+  }
+}
+
+resource "aws_service_discovery_service" "fargate" {
+  name = var.cluster_name
+
+  dns_config {
+    namespace_id = aws_service_discovery_private_dns_namespace.fargate.id
+
+    dns_records {
+      ttl  = 10
+      type = "A"
+    }
+
+    routing_policy = "MULTIVALUE"
+  }
+
+  health_check_custom_config {
+    failure_threshold = 1
+  }
+}
+
+
 resource "aws_vpc" "main" {
-  cidr_block = "172.17.0.0/16"
+  cidr_block           = "172.17.0.0/16"
+  enable_dns_support   = true
+  enable_dns_hostnames = true
   tags = {
     Name = "vpc-${var.cluster_name}"
   }
 }
 
-# Create var.az_count private subnets, each in a different AZ
-resource "aws_subnet" "private" {
+
+ # Create var.az_count private subnets, each in a different AZ
+ resource "aws_subnet" "private" {
   count             = var.az_count
   cidr_block        = cidrsubnet(aws_vpc.main.cidr_block, 8, count.index)
   availability_zone = data.aws_availability_zones.available.names[count.index]
-  vpc_id            = aws_vpc.main.id
-}
+ vpc_id            = aws_vpc.main.id
+ }
 
-# Create var.az_count public subnets, each in a different AZ
-resource "aws_subnet" "public" {
+ resource "aws_subnet" "public" {
   count                   = var.az_count
   cidr_block              = cidrsubnet(aws_vpc.main.cidr_block, 8, var.az_count + count.index)
   availability_zone       = data.aws_availability_zones.available.names[count.index]
   vpc_id                  = aws_vpc.main.id
   map_public_ip_on_launch = true
 }
+
+
 
 # Internet Gateway for the public subnet
 resource "aws_internet_gateway" "gw" {

@@ -27,8 +27,9 @@ resource "aws_ecs_task_definition" "psql" {
   cpu                      = var.fargate_cpu
   memory                   = var.fargate_memory
   container_definitions    = data.template_file.psql.rendered
+
   volume {
-    name = "service-storage"
+    name = "psql_efs"
     efs_volume_configuration {
       file_system_id          = aws_efs_file_system.filesystem.id
       transit_encryption      = "ENABLED"
@@ -53,6 +54,9 @@ resource "aws_ecs_service" "psql" {
     security_groups  = [aws_security_group.ecs_tasks.id]
     subnets          = aws_subnet.private.*.id
     assign_public_ip = false
+  }
+  service_registries {
+    registry_arn = aws_service_discovery_service.fargate.arn
   }
 
   depends_on = [aws_iam_role_policy_attachment.ecs_task_execution_role]

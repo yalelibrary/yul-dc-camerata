@@ -13,6 +13,18 @@
           "awslogs-stream-prefix": "${app}"
         }
     },
+    "environment" :[
+      {"name": "POSTGRES_MULTIPLE_DATABASES", "value": "blacklight_yul_production,management_yul_production"},
+      {"name": "POSTGRES_HOST", "value": "db"},
+      {"name": "POSTGRES_USER", "value": "postgres"},
+      {"name": "POSTGRES_PASSWORD", "value": "password"}
+
+    ],
+    "mountPoints": [{
+      "readOnly": false,
+      "containerPath": "/var/lib/postgresql/data",
+      "sourceVolume": "psql_efs"
+    }],
     "portMappings": [
       {
         "containerPort": ${app_port},
