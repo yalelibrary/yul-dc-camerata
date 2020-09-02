@@ -83,7 +83,7 @@ jobs:
       - run:
           name: Deploy the main group of services
           command: |
-            bundle exec cam deploy-main yul-deploy
+            PUBLIC_IP=ENABLED bundle exec cam deploy-main yul-deploy
       - run:
           name: smoke
           command: |
