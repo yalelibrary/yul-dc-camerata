@@ -8,11 +8,12 @@ services:
       AWS_ACCESS_KEY_ID:
       AWS_DEFAULT_REGION: us-east-1
       AWS_SECRET_ACCESS_KEY:
-      IIIF_IMAGE_BASE_URL: http://localhost:8182/iiif
-      IIIF_MANIFESTS_BASE_URL: http://localhost/manifests/
       IIIF_MANIFEST_VERSION:
       PASSENGER_APP_ENV: development # development
+      POSTGRES_DB: iiif_manifest_yul_development
+      POSTGRES_HOST: db
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: postgres
       RAILS_LOG_TO_STDOUT: 'true'
       RAILS_RELATIVE_URL_ROOT: /manifests
-      S3_SOURCE_BUCKET_NAME: yale-image-samples
       SAMPLE_BUCKET: yul-development-samples

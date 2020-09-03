@@ -2,7 +2,7 @@ version: '3'
 services:
   iiif_manifest:
     environment:
-      HONEYBADGER_API_KEY_MANAGEMENT: ${HONEYBADGER_API_KEY_MANIFEST}
+      HONEYBADGER_API_KEY_MANIFEST: ${HONEYBADGER_API_KEY_MANIFEST}
       IIIF_IMAGE_BASE_URL: 'https://$$host/iiif'
       IIIF_MANIFESTS_BASE_URL: 'https://$$host/manifests/'
       PASSENGER_APP_ENV: ${RAILS_ENV:-production}
