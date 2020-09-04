@@ -19,12 +19,14 @@ services:
       PTIFF_OUTPUT_DIRECTORY: data
       RAILS_LOG_TO_STDOUT: 'true'
       RAILS_RELATIVE_URL_ROOT: /management
-      S3_SOURCE_BUCKET_NAME: yale-image-samples
-      SAMPLE_BUCKET: yul-development-samples
+      S3_SOURCE_BUCKET_NAME: 
+      SAMPLE_BUCKET: 
       SOLR_BASE_URL: http://solr:8983/solr
       SOLR_CORE: blacklight-core
       TEMP_IMAGE_WORKSPACE: /tmp
       VPN:
+      MC_USER:
+      MC_PW:
       # The management app needs the versions for all the applications for the dashboard
       IIIF_MANIFEST_VERSION:
       SOLR_VERSION:
@@ -55,12 +57,14 @@ services:
       PTIFF_OUTPUT_DIRECTORY: data
       RAILS_LOG_TO_STDOUT: 'true'
       RAILS_RELATIVE_URL_ROOT: /management
-      S3_SOURCE_BUCKET_NAME: yale-image-samples
-      SAMPLE_BUCKET: yul-development-samples
+      S3_SOURCE_BUCKET_NAME: 
+      SAMPLE_BUCKET: 
       SOLR_BASE_URL: http://solr:8983/solr
       SOLR_CORE: blacklight-core
       TEMP_IMAGE_WORKSPACE: /tmp
       VPN:
+      MC_USER:
+      MC_PW:
       # The management app needs the versions for all the applications for the dashboard
       IIIF_MANIFEST_VERSION:
       SOLR_VERSION:
