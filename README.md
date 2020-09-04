@@ -258,6 +258,8 @@ To build a new cluster and deploy to it, you'll put all of the above commands to
 4. (optional) `cam get-params $CLUSTER_NAME` to read the configuration data for your new cluster
 
 5. `DOMAIN_NAME='*.your-domain-name' cam add-alb $CLUSTER_NAME` add a load balancer for your new cluster (NOTE: This has to happen _before_ you will be able to deploy)
+<!-- Can we add an example of this command here?
+-->
 6. `cam deploy-solr $CLUSTER_NAME --enable-service-discovery`
 7. `cam deploy-psql $CLUSTER_NAME --enable-service-discovery`
 8. `cam deploy-main $CLUSTER_NAME --enable-service-discovery` to deploy the application
