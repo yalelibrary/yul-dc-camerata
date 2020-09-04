@@ -3,7 +3,7 @@ services:
   iiif_manifest:
     image: yalelibraryit/dc-iiif-manifest:${IIIF_MANIFEST_VERSION:-latest}
     ports:
-      - '3002:3002'
+      - '80:80'
     environment:
       AWS_ACCESS_KEY_ID:
       AWS_DEFAULT_REGION: us-east-1
