@@ -13,6 +13,17 @@ module Camerata
       `aws ssm get-parameters --names #{key} --with-decryption`
     end
 
+    def self.copy_param_set(group, source_ns, target_ns)
+      group.each do |name, version|
+        Camerata::Parameters.set(create_param_name(target_ns, source_ns, name), version)
+      end
+    end
+
+    def self.create_param_name(target_ns, source_ns, name)
+      param_base = source_ns.strip.empty? ? name : name.split("#{source_ns}_")[1]
+      "#{target_ns}_#{param_base}"
+    end
+
     # rubocop:disable Naming/AccessorMethodName
     def self.get_hash(key)
       json = get(key)

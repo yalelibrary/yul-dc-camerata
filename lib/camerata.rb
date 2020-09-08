@@ -141,11 +141,6 @@ module Camerata
     end
     map rc: :console
 
-    def create_param_name(target_ns, source_ns, name)
-      param_base = source_ns.strip.empty? ? name : name.split("#{source_ns}_")[1]
-      "#{target_ns}_#{param_base}"
-    end
-
     desc "env_copy TARGET_NS SOURCE_NS", "copy params from env to another"
     def env_copy(target_ns, source_ns = "")
       app_versions = Camerata::AppVersions.get_all source_ns
@@ -155,10 +150,10 @@ module Camerata
            "\n SECRETS: #{secrets}"
 
       # Refactor to .each on an argument (app_versions, secrets, eventually cluster params)
-      copy_param_set(app_versions, target_ns, source_ns)
+      Camerata::Parameters.copy_param_set(app_versions, target_ns, source_ns)
       secrets.each do |name, version|
         # Skip set when looking at AWS Credentials
-        Camerata::Parameters.set(create_param_name(target_ns, source_ns, name), version, true) unless name == "AWS_ACCESS_KEY_ID" || name == "AWS_SECRET_ACCESS_KEY"
+        Camerata::Parameters.set(Camerata::Parameters.create_param_name(target_ns, source_ns, name), version, true) unless name == "AWS_ACCESS_KEY_ID" || name == "AWS_SECRET_ACCESS_KEY"
       end
     end
 
@@ -278,12 +273,6 @@ module Camerata
         db_only_compose
       when 'deploy-solr'
         solr_only_compose
-      end
-    end
-
-    def copy_param_set(group, source_ns, target_ns)
-      group.each do |name, version|
-        Camerata::Parameters.set(create_param_name(target_ns, source_ns, name), version)
       end
     end
 
