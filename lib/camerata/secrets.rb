@@ -8,6 +8,8 @@ module Camerata
         HONEYBADGER_API_KEY_MANAGEMENT
         HTTP_PASSWORD
         HTTP_USERNAME
+        MC_USER
+        MC_PW
         RAILS_MASTER_KEY
       ]
     end
