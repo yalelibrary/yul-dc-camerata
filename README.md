@@ -67,7 +67,15 @@ To start the application stack, run `cam up` in the directory you are working in
 - Access the management app at `http://localhost:3001/management`
 
 ## Troubleshooting
+### File permissions errors in deployed environments
 
+If you have problems deploying Solr and Postgres, e.g.
+```
+cp: cannot create directory '/var/solr/data/blacklight-core/conf': Permission denied`
+```
+make sure that you have the correct version of ecs-cli, defined below.
+
+### AWS Setup
 If you receive a `please set your AWS_PROFILE and AWS_DEFAULT_REGION (RuntimeError)` error when you `cam up`, you will need to set your AWS credentials. Credentials can be set in the `~/.aws/credentials` file in the following format:
 
 ```bash
@@ -101,7 +109,7 @@ Confirm aws-cli and ecs-cli are installed
 aws --version
 ecs-cli --version
 ```
-
+ecs-cli version must be 1.19 or above in order to successfully deploy solr and postgres.
 Confirm that your aws cli credentials are set correctly
 
 ```bash
