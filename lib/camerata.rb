@@ -149,12 +149,13 @@ module Camerata
            "\n APP VERSIONS: #{app_versions}" \
            "\n SECRETS: #{secrets}"
 
-      app_versions.each do |app, version|
-        param_base = app.split("#{source_ns}_")[1]
-        Camerata::Parameters.set("#{target_ns}_#{param_base}", version)
-      end
+      # Refactor to .each on an argument (app_versions, secrets, eventually cluster params)
+      copy_param_set(app_versions)
       secrets.each do |app, version|
-        param_base = app == "AWS_ACCESS_KEY_ID" || app == "AWS_SECRET_ACCESS_KEY" ? app : app.split("#{source_ns}_")[1]
+        # Don't set AWS credentials
+        # TODO: Skip set when looking at AWS Credentials
+        # param_base = app == "AWS_ACCESS_KEY_ID" || app == "AWS_SECRET_ACCESS_KEY" ? app : app.split("#{source_ns}_")[1]
+        param_base = source_ns.strip.empty? ? app : app.split("#{source_ns}_")[1]
         Camerata::Parameters.set("#{target_ns}_#{param_base}", version, true)
       end
     end
@@ -275,6 +276,13 @@ module Camerata
         db_only_compose
       when 'deploy-solr'
         solr_only_compose
+      end
+    end
+
+    def copy_param_set(group)
+      group.each do |app, version|
+        param_base = source_ns.strip.empty? ? app : app.split("#{source_ns}_")[1]
+        Camerata::Parameters.set("#{target_ns}_#{param_base}", version)
       end
     end
 

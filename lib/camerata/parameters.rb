@@ -6,6 +6,7 @@ module Camerata
       raise 'please set your AWS_PROFILE and AWS_DEFAULT_REGION' unless ENV['AWS_DEFAULT_REGION'] && ENV['AWS_PROFILE']
       key = "\"#{key}\"" unless key.match?('"')
       result = call_aws_ssm(key)
+      # byebug
       JSON.parse(result) if result && !result.empty?
     end
 
@@ -43,8 +44,12 @@ module Camerata
       puts "Setting #{key} param value to #{value}. Secret: #{secret}"
       raise 'please set your AWS_PROFILE and AWS_DEFAULT_REGION' unless ENV['AWS_DEFAULT_REGION'] && ENV['AWS_PROFILE']
       type = secret ? 'SecureString' : 'String'
-      result = `aws ssm put-parameter --name "#{key}" --type #{type} --value "#{value}" --overwrite`
+      result = put_parameter(key, value, secret)
       JSON.parse(result) if result && !result.empty?
+    end
+
+    def self.put_parameter(key, value, secret = false)
+      `aws ssm put-parameter --name "#{key}" --type #{type} --value "#{value}" --overwrite`
     end
 
     def self.load_env
