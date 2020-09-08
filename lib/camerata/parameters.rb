@@ -6,12 +6,11 @@ module Camerata
       raise 'please set your AWS_PROFILE and AWS_DEFAULT_REGION' unless ENV['AWS_DEFAULT_REGION'] && ENV['AWS_PROFILE']
       key = "\"#{key}\"" unless key.match?('"')
       result = call_aws_ssm(key)
-      # byebug
       JSON.parse(result) if result && !result.empty?
     end
 
     def self.call_aws_ssm(key)
-      `aws ssm get-parameters --names #{key}`
+      `aws ssm get-parameters --names #{key} --with-decryption`
     end
 
     # rubocop:disable Naming/AccessorMethodName
@@ -43,12 +42,12 @@ module Camerata
     def self.set(key, value, secret = false)
       puts "Setting #{key} param value to #{value}. Secret: #{secret}"
       raise 'please set your AWS_PROFILE and AWS_DEFAULT_REGION' unless ENV['AWS_DEFAULT_REGION'] && ENV['AWS_PROFILE']
-      type = secret ? 'SecureString' : 'String'
       result = put_parameter(key, value, secret)
       JSON.parse(result) if result && !result.empty?
     end
 
     def self.put_parameter(key, value, secret = false)
+      type = secret ? 'SecureString' : 'String'
       `aws ssm put-parameter --name "#{key}" --type #{type} --value "#{value}" --overwrite`
     end
 

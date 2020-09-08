@@ -141,6 +141,11 @@ module Camerata
     end
     map rc: :console
 
+    def create_param_name(target_ns, source_ns, name)
+      param_base = source_ns.strip.empty? ? name : name.split("#{source_ns}_")[1]
+      "#{target_ns}_#{param_base}"
+    end
+
     desc "env_copy TARGET_NS SOURCE_NS", "copy params from env to another"
     def env_copy(target_ns, source_ns = "")
       app_versions = Camerata::AppVersions.get_all source_ns
@@ -150,19 +155,16 @@ module Camerata
            "\n SECRETS: #{secrets}"
 
       # Refactor to .each on an argument (app_versions, secrets, eventually cluster params)
-      copy_param_set(app_versions)
-      secrets.each do |app, version|
-        # Don't set AWS credentials
-        # TODO: Skip set when looking at AWS Credentials
-        # param_base = app == "AWS_ACCESS_KEY_ID" || app == "AWS_SECRET_ACCESS_KEY" ? app : app.split("#{source_ns}_")[1]
-        param_base = source_ns.strip.empty? ? app : app.split("#{source_ns}_")[1]
-        Camerata::Parameters.set("#{target_ns}_#{param_base}", version, true)
+      copy_param_set(app_versions, target_ns, source_ns)
+      secrets.each do |name, version|
+        # Skip set when looking at AWS Credentials
+        Camerata::Parameters.set(create_param_name(target_ns, source_ns, name), version, true) unless name == "AWS_ACCESS_KEY_ID" || name == "AWS_SECRET_ACCESS_KEY"
       end
     end
 
     desc "env_get KEY", "get value of a parameter"
     def env_get(key)
-      result = Camerata::Secrets.get(key)
+      result = Camerata::Parameters.get(key)
       if result["Parameters"].blank?
         puts "The requested #{key} param does not exist"
       else
@@ -279,10 +281,9 @@ module Camerata
       end
     end
 
-    def copy_param_set(group)
-      group.each do |app, version|
-        param_base = source_ns.strip.empty? ? app : app.split("#{source_ns}_")[1]
-        Camerata::Parameters.set("#{target_ns}_#{param_base}", version)
+    def copy_param_set(group, source_ns, target_ns)
+      group.each do |name, version|
+        Camerata::Parameters.set(create_param_name(target_ns, source_ns, name), version)
       end
     end
 

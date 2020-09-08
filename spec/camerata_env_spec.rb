@@ -1,18 +1,15 @@
+# frozen_string_literal: true
 RSpec.describe Camerata::CLI do
   subject(:cli) { described_class.new }
   before do
-    # parameters = class_double('Camerata::Parameters').as_stubbed_const(transfer_nested_constants: true)
-    allow(Camerata::Parameters).to receive(:put_parameter).and_return("somestring")
-    allow(Camerata::Parameters).to receive(:call_aws_ssm).and_return("{}")
-    
-    # secrets = class_double('Camerata::Secrets').as_stubbed_const(transfer_nested_constants: true)
-    allow(Camerata::Secrets).to receive(:call_aws_ssm).and_return('{ "Parameters" => [{ "Name" => "TEST_PARAM", "Type" => "String", "Value" => "TEST_VAL" }] }')
+    allow(Camerata::Parameters).to receive(:put_parameter).and_return("{\n    \"Version\": 1,\n    \"Tier\": \"Standard\"\n}\n")
+    allow(Camerata::Parameters).to receive(:call_aws_ssm).and_return("{\n    \"Parameters\": [\n        {\n            \"Name\": \"BLACKLIGHT_VERSION\",\n            \"Type\": \"String\",\n            \"Value\": \"v1.15.1\",\n            \"Version\": 24,\n            \"LastModifiedDate\": \"2020-09-02T11:09:53.862000-07:00\",\n            \"ARN\": \"arn:aws:ssm:us-east-1:229792048549:parameter/BLACKLIGHT_VERSION\",\n            \"DataType\": \"text\"\n        }\n    ],\n    \"InvalidParameters\": []\n}\n")
     allow(Camerata::Secrets).to receive(:aws_secret_access_key).and_return("a-secret-key")
     allow(Camerata::Secrets).to receive(:aws_access_key_id).and_return("an-access-key-id")
     allow(Camerata::Secrets).to receive(:aws_access_key_id).and_return("an-access-key-id")
   end
 
-  around(:each) do |example|
+  around do |example|
     aws_profile = ENV['AWS_PROFILE']
     aws_default_region = ENV['AWS_DEFAULT_REGION']
     ENV['AWS_PROFILE'] = 'a-user'
@@ -25,7 +22,7 @@ RSpec.describe Camerata::CLI do
   context 'env_get' do
     let(:output) { capture(:stdout) { cli.env_get "TEST_PARAM" } }
     it 'gets the value of a param from the param store' do
-      expect(output).to match("TEST_VAL")
+      expect(output).to match("v1.15.1")
     end
   end
 
