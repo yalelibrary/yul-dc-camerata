@@ -3,7 +3,7 @@ services:
   iiif_manifest:
     <%- if in_manifest? -%>
     build: .
-    image: yalelibraryit/dc-manifest:master
+    image: yalelibraryit/dc-iiif-manifest:${IIIF_MANIFEST_VERSION:-master}
     <%- end -%>
     environment:
       PASSENGER_APP_ENV: development
