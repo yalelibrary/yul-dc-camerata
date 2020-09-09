@@ -2,7 +2,7 @@
 RSpec.describe Camerata::Parameters do
   before do
     allow(described_class).to receive(:put_parameter).and_return("{\n    \"Version\": 1,\n    \"Tier\": \"Standard\"\n}\n")
-    allow(described_class).to receive(:call_aws_ssm).and_return("{\n    \"Parameters\": [\n        {\n            \"Name\": \"BLACKLIGHT_VERSION\",\n            \"Value\": \"v1.15.1\",\n}]}")
+    allow(described_class).to receive(:call_aws_ssm).and_return("{\n    \"Parameters\": [\n        {\n            \"Name\": \"BLACKLIGHT_VERSION\",\n            \"Value\": \"v1.15.1\"\n}]}")
     allow(Camerata::Secrets).to receive(:aws_secret_access_key).and_return("a-secret-key")
     allow(Camerata::Secrets).to receive(:aws_access_key_id).and_return("an-access-key-id")
     allow(Camerata::Secrets).to receive(:aws_access_key_id).and_return("an-access-key-id")
