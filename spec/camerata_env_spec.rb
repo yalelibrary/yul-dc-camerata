@@ -3,7 +3,7 @@ RSpec.describe Camerata::CLI do
   subject(:cli) { described_class.new }
   before do
     allow(Camerata::Parameters).to receive(:put_parameter).and_return("{\n    \"Version\": 1,\n    \"Tier\": \"Standard\"\n}\n")
-    allow(Camerata::Parameters).to receive(:call_aws_ssm).and_return("{\n    \"Parameters\": [\n        {\n            \"Name\": \"BLACKLIGHT_VERSION\",\n            \"Type\": \"String\",\n            \"Value\": \"v1.15.1\",\n            \"Version\": 24,\n            \"LastModifiedDate\": \"2020-09-02T11:09:53.862000-07:00\",\n            \"ARN\": \"arn:aws:ssm:us-east-1:some-identifying-number:parameter/BLACKLIGHT_VERSION\",\n            \"DataType\": \"text\"\n        }\n    ],\n    \"InvalidParameters\": []\n}\n")
+    allow(Camerata::Parameters).to receive(:call_aws_ssm).and_return("{\n    \"Parameters\": [\n        {\n            \"Name\": \"BLACKLIGHT_VERSION\",\n            \"Value\": \"v1.15.1\",\n}]}")
     allow(Camerata::Secrets).to receive(:aws_secret_access_key).and_return("a-secret-key")
     allow(Camerata::Secrets).to receive(:aws_access_key_id).and_return("an-access-key-id")
     allow(Camerata::Secrets).to receive(:aws_access_key_id).and_return("an-access-key-id")
