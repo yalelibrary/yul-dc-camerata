@@ -13,14 +13,18 @@ module Camerata
       `aws ssm get-parameters --names #{key} --with-decryption`
     end
 
-    def self.copy_param_set(group, source_ns, target_ns)
+    def self.copy_param_set(group, target_ns, source_ns)
       group.each do |name, version|
-        Camerata::Parameters.set(create_param_name(target_ns, source_ns, name), version)
+        set(create_param_name(target_ns, source_ns, name), version)
       end
     end
 
     def self.create_param_name(target_ns, source_ns, name)
+      # Gets param name base by removing any ns prefixes from param name
+      # param_base of "YUL_TEST_BLACKLIGHT_VERSION" --> "BLACKLIGHT_VERSION"
+      # param_base defaults to name if source_ns is empty
       param_base = source_ns.strip.empty? ? name : name.split("#{source_ns}_")[1]
+      # Returns the new param name with target_ns prefixed to base
       "#{target_ns}_#{param_base}"
     end
 

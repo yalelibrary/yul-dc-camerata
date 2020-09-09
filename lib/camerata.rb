@@ -143,20 +143,30 @@ module Camerata
 
     desc "env_copy TARGET_NS SOURCE_NS", "copy params from env to another"
     def env_copy(target_ns, source_ns = "")
+      # Collect all app_versions and secrets
       app_versions = Camerata::AppVersions.get_all source_ns
       secrets = Camerata::Secrets.get_all source_ns
+
+      # Output the collected list of app versions and secrets
+      # Without source_ns APP VERSIONS: { "BLACKLIGHT_VERSION"=>"v1.15.1", "CAMERATA_VERSION"=>"v2.4.0" ...}
+      # With source_ns set to "YUL_DEPLOY" APP VERSIONS: { "YUL_DEPLOY_BLACKLIGHT_VERSION"=>"v1.15.1", "YUL_DEPLOY_CAMERATA_VERSION"=>"v2.4.0" ...}
       puts "\n Copying following parameters from source to #{target_ns} namespace: " \
            "\n APP VERSIONS: #{app_versions}" \
            "\n SECRETS: #{secrets}"
 
-      # Refactor to .each on an argument (app_versions, secrets, eventually cluster params)
+      # Using the list from app_versions, create new params with the target_ns prefixed to param name
+      # copy_param_set should be using create_param_name method to create the new namespaced param name
       Camerata::Parameters.copy_param_set(app_versions, target_ns, source_ns)
+
+      # Using the list from secrets, create new params with the target_ns prefixed to param name
+      # Also uses create_param_name to create the new namespaced param name
       secrets.each do |name, version|
         # Skip set when looking at AWS Credentials
         Camerata::Parameters.set(Camerata::Parameters.create_param_name(target_ns, source_ns, name), version, true) unless name == "AWS_ACCESS_KEY_ID" || name == "AWS_SECRET_ACCESS_KEY"
       end
     end
 
+    # what does env_copy do
     desc "env_get KEY", "get value of a parameter"
     def env_get(key)
       result = Camerata::Parameters.get(key)
