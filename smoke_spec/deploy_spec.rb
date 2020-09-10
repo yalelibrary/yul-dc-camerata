@@ -131,10 +131,8 @@ RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
       # moment -- will add CSS to make this easier in the management app
       # in a later PR.
       visit management_url
-      find("tr:nth-child(2)")
-      within("tr:nth-child(2)") do
-        expect(page).to have_content(/v\d+\.\d+\.\d+/)
-      end
+      byebug
+      expect(page).to have_selector("#management_version", text: "v2.11.7")
       find("tr:nth-child(3)")
       within("tr:nth-child(3)") do
         expect(page).to have_content(/v\d+\.\d+\.\d+/)
