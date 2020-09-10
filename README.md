@@ -289,18 +289,12 @@ Example:
 
 ## Running the deployment test against a deployed cluster
 
-The deployment testing suite lives in `/spec/deploy_spec.rb` at the root of this repo.
+The deployment testing suite lives in `smoke_spec/deploy_spec.rb` at the root of this repo.
 
 To run it against a deployed cluster:
 
 1. Set YUL_DC_SERVER to the domain name for your deployed cluster `export YUL_DC_SERVER=collections-test.curationexperts.com`
-
-2. Set the HTTP loging vars:
-
-  - Set HTTP_USERNAME to the known Blacklight http basic auth username for your deployed cluster `export HTTP_USERNAME=<basic-auth-username>`
-  - Set HTTP_PASSWORD to the known Blacklight http basic auth password for you deployed cluster `export HTTP_PASSWORD=<basic-auth-password>`
-
-3. `cam smoke`
+2. `cam smoke`
 
 ## Releasing a new dependency version
 
