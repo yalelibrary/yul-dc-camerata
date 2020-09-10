@@ -58,7 +58,36 @@ jobs:
           name: smoke specs
           command:  |
             bundle exec rspec smoke_spec
-
+  deploy-smoke:
+    docker:
+      - image: circleci/ruby:2.6-stretch-node-browsers-legacy
+    steps:
+      - checkout
+      - run:
+          name: Bundler
+          command: |
+            gem install bundler -v 2.1.4 && bundle
+      - run:
+          name: aws-cli
+          command: |
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && unzip awscliv2.zip && sudo ./aws/install
+            sudo curl -Lo /usr/local/bin/ecs-cli https://amazon-ecs-cli.s3.amazonaws.com/ecs-cli-linux-amd64-latest
+            sudo chmod +x /usr/local/bin/ecs-cli
+      - run:
+          name: Set up aws
+          command: |
+            echo AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} >> .secrets
+            echo AWS_SECRET_KEY=${AWS_SECRET_KEY} >> .secrets
+            mkdir -p ~/.aws
+            echo ${AWS_PROFILE_VALUE} | base64 -d > ~/.aws/credentials
+      - run:
+          name: Deploy the main group of services
+          command: |
+            PUBLIC_IP=ENABLED bundle exec cam deploy-main yul-deploy
+      - run:
+          name: smoke
+          command: |
+            YUL_DC_SERVER=collections-deploy.curationexperts.com bundle exec cam smoke
 orbs:
   docker: circleci/docker@1.0.1
 version: 2.1
@@ -70,11 +99,14 @@ workflows:
   every-four-hours:
     triggers:
       - schedule:
-          cron: "5 1,5,9,13,17,21 * * *"
+          cron: "40 1,5,9,13,17,21 * * *"
           filters:
             branches:
               only:
                 - master
+                - deploy-from-circle
     jobs:
+      - deploy-smoke:
+          context: yul-dc
       - run-tests:
           context: yul-dc

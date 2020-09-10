@@ -33,6 +33,21 @@ bundle install
 rake install
 ```
 
+## Configure
+
+Camerata will read a .cameratarc file in your path. It will traverse up the path
+until it finds the first instance of .cameratarc so `/home/rob/work/yale/yul-camerata`
+will look in yul-camerata, then yale, then work, then rob, then home and finally
+the root, taking only the first file it finds.
+
+This will load any Ruby code it finds in the file, which can be useful for setting
+variables like so:
+
+```ruby
+ENV['AWS_DEFAULT_REGION'] = 'us-east-1'
+ENV['AWS_PROFILE'] = 'dce'
+```
+
 ## General Use
 
 Once camerata is installed on your system, interactions happen through the camerata command-line tool or through its alias `cam`. The camerata tool can be used to bring the development stack up and down locally, interact with the docker containers, deploy, run the smoke tests and otherwise do development tasks common to the various applications in the yul-dc application stack.
@@ -52,7 +67,15 @@ To start the application stack, run `cam up` in the directory you are working in
 - Access the management app at `http://localhost:3001/management`
 
 ## Troubleshooting
+### File permissions errors in deployed environments
 
+If you have problems deploying Solr and Postgres, e.g.
+```
+cp: cannot create directory '/var/solr/data/blacklight-core/conf': Permission denied`
+```
+make sure that you have the correct version of ecs-cli, defined below.
+
+### AWS Setup
 If you receive a `please set your AWS_PROFILE and AWS_DEFAULT_REGION (RuntimeError)` error when you `cam up`, you will need to set your AWS credentials. Credentials can be set in the `~/.aws/credentials` file in the following format:
 
 ```bash
@@ -86,7 +109,7 @@ Confirm aws-cli and ecs-cli are installed
 aws --version
 ecs-cli --version
 ```
-
+ecs-cli version must be 1.19 or above in order to successfully deploy solr and postgres.
 Confirm that your aws cli credentials are set correctly
 
 ```bash
@@ -172,6 +195,38 @@ cam get-params $CLUSTER_NAME 4GB 2048
 Valid combinations of memory and cpu documented here: <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/AWS_Fargate.html#fargate-tasks-size>
 
 ## Note: In the DCE environment, you should set PUBLIC_IP=ENABLED when fetching parameters (including when running other deploy scripts when you have no parameters present), or you will have a bad time.
+
+### Retrieving arbitrary params
+
+Retrieving a parameter from AWS is available through the following command:
+
+```
+cam env_get $PARAM_NAME
+```
+
+This command will log the param value to the console.
+
+### Setting a param
+
+Setting a parameter in AWS is available through the following command:
+
+```
+cam env_set $PARAM_NAME $PARAM_VALUE [Secret Boolean]
+```
+
+This command will update or create an AWS Parameter in the store. The 'Secret Boolean' is optional. Set it to true if the value you are setting is a secret that should be of a `SecureString` type. It can otherwise be left blank.
+
+### Copying params from one namespace to another
+
+Moving forward, parameters will be prefixed to delineate between different deployments.
+
+The following command can be used to copy the params of one 'namespace' to another:
+
+```
+cam env_copy $TARGET_NS [SOURCE_NS]
+```
+
+This command requires a TARGET_NS and uses it as a prefix to all known params and secrets as it sets them. If provided, the SOURCE_NS argument will act as the prefix to the source set of params. If left blank, it defaults to the params as named in /lib/camerata/app_versions.rb and /lib/camerata/secrets.rb.
 
 ### Deploy the Postgres and Solr servers
 

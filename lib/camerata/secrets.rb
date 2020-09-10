@@ -8,6 +8,8 @@ module Camerata
         HONEYBADGER_API_KEY_MANAGEMENT
         HTTP_PASSWORD
         HTTP_USERNAME
+        MC_USER
+        MC_PW
         RAILS_MASTER_KEY
       ]
     end
@@ -20,7 +22,7 @@ module Camerata
     end
 
     # rubocop:disable Naming/AccessorMethodName
-    def self.get_all
+    def self.get_all(namespace = "")
       hash = super
       hash['AWS_SECRET_ACCESS_KEY'] = aws_secret_access_key
       hash['AWS_ACCESS_KEY_ID'] = aws_access_key_id

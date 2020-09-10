@@ -1,15 +1,17 @@
 # frozen_string_literal: true
-require "camerata/version"
-require "camerata/parameters"
-require "camerata/app_versions"
-require "camerata/secrets"
-require "camerata/taggable_app"
 require 'thor'
 require 'erb'
 require 'json'
 require 'active_support'
 require 'yaml'
 require 'byebug'
+
+require "camerata/version"
+require "camerata/dot_rc"
+require "camerata/parameters"
+require "camerata/app_versions"
+require "camerata/secrets"
+require "camerata/taggable_app"
 
 # rubocop:disable Metrics/ClassLength
 module Camerata
@@ -87,10 +89,12 @@ module Camerata
     end
     map log: :logs
 
+    method_option :user, default: 'app', type: :string, alias: '-u'
     desc "bundle SERVICE", "runs bundle inside the running container, specify the serivce as blacklight or management"
     def bundle(service = 'blacklight')
       ensure_env
-      run_with_exit("#{docker_compose} exec #{service} bundle")
+      user = options.dup.delete(:user)
+      run_with_exit("#{docker_compose} exec -u #{user} #{service} bundle")
     end
 
     desc "walk ARGS", "wraps docker-compose run, 'run' is not an allowed thor command, thus walk"
@@ -100,37 +104,79 @@ module Camerata
       run_with_exit("#{docker_compose} run #{options.join(' ')}")
     end
 
+    method_option :user, default: 'app', type: :string, alias: '-u'
     desc "exec ARGS", "wraps docker-compose exec"
     def exec(*args)
       ensure_env
+      user = options.dup.delete(:user)
       options = default_options(args)
-      run_with_exit("#{docker_compose} exec #{options.join(' ')}")
+      run_with_exit("#{docker_compose} exec -u #{user} #{options.join(' ')}")
     end
     map ex: :exec
 
+    method_option :user, default: 'app', type: :string, alias: '-u'
     desc 'sh ARGS', "launch a shell using docker-compose exec, sets tty properly"
     def sh(*args)
       ensure_env
+      user = options.dup.delete(:user)
       options = default_options(args, ["-e COLUMNS=\"\`tput cols\`\" -e LINES=\"\`tput lines\`\""])
-      run_with_exit("#{docker_compose} exec #{options.join(' ')} bundle exec bash")
+      run_with_exit("#{docker_compose} exec -u #{user} #{options.join(' ')} bundle exec bash")
     end
 
+    method_option :user, default: 'app', type: :string, alias: '-u'
     desc "bundle_exec ARGS", "wraps docker-compose exec SERVICE bundle exec ARGS"
     def bundle_exec(service, *args)
       ensure_env
-      run_with_exit("#{docker_compose} exec #{service} bundle exec #{args.join(' ')}")
+      user = options[:user]
+      run_with_exit("#{docker_compose} exec -u #{user} #{service} bundle exec #{args.join(' ')}")
     end
     map be: :bundle_exec
 
+    method_option :user, default: 'app', type: :string, alias: '-u'
     desc "console ARGS", "shortcut to start rails console"
     def console(service, *args)
       ensure_env
-      run_with_exit("#{docker_compose} exec #{service} bundle exec rails console #{args.join(' ')}")
+      user = options[:user]
+      run_with_exit("#{docker_compose} exec -u #{user} #{service} bundle exec rails console #{args.join(' ')}")
     end
     map rc: :console
 
+    desc "env_copy TARGET_NS SOURCE_NS", "copy params from env to another"
+    def env_copy(target_ns, source_ns = "")
+      app_versions = Camerata::AppVersions.get_all source_ns
+      secrets = Camerata::Secrets.get_all source_ns
+      puts "\n Copying following parameters from source to #{target_ns} namespace: " \
+           "\n APP VERSIONS: #{app_versions}" \
+           "\n SECRETS: #{secrets}"
+
+      app_versions.each do |app, version|
+        param_base = app.split("#{source_ns}_")[1]
+        Camerata::Parameters.set("#{target_ns}_#{param_base}", version)
+      end
+      secrets.each do |app, version|
+        param_base = app == "AWS_ACCESS_KEY_ID" || app == "AWS_SECRET_ACCESS_KEY" ? app : app.split("#{source_ns}_")[1]
+        Camerata::Parameters.set("#{target_ns}_#{param_base}", version, true)
+      end
+    end
+
+    desc "env_get KEY", "get value of a parameter"
+    def env_get(key)
+      result = Camerata::Secrets.get(key)
+      if result["Parameters"].blank?
+        puts "The requested #{key} param does not exist"
+      else
+        puts result["Parameters"][0]["Value"]
+      end
+    end
+
+    desc "env_set ARGS", "set the value of a parameter"
+    def env_set(*args)
+      Camerata::Parameters.set(*args)
+    end
+
     desc "smoke ARGS", "Run the smoke tests against a running stack"
     def smoke(*args)
+      ensure_env
       run_with_exit("rspec #{smoke_path} #{args.join(' ')}")
     end
 
@@ -322,6 +368,11 @@ module Camerata
       File.exist?(file) && !File.open(file).grep(/YulDcManagement/).empty?
     end
 
+    def in_manifest?
+      file = File.join('config', 'application.rb')
+      File.exist?(file) && !File.open(file).grep(/YulDcIiifManifest/).empty?
+    end
+
     def without
       options[:without] || ''
     end
@@ -342,7 +393,11 @@ module Camerata
       end
     end
 
+    ##
+    # Generate secrets and .env files that are expected by deploy scripts and
+    # docker-compose files
     def ensure_env(type = 'local')
+      DotRc.new
       # TODO: remove writing these files once the env is confirmed all in memory
       template(".secrets.erb", secrets_path(type)) unless File.exist?(secrets_path(type))
       template(".env.erb", env_path(type)) unless File.exist?(env_path(type))

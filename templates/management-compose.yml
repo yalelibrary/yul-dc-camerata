@@ -3,21 +3,27 @@ services:
   management:
     image: yalelibraryit/dc-management:${MANAGEMENT_VERSION}
     environment:
+      ACCESS_MASTER_MOUNT: # The path to the mounted drive, or "s3"
       AWS_ACCESS_KEY_ID:
       AWS_DEFAULT_REGION: us-east-1
       AWS_SECRET_ACCESS_KEY:
       IIIF_IMAGE_BASE_URL: http://iiif_image:8182/iiif
       IIIF_MANIFESTS_BASE_URL: http://localhost/manifests/
+      MC_USER:
+      MC_PW:
       PASSENGER_APP_ENV: development # development
       POSTGRES_DB: management_yul_development
       POSTGRES_HOST: db
       POSTGRES_PASSWORD: password
       POSTGRES_USER: postgres
+      PTIFF_OUTPUT_DIRECTORY: data
       RAILS_LOG_TO_STDOUT: 'true'
       RAILS_RELATIVE_URL_ROOT: /management
+      S3_SOURCE_BUCKET_NAME: yale-image-samples
       SAMPLE_BUCKET: yul-development-samples
       SOLR_BASE_URL: http://solr:8983/solr
       SOLR_CORE: blacklight-core
+      TEMP_IMAGE_WORKSPACE: /tmp
       VPN:
       # The management app needs the versions for all the applications for the dashboard
       IIIF_MANIFEST_VERSION:
@@ -33,21 +39,27 @@ services:
     image: yalelibraryit/dc-management:${MANAGEMENT_VERSION}
     command: /sbin/setuser app bash -l -c "bin/delayed_job run"
     environment:
+      ACCESS_MASTER_MOUNT: # The path to the mounted drive, or "s3"
       AWS_ACCESS_KEY_ID:
       AWS_DEFAULT_REGION: us-east-1
       AWS_SECRET_ACCESS_KEY:
       IIIF_IMAGE_BASE_URL: http://iiif_image:8182/iiif
       IIIF_MANIFESTS_BASE_URL: http://localhost/manifests/
+      MC_USER: 
+      MC_PW:
       PASSENGER_APP_ENV: development # development
       POSTGRES_DB: management_yul_development
       POSTGRES_HOST: db
       POSTGRES_PASSWORD: password
       POSTGRES_USER: postgres
+      PTIFF_OUTPUT_DIRECTORY: data
       RAILS_LOG_TO_STDOUT: 'true'
       RAILS_RELATIVE_URL_ROOT: /management
+      S3_SOURCE_BUCKET_NAME: yale-image-samples
       SAMPLE_BUCKET: yul-development-samples
       SOLR_BASE_URL: http://solr:8983/solr
       SOLR_CORE: blacklight-core
+      TEMP_IMAGE_WORKSPACE: /tmp
       VPN:
       # The management app needs the versions for all the applications for the dashboard
       IIIF_MANIFEST_VERSION:
