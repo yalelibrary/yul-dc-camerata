@@ -395,7 +395,7 @@ module Camerata
 
     ##
     # Generate secrets and .env files that are expected by deploy scripts and
-    # docker-compose files 
+    # docker-compose files
     def ensure_env(type = 'local')
       DotRc.new
       # TODO: remove writing these files once the env is confirmed all in memory
