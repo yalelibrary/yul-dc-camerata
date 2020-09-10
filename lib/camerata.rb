@@ -202,10 +202,9 @@ module Camerata
     ##
     # Tag a release of a microservice, E.g., cam release blacklight
     # This will:
-    # 1. Check for merged PRs not yet in a release
-    # 2. Determine whether any of them are features or breaking changes, and increment the version number accordingly
-    # 3. Auto-generate release notes for the new version
-    # 4. Tag the release in github with the new version number and the release notes
+    # 1. Auto-generate release notes for the new version
+    # 2. Determine whether there are any features or breaking changes, and increment the version number accordingly
+    # 3. Tag the release in github with the new version number and the release notes
     desc "release APP", "tag a release of a microservice, e.g., cam release blacklight"
     def release(app)
       puts "You must set CHANGELOG_GITHUB_TOKEN. See https://github.com/github-changelog-generator/github-changelog-generator#github-token" unless ENV['CHANGELOG_GITHUB_TOKEN']
@@ -217,10 +216,9 @@ module Camerata
       end
       taggable_app = Camerata::TaggableApp.new(app)
       unless taggable_app.release_needed?
-        puts "No new PRs to release for #{app}"
+        puts "No new release needed for #{app}"
         exit(0)
       end
-      puts "New PRs to release: #{taggable_app.release_prs.size}"
       taggable_app.release
       puts "Released #{app} #{taggable_app.new_version_number}"
     end
