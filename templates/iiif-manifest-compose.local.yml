@@ -1,1 +1,20 @@
 version: '3'
+services:
+  iiif_manifest:
+    <%- if in_manifest? -%>
+    build: .
+    image: yalelibraryit/dc-iiif-manifest:${IIIF_MANIFEST_VERSION:-master}
+    <%- end -%>
+    environment:
+      PASSENGER_APP_ENV: development
+      POSTGRES_MULTIPLE_DATABASES: iiif_manifest_yul_development
+    <%- if in_manifest? -%>
+    volumes:
+      - .:/home/app/webapp:cached
+    <%- end -%>
+    stdin_open: true
+    tty: true
+    depends_on:
+      <%- unless without.match(/db/) -%>
+      - db
+      <%- end -%>

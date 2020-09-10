@@ -117,6 +117,7 @@ then
     --protocol HTTP \
     --port 80 \
     --vpc-id $VPC_ID \
+    --health-check-path /manifests/2041002 \
       | grep -Eo -m 1 'arn:aws:elasticloadbalancing[^\"]*'`
 
   # Create a target group to associate the MANAGEMENT listener to clusters

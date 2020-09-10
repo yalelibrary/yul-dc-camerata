@@ -368,6 +368,11 @@ module Camerata
       File.exist?(file) && !File.open(file).grep(/YulDcManagement/).empty?
     end
 
+    def in_manifest?
+      file = File.join('config', 'application.rb')
+      File.exist?(file) && !File.open(file).grep(/YulDcIiifManifest/).empty?
+    end
+
     def without
       options[:without] || ''
     end
@@ -388,6 +393,9 @@ module Camerata
       end
     end
 
+    ##
+    # Generate secrets and .env files that are expected by deploy scripts and
+    # docker-compose files
     def ensure_env(type = 'local')
       DotRc.new
       # TODO: remove writing these files once the env is confirmed all in memory
