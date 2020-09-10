@@ -10,6 +10,10 @@ services:
       POSTGRES_HOST: ${CLUSTER_NAME}-psql.${CLUSTER_NAME}
       RAILS_ENV: ${RAILS_ENV:-production}
       RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
+    # This is a one-off workaround to create the needed database for iiif_manifest on an existing cluster.
+    # To use, uncomment this line, deploy to create the database, then comment this line back out.
+    # TODO: This should be an idempotent addition elsewhere 
+    # command: 'bash -e bundle exec rake db:create'
     logging:
       driver: awslogs
       options:
