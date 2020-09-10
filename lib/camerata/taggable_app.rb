@@ -2,10 +2,9 @@
 ##
 # Tag a release of a microservice, E.g., cam tag blacklight
 # This will:
-# 1. Check for merged PRs not yet in a release
+# 1. Use github_changelog_generator to generate release notes
 # 2. Determine whether any of them are features or breaking changes, and increment the version number accordingly
-# 3. Auto-generate release notes for the new version
-# 4. Tag the release in github with the new version number and the release notes
+# 3. If a release is needed, tag the release in github with the new version number and the release notes
 require 'github_changelog_generator'
 require 'octokit'
 require 'set'
@@ -13,6 +12,12 @@ require 'set'
 module Camerata
   class TaggableApp
     attr_reader :github_user, :github_project
+    BREAKING_PREFIX = "Backwards incompatible changes:"
+    ENHANCEMENT_PREFIX = "New Features:"
+    BUG_PREFIX = "Fixed Bugs:"
+    MERGE_PREFIX = "Technical Enhancements:"
+    SECURITY_PREFIX = "Security fixes:"
+    RELEASE_PLACEHOLDER = "v9999"
 
     ##
     # Make an instance that's configured for a specific application
@@ -27,10 +32,33 @@ module Camerata
     end
 
     ##
-    # Do not make a new release if there are no new PRs
-    def release_needed?
-      return false if release_prs.empty?
-      true
+    # Setup for generating release notes.
+    # Set future release to "v9999" so we can easily replace it with our real
+    # release tag
+    def generator
+      return @generator if @generator
+      options = ::GitHubChangelogGenerator::Parser.default_options
+      options[:user] = @github_user
+      options[:project] = @github_project
+      options[:since_tag] = last_version_number
+      options[:future_release] = RELEASE_PLACEHOLDER
+      options[:token] = ENV['CHANGELOG_GITHUB_TOKEN']
+      options[:enhancement_labels] = ["Feature", "Features", "feature", "features"]
+      options[:bug_labels] = ["Bug", "Bugs", "bug", "bugs"]
+      options[:breaking_prefix] = "**#{BREAKING_PREFIX}**"
+      options[:enhancement_prefix] = "**#{ENHANCEMENT_PREFIX}**"
+      options[:bug_prefix] = "**#{BUG_PREFIX}**"
+      options[:merge_prefix] = "**#{MERGE_PREFIX}**"
+      options[:security_labels] = ["dependencies", "security"]
+      options[:security_prefix] = "**#{SECURITY_PREFIX}**"
+      @generator = GitHubChangelogGenerator::Generator.new options
+      @generator
+    end
+
+    ##
+    # Generate release notes for all PRs merged since the last release
+    def generate_release_notes
+      generator.compound_changelog
     end
 
     ##
@@ -40,25 +68,36 @@ module Camerata
     end
 
     ##
+    # Do we need a new release?
+    # If the release notes do not match any of our headings, then we must
+    # not need a new release
+    def release_needed?
+      return true if major_release
+      return true if feature_release
+      return true if patch_release
+      false
+    end
+
+    ##
     # The name of the most recent release
     def last_version_number
       last_release[:name]
     end
 
-    ##
-    # Keep the release PRs in an instance variable so we don't fetch them over
-    # and over again
-    def release_prs
-      @release_prs ||= fetch_release_prs
+    def major_release
+      !!release_notes.match(/#{BREAKING_PREFIX}/)
     end
 
-    ##
-    # Fetch the PRs merged since the last release
-    # @return [Array] the PRs with timestamps since the last release
-    def fetch_release_prs
-      last_release_timestamp = last_release[:created_at]
-      pull_requests = @client.pulls "#{@github_user}/#{@github_project}", state: 'closed'
-      pull_requests.select { |a| a[:merged_at] && a[:merged_at] > last_release_timestamp }
+    def feature_release
+      !!release_notes.match(/#{ENHANCEMENT_PREFIX}/)
+    end
+
+    def patch_release
+      !!(
+          release_notes.match(/#{BUG_PREFIX}/) ||
+          release_notes.match(/#{MERGE_PREFIX}/) ||
+          release_notes.match(/#{SECURITY_PREFIX}/)
+        )
     end
 
     ##
@@ -67,27 +106,11 @@ module Camerata
       @new_version_number ||= calculate_new_version_number
     end
 
-    def labels
-      @labels ||= union_labels
-    end
-
-    ##
-    # Get the union set of all of the labels of all the PRs in this release
-    def union_labels
-      labels = release_prs.map { |a| a[:labels] }
-      union_labels = Set[]
-      return union_labels if labels.empty?
-      labels.each { |a| a.each { |b| union_labels.add(b[:name]) } }
-      union_labels
-    end
-
     ##
     # Fetch all the merged PRs since the last release, and determine whether any of
     # them had a "Feature" label. If so, increment the minor part of the version number.
     # If not, increment the patch part of the version number.
     def calculate_new_version_number
-      major_release = labels.include?("Major")
-      feature_release = labels.include?("Feature")
       major, minor, patch = last_version_number.split(".")
 
       if major_release
@@ -106,25 +129,6 @@ module Camerata
 
     def release_notes
       @release_notes ||= generate_release_notes
-    end
-
-    ##
-    # Generate release notes for all PRs merged since the last release
-    def generate_release_notes
-      options = ::GitHubChangelogGenerator::Parser.default_options
-      options[:user] = @github_user
-      options[:project] = @github_project
-      options[:since_tag] = last_version_number
-      options[:future_release] = new_version_number
-      options[:token] = ENV['CHANGELOG_GITHUB_TOKEN']
-      options[:enhancement_labels] = ["Feature"]
-      options[:bug_labels] = ["Bug", "Bugs", "bug", "bugs"]
-      options[:enhancement_prefix] = "**New Features:**"
-      options[:bug_prefix] = "**Fixed Bugs:**"
-      options[:merge_prefix] = "**Technical Enhancements:**"
-      options[:security_labels] = ["dependencies", "security"]
-      generator = GitHubChangelogGenerator::Generator.new options
-      generator.compound_changelog
     end
 
     ##
@@ -179,27 +183,33 @@ module Camerata
     ##
     # Actually tag a release. Pass the release notes and the new version number.
     def release
-      release_options = { name: new_version_number, body: release_notes }
+      final_release_notes = release_notes.gsub(RELEASE_PLACEHOLDER, new_version_number)
+      release_options = { name: new_version_number, body: final_release_notes }
       @client.create_release("#{@github_user}/#{@github_project}", new_version_number, release_options)
       increment_camerata_version if @app == 'camerata'
     end
 
     ##
-    # Open a PR to update the number in `lib/camerata/version.rb` to the latest version
+    # Open a PR to update the number in `lib/camerata/version.rb` to the latest version.
+    # This should happen automatically, but it's not working as expected.
+    # Removing it for now until we can come up with a better approach.
     def increment_camerata_version
-      starting_branch = `git rev-parse --abbrev-ref HEAD`
-      starting_branch.chomp
-      temporary_branch = "increment_camerata_version"
-      `git branch -D #{temporary_branch}`
-      `git checkout -b #{temporary_branch}`
-      tfile = make_version_tempfile
-      FileUtils.mv(tfile.path, version_file)
-      pr_message = "Increment camerata version to #{new_version_number}"
-      `git commit #{version_file} -m "#{pr_message}"`
-      `git push --set-upstream origin #{temporary_branch}`
-      @client.create_pull_request("#{@github_user}/#{@github_project}", "master", temporary_branch, pr_message, "")
-      `git checkout #{starting_branch}`
-      `git branch -D #{temporary_branch}`
+      puts "**********"
+      puts "Please go open a PR for camerata that increments lib/camerata/version.rb to #{new_version_number}"
+      puts "**********"
+      # starting_branch = `git rev-parse --abbrev-ref HEAD`
+      # starting_branch.chomp
+      # temporary_branch = "increment_camerata_version"
+      # `git branch -D #{temporary_branch}`
+      # `git checkout -b #{temporary_branch}`
+      # tfile = make_version_tempfile
+      # FileUtils.mv(tfile.path, version_file)
+      # pr_message = "Increment camerata version to #{new_version_number}"
+      # `git commit #{version_file} -m "#{pr_message}"`
+      # `git push --set-upstream origin #{temporary_branch}`
+      # @client.create_pull_request("#{@github_user}/#{@github_project}", "master", temporary_branch, pr_message, "")
+      # `git checkout #{starting_branch}`
+      # `git branch -D #{temporary_branch}`
     end
 
     def version_file
