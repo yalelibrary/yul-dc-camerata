@@ -2,7 +2,7 @@ version: '3'
 services:
   db:
     environment:
-      POSTGRES_MULTIPLE_DATABASES: blacklight_yul_${RAILS_ENV:-production},management_yul_${RAILS_ENV:-production}
+      POSTGRES_MULTIPLE_DATABASES: blacklight_yul_${RAILS_ENV:-production},management_yul_${RAILS_ENV:-production},iiif_manifest_yul_${RAILS_ENV:-production}
     logging:
       driver: awslogs
       options:
