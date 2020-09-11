@@ -10,7 +10,22 @@ module Camerata
     end
 
     def self.call_aws_ssm(key)
-      `aws ssm get-parameters --names #{key}`
+      `aws ssm get-parameters --names #{key} --with-decryption`
+    end
+
+    def self.copy_param_set(group, target_ns, source_ns)
+      group.each do |name, version|
+        set(create_param_name(target_ns, source_ns, name), version)
+      end
+    end
+
+    def self.create_param_name(target_ns, source_ns, name)
+      # Gets param name base by removing any ns prefixes from param name
+      # param_base of "YUL_TEST_BLACKLIGHT_VERSION" --> "BLACKLIGHT_VERSION"
+      # param_base defaults to name if source_ns is empty
+      param_base = source_ns.strip.empty? ? name : name.split("#{source_ns}_")[1]
+      # Returns the new param name with target_ns prefixed to base
+      "#{target_ns}_#{param_base}"
     end
 
     # rubocop:disable Naming/AccessorMethodName
@@ -42,9 +57,13 @@ module Camerata
     def self.set(key, value, secret = false)
       puts "Setting #{key} param value to #{value}. Secret: #{secret}"
       raise 'please set your AWS_PROFILE and AWS_DEFAULT_REGION' unless ENV['AWS_DEFAULT_REGION'] && ENV['AWS_PROFILE']
-      type = secret ? 'SecureString' : 'String'
-      result = `aws ssm put-parameter --name "#{key}" --type #{type} --value "#{value}" --overwrite`
+      result = put_parameter(key, value, secret)
       JSON.parse(result) if result && !result.empty?
+    end
+
+    def self.put_parameter(key, value, secret = false)
+      type = secret ? 'SecureString' : 'String'
+      `aws ssm put-parameter --name "#{key}" --type #{type} --value "#{value}" --overwrite`
     end
 
     def self.load_env
