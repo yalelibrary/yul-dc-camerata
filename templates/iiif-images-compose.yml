@@ -5,8 +5,8 @@ services:
     environment:
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
       AWS_SECRET_KEY: ${AWS_SECRET_ACCESS_KEY}
-      S3CACHE_BUCKET_NAME: yale-image-samples/cantaloupe/cache #NO TRAILING SLASH!
-      S3_SOURCE_BUCKET_NAME: yale-image-samples
-      IIIF_IMAGE_VERSION:  
+      S3CACHE_BUCKET_NAME: ${S3_SOURCE_BUCKET_NAME}/cantaloupe/cache #NO TRAILING SLASH!
+      S3_SOURCE_BUCKET_NAME:
+      IIIF_IMAGE_VERSION:
     ports:
       - '8182:8182'
