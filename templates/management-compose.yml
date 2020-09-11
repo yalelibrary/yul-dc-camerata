@@ -25,6 +25,8 @@ services:
       SOLR_CORE: blacklight-core
       TEMP_IMAGE_WORKSPACE: /tmp
       VPN:
+      MC_USER:
+      MC_PW:
       # The management app needs the versions for all the applications for the dashboard
       IIIF_MANIFEST_VERSION:
       SOLR_VERSION:
@@ -61,6 +63,8 @@ services:
       SOLR_CORE: blacklight-core
       TEMP_IMAGE_WORKSPACE: /tmp
       VPN:
+      MC_USER:
+      MC_PW:
       # The management app needs the versions for all the applications for the dashboard
       IIIF_MANIFEST_VERSION:
       SOLR_VERSION:
