@@ -13,6 +13,8 @@ services:
       POSTGRES_DB: management_yul_production
       PASSENGER_APP_ENV: ${RAILS_ENV:-production}
       RAILS_ENV: ${RAILS_ENV:-production}
+      S3_SOURCE_BUCKET_NAME:
+      SAMPLE_BUCKET:
       SOLR_BASE_URL: http://${CLUSTER_NAME}-solr.${CLUSTER_NAME}:8983/solr
       POSTGRES_HOST: ${CLUSTER_NAME}-psql.${CLUSTER_NAME}
     logging:
@@ -34,6 +36,8 @@ services:
       POSTGRES_DB: management_yul_production
       PASSENGER_APP_ENV: ${RAILS_ENV:-production}
       RAILS_ENV: ${RAILS_ENV:-production}
+      S3_SOURCE_BUCKET_NAME:
+      SAMPLE_BUCKET: 
       SOLR_BASE_URL: http://${CLUSTER_NAME}-solr.${CLUSTER_NAME}:8983/solr
       POSTGRES_HOST: ${CLUSTER_NAME}-psql.${CLUSTER_NAME}
     logging:
