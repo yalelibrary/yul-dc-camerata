@@ -7,8 +7,8 @@ services:
       AWS_ACCESS_KEY_ID:
       AWS_DEFAULT_REGION: us-east-1
       AWS_SECRET_ACCESS_KEY:
-      IIIF_IMAGE_BASE_URL: http://iiif_image:8182/iiif
-      IIIF_MANIFESTS_BASE_URL: http://localhost/manifests/
+      IIIF_IMAGE_BASE_URL: ${IIIF_IMAGE_BASE_URL:-http://localhost:8182/iiif}
+      IIIF_MANIFESTS_BASE_URL: ${IIIF_MANIFESTS_BASE_URL:-http://localhost/manifests/}
       MC_USER:
       MC_PW:
       PASSENGER_APP_ENV: development # development
@@ -45,7 +45,7 @@ services:
       AWS_SECRET_ACCESS_KEY:
       IIIF_IMAGE_BASE_URL: http://iiif_image:8182/iiif
       IIIF_MANIFESTS_BASE_URL: http://localhost/manifests/
-      MC_USER: 
+      MC_USER:
       MC_PW:
       PASSENGER_APP_ENV: development # development
       POSTGRES_DB: management_yul_development
