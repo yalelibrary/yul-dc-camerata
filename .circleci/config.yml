@@ -51,8 +51,8 @@ jobs:
           command:  |
             bundle exec rspec smoke_spec
   run-tests:
-    machine:
-      image: ubuntu-1604:202004-01
+    docker:
+      - image: circleci/ruby:2.6-stretch-node-browsers-legacy
     steps:
       - checkout
       - run:
@@ -60,40 +60,26 @@ jobs:
           command: |
             gem install bundler -v 2.1.4 && bundle
       - run:
-          name: Rubocop
+          name: aws-cli
           command: |
-            bundle exec rubocop --parallel
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && unzip awscliv2.zip && sudo ./aws/install
+            sudo curl -Lo /usr/local/bin/ecs-cli https://amazon-ecs-cli.s3.amazonaws.com/ecs-cli-linux-amd64-latest
+            sudo chmod +x /usr/local/bin/ecs-cli
       - run:
-          name: Setup Secrets
+          name: Set up aws
           command: |
-            echo HTTP_USERNAME=test >> .secrets
-            echo HTTP_PASSWORD=test >> .secrets
             echo AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} >> .secrets
             echo AWS_SECRET_KEY=${AWS_SECRET_KEY} >> .secrets
             mkdir -p ~/.aws
             echo ${AWS_PROFILE_VALUE} | base64 -d > ~/.aws/credentials
       - run:
-          name: Docker Compose Up
-          environment:
-            RAILS_ENV: development
+          name: Rubocop
           command: |
-            set -x
-            ls -l
-            bundle exec ./exe/camerata up -d
+            bundle exec rubocop --parallel
       - run:
           name: rspec
           command:  |
             bundle exec rspec
-      - run:
-          name: Wait for services to be fully up
-          command: |
-            wget --tries 10 --retry-connrefused http://localhost:8983/solr/
-            wget --tries 10 --retry-connrefused http://test:test@localhost:3001
-            wget --tries 10 --retry-connrefused http://test:test@localhost:3000
-      - run:
-          name: smoke specs
-          command:  |
-            bundle exec rspec smoke_spec
   deploy-smoke:
     docker:
       - image: circleci/ruby:2.6-stretch-node-browsers-legacy
