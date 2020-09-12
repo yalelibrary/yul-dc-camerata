@@ -11,6 +11,7 @@ require "camerata/dot_rc"
 require "camerata/parameters"
 require "camerata/app_versions"
 require "camerata/secrets"
+require "camerata/cluster"
 require "camerata/taggable_app"
 
 # rubocop:disable Metrics/ClassLength
@@ -411,6 +412,7 @@ module Camerata
       template(".env.erb", env_path(type)) unless File.exist?(env_path(type))
       Camerata::AppVersions.load_env
       Camerata::Secrets.load_env
+      Camerata::Cluster.load_env
       build_compose(type)
     end
 
