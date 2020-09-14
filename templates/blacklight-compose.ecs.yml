@@ -6,6 +6,7 @@ services:
       HTTP_PASSWORD: ${HTTP_PASSWORD}
       HTTP_PASSWORD_PROTECT: 'true'
       HTTP_USERNAME: ${HTTP_USERNAME}
+      IIIF_IMAGE_BASE_URL: 'https://collections-test.library.yale.edu/iiif'
       IIIF_MANIFESTS_BASE_URL: /manifests/
       PASSENGER_APP_ENV: ${RAILS_ENV:-production}
       POSTGRES_HOST: ${CLUSTER_NAME}-psql.${CLUSTER_NAME}
