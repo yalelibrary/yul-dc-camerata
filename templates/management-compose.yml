@@ -41,7 +41,7 @@ services:
     image: yalelibraryit/dc-management:${MANAGEMENT_VERSION}
     command: /sbin/setuser app bash -l -c "bin/delayed_job run"
     environment:
-      ACCESS_MASTER_MOUNT: # The path to the mounted drive, or "s3"
+      ACCESS_MASTER_MOUNT: s3 # The path to the mounted drive, or "s3"
       AWS_ACCESS_KEY_ID:
       AWS_DEFAULT_REGION: us-east-1
       AWS_SECRET_ACCESS_KEY:
