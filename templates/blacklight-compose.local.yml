@@ -6,6 +6,7 @@ services:
     image: yalelibraryit/dc-blacklight:master
     <%- end -%>
     environment:
+      IIIF_IMAGE_BASE_URL: ${IIIF_IMAGE_BASE_URL:-http://localhost:8182/iiif}
       IIIF_MANIFESTS_BASE_URL: ${IIIF_MANIFESTS_BASE_URL:-http://localhost/manifests/}
       PASSENGER_APP_ENV: development
       POSTGRES_DB: blacklight_yul_development
