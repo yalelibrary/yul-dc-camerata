@@ -4,8 +4,8 @@ services:
     environment:
       HTTP_USERNAME: ${HTTP_USERNAME}
       HTTP_PASSWORD: ${HTTP_PASSWORD}
-      IIIF_IMAGE_BASE_URL: 'https://collections-demo.library.yale.edu/iiif'
-      IIIF_MANIFESTS_BASE_URL: 'https://collections-demo.library.yale.edu/manifests'
+      IIIF_IMAGE_BASE_URL: 'https://collections-test.library.yale.edu/iiif'
+      IIIF_MANIFESTS_BASE_URL: 'https://collections-test.library.yale.edu/manifests'
       MC_USER: ${MC_USER}
       MC_PW: ${MC_PW}
       RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
@@ -27,8 +27,8 @@ services:
     environment:
       HTTP_USERNAME: ${HTTP_USERNAME}
       HTTP_PASSWORD: ${HTTP_PASSWORD}
-      IIIF_IMAGE_BASE_URL: 'https://collections-demo.library.yale.edu/iiif'
-      IIIF_MANIFESTS_BASE_URL: 'https://collections-demo.library.yale.edu/manifests'
+      IIIF_IMAGE_BASE_URL: 'https://collections-test.library.yale.edu/iiif'
+      IIIF_MANIFESTS_BASE_URL: 'https://collections-test.library.yale.edu/manifests'
       MC_USER: ${MC_USER}
       MC_PW: ${MC_PW}
       RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
