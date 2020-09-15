@@ -126,35 +126,15 @@ RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
     end
   end
   describe "The management index page at #{management_url}" do
-    it "has at least six version numbers in the table" do
-      # skipping looking for the first row of the version number table for the
-      # moment -- will add CSS to make this easier in the management app
-      # in a later PR.
+    it "has version numbers in the table" do
       visit management_url
-      find("tr:nth-child(2)")
-      within("tr:nth-child(2)") do
-        expect(page).to have_content(/v\d+\.\d+\.\d+/)
-      end
-      find("tr:nth-child(3)")
-      within("tr:nth-child(3)") do
-        expect(page).to have_content(/v\d+\.\d+\.\d+/)
-      end
-      find("tr:nth-child(4)")
-      within("tr:nth-child(4)") do
-        expect(page).to have_content(/v\d+\.\d+\.\d+/)
-      end
-      find("tr:nth-child(5)")
-      within("tr:nth-child(5)") do
-        expect(page).to have_content(/v\d+\.\d+\.\d+/)
-      end
-      find("tr:nth-child(6)")
-      within("tr:nth-child(6)") do
-        expect(page).to have_content(/v\d+\.\d+\.\d+/)
-      end
-      find("tr:nth-child(7)")
-      within("tr:nth-child(7)") do
-        expect(page).to have_content(/v\d+\.\d+\.\d+/)
-      end
+      expect(page).to have_selector("#management_version", text: /v\d+.\d+.\d+/)
+      expect(page).to have_selector("#postgres_version", text: /v\d+.\d+.\d+/)
+      expect(page).to have_selector("#blacklight_version", text: /v\d+.\d+.\d+/)
+      expect(page).to have_selector("#solr_version", text: /v\d+.\d+.\d+/)
+      expect(page).to have_selector("#iiif_image_version", text: /v\d+.\d+.\d+/)
+      expect(page).to have_selector("#iiif_manifest_version", text: /v\d+.\d+.\d+/)
+      expect(page).to have_selector("#camerata_version", text: /v\d+.\d+.\d+/)
     end
   end
 end
