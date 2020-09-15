@@ -16,14 +16,12 @@ services:
       POSTGRES_HOST: db
       POSTGRES_PASSWORD: password
       POSTGRES_USER: postgres
-      PTIFF_OUTPUT_DIRECTORY: data
       RAILS_LOG_TO_STDOUT: 'true'
       RAILS_RELATIVE_URL_ROOT: /management
       S3_SOURCE_BUCKET_NAME:
       SAMPLE_BUCKET: yul-development-samples
       SOLR_BASE_URL: http://solr:8983/solr
       SOLR_CORE: blacklight-core
-      TEMP_IMAGE_WORKSPACE: /tmp
       VPN:
       MC_USER:
       MC_PW:
@@ -54,14 +52,12 @@ services:
       POSTGRES_HOST: db
       POSTGRES_PASSWORD: password
       POSTGRES_USER: postgres
-      PTIFF_OUTPUT_DIRECTORY: data
       RAILS_LOG_TO_STDOUT: 'true'
       RAILS_RELATIVE_URL_ROOT: /management
       S3_SOURCE_BUCKET_NAME:
       SAMPLE_BUCKET: yul-development-samples
       SOLR_BASE_URL: http://solr:8983/solr
       SOLR_CORE: blacklight-core
-      TEMP_IMAGE_WORKSPACE: /tmp
       VPN:
       MC_USER:
       MC_PW:
