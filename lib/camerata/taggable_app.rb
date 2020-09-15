@@ -117,7 +117,7 @@ module Camerata
       options[:since_tag] = last_version_number
       options[:future_release] = new_version_number
       options[:token] = ENV['CHANGELOG_GITHUB_TOKEN']
-      options[:enhancement_labels] = ["Feature"]
+      options[:enhancement_labels] = ["Feature", "Features"]
       options[:bug_labels] = ["Bug", "Bugs", "bug", "bugs"]
       options[:enhancement_prefix] = "**New Features:**"
       options[:bug_prefix] = "**Fixed Bugs:**"
