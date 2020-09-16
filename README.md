@@ -75,6 +75,15 @@ cp: cannot create directory '/var/solr/data/blacklight-core/conf': Permission de
 ```
 make sure that you have the correct version of ecs-cli, defined below.
 
+## Base Docker Image
+The base docker image, used for our three Ruby on Rails applications (Management, Blacklight, and IIIF Manifest server), lives in this repository under [base/Dockerfile](base/Dockerfile). In order to rebuild this image, first edit the [base/docker-compose.yml](base/docker-compose.yml) to reflect the new version number (should use semantic versioning, just like other applications). Then
+```bash
+cd base
+docker-compose build
+docker-compose push
+```
+
+
 ### AWS Setup
 If you receive a `please set your AWS_PROFILE and AWS_DEFAULT_REGION (RuntimeError)` error when you `cam up`, you will need to set your AWS credentials. Credentials can be set in the `~/.aws/credentials` file in the following format:
 
