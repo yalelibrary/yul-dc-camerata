@@ -7,7 +7,6 @@ services:
     <%- end -%>
     environment:
       ACCESS_MASTER_MOUNT: "s3" # The path to the mounted drive, or "S3"
-      THUMBNAIL_BASE_URL: "http://iiif_image:8182/iiif"
       PASSENGER_APP_ENV: development
       POSTGRES_MULTIPLE_DATABASES: management_yul_development
       SOLR_TEST_CORE: blacklight-test
