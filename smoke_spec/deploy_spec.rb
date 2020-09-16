@@ -53,9 +53,11 @@ RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
       expect(page).to have_selector(".branch-name", text: /v\d+\.\d+\.\d+/)
       click_on 'search'
       expect(page).to have_selector(".document-position-4"), "an open search has at least 5 items"
-      if ENV['YUL_DC_SERVER']
-        expect(page).to have_selector("[aria-label='Go to page 5']"), "an open search has at least 5 pages"
-      end
+    end
+    it 'has multiple pages of results in deployed environments', deployed: true do
+      visit uri
+      click_on 'search'
+      expect(page).to have_selector("[aria-label='Go to page 5']"), "an open search has at least 5 pages"
     end
     it 'is local or has a valid SSL certificate' do
       # this method is using the HTTP gem instead of capybara because
