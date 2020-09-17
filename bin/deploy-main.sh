@@ -54,6 +54,7 @@ then
     --launch-type FARGATE \
     --create-log-groups \
     --cluster ${CLUSTER_NAME} \
+    --timeout 10 \
     --target-groups targetGroupArn=$BL_TG_ARN,containerName=blacklight,containerPort=3000 \
     --target-groups targetGroupArn=$IMG_TG_ARN,containerName=iiif_image,containerPort=8182 \
     --target-groups targetGroupArn=$MFST_TG_ARN,containerName=iiif_manifest,containerPort=80 \
