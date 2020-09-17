@@ -44,8 +44,8 @@ then
   echo $MGMT_TG_ARN
 
   # Launch the service and register containers with the loadbalancer
-  # The $2 here can be anything, but is usually --enable-service-discovery
   ecs-cli compose  \
+  # The $2 here can be anything, but is usually --enable-service-discovery
     --region $AWS_DEFAULT_REGION \
     --project-name ${CLUSTER_NAME}-main \
     --ecs-params ${CLUSTER_NAME}-ecs-params.yml \
