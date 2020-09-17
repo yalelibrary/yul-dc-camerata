@@ -44,8 +44,8 @@ then
   echo $MGMT_TG_ARN
 
   # Launch the service and register containers with the loadbalancer
-  # The $2 here can be anything, but is usually --enable-service-discovery
   ecs-cli compose  \
+  # The $2 here can be anything, but is usually --enable-service-discovery
     --region $AWS_DEFAULT_REGION \
     --project-name ${CLUSTER_NAME}-main \
     --ecs-params ${CLUSTER_NAME}-ecs-params.yml \
@@ -54,6 +54,7 @@ then
     --launch-type FARGATE \
     --create-log-groups \
     --cluster ${CLUSTER_NAME} \
+    --timeout 10 \
     --target-groups targetGroupArn=$BL_TG_ARN,containerName=blacklight,containerPort=3000 \
     --target-groups targetGroupArn=$IMG_TG_ARN,containerName=iiif_image,containerPort=8182 \
     --target-groups targetGroupArn=$MFST_TG_ARN,containerName=iiif_manifest,containerPort=80 \
