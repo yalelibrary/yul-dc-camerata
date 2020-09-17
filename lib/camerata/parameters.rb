@@ -21,11 +21,11 @@ module Camerata
 
     def self.create_param_name(target_ns, source_ns, name)
       # Gets param name base by removing any ns prefixes from param name
-      # param_base of "YUL_TEST_BLACKLIGHT_VERSION" --> "BLACKLIGHT_VERSION"
+      # param_base of "/YUL_TEST/BLACKLIGHT_VERSION" --> "BLACKLIGHT_VERSION"
       # param_base defaults to name if source_ns is empty
-      param_base = source_ns.strip.empty? ? name : name.split("#{source_ns}_")[1]
-      # Returns the new param name with target_ns prefixed to base
-      "#{target_ns}_#{param_base}"
+      param_base = source_ns.strip.empty? ? name : name.split("/#{source_ns}/")[1]
+      # Returns the new param name with /target_ns/ prefixed to base
+      "/#{target_ns}/#{param_base}"
     end
 
     # rubocop:disable Naming/AccessorMethodName
@@ -46,7 +46,7 @@ module Camerata
         if namespace.strip.empty?
           "\"#{v}\""
         else
-          "\"#{namespace}_#{v}\""
+          "\"/#{namespace}/#{v}\""
         end
       end
       parameter_string = parameter_string.join(" ")
@@ -65,7 +65,8 @@ module Camerata
       type = secret ? 'SecureString' : 'String'
       `aws ssm put-parameter --name "#{key}" --type #{type} --value "#{value}" --overwrite`
     end
-
+# just babbling
+# default namespace /BLACKLIGHT_VERSION   cluster-specific namespace /YUL_TEST/BLACKLIGHT_VERSION
     def self.load_env
       get_all.each do |k, v|
         ENV[k] = v unless ENV[k] && !ENV[k].empty?

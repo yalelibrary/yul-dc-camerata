@@ -167,7 +167,6 @@ module Camerata
       end
     end
 
-    # what does env_copy do
     desc "env_get KEY", "get value of a parameter"
     def env_get(key)
       result = Camerata::Parameters.get(key)

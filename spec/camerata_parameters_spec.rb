@@ -10,13 +10,8 @@ RSpec.describe Camerata::Parameters do
     allow(described_class).to receive(:call_aws_ssm).and_return(File.open(File.join("spec", "fixtures", 'camerata_version.json')).read)
     # stubbing the parameters method which is ordinarily provided by a subclass
     allow(described_class).to receive(:parameters).and_return(%w[
-                                                                BLACKLIGHT_VERSION
-                                                                IIIF_IMAGE_VERSION
-                                                                IIIF_MANIFEST_VERSION
-                                                                MANAGEMENT_VERSION
-                                                                POSTGRES_VERSION
-                                                                SOLR_VERSION
-                                                                CAMERATA_VERSION
+                                                                TEST_VERSION
+                                                                TEST_API_KEY
                                                               ])
   end
 
@@ -41,11 +36,21 @@ RSpec.describe Camerata::Parameters do
 
   context "create_param_name" do
     it "creates a new ssm param name" do
-      expect(described_class.create_param_name("TARGET_NS", "SOURCE_NS", "SOURCE_NS_PARAM")).to match("TARGET_NS_PARAM")
+      expect(described_class.create_param_name("TARGET_NS", "SOURCE_NS", "/SOURCE_NS/PARAM")).to match("/TARGET_NS/PARAM")
     end
 
     it "creates appropriate ssm param name when source ns not provided" do
-      expect(described_class.create_param_name("TARGET_NS", "", "PARAM")).to match("TARGET_NS_PARAM")
+      expect(described_class.create_param_name("TARGET_NS", "", "PARAM")).to match("/TARGET_NS/PARAM")
     end
+  end
+
+  context "get_all" do
+    it "gets all ssm parameters for a namespace" do
+      expect(described_class.get_all("TEST_NS")).to include("/TEST_NS/TEST_API_KEY" => 2, "/TEST_NS/TEST_API_KEY" => 1)
+    end
+    
+    # it "gets all ssm parameters from default namespace" do
+    #   expect(described_class.get_all).to include("TEST_API_KEY" => 2, "TEST_API_KEY" => 1)
+    # end
   end
 end
