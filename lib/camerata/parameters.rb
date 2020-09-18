@@ -29,11 +29,12 @@ module Camerata
     end
 
     # rubocop:disable Naming/AccessorMethodName
-    def self.pull_parameter_hash(key)
+    def self.pull_parameter_hash(key, namespace)
       json = get(key)
       hash = {}
       json["Parameters"].each do |p|
-        key = p['Name']
+        # Remove namespace before setting key
+        key = p['Name'].sub(/^\/#{Regexp.escape(namespace)}\//, '')
         value = p['Value']
         hash[key] = value
       end
@@ -41,16 +42,18 @@ module Camerata
     end
 
     def self.get_all(namespace = "")
-      parameter_string = parameters.map do |v|
+      parameter_list = parameters.map do |v|
         # Pass prefix with namespace if it is provided
-        if namespace.strip.empty?
-          "\"#{v}\""
-        else
-          "\"/#{namespace}/#{v}\""
-        end
+        # Create both versions of param string
+        # Use sub verion: sub(/^\/#{Regexp.escape(namespace)}\//, '')
+        "\"#{v}\""
       end
-      parameter_string = parameter_string.join(" ")
-      pull_parameter_hash(parameter_string)
+      namespaced_parameter_hash = pull_parameter_hash(parameter_list.join(" "), namespace)
+      parameter_list = parameter_list.map do |p|
+        p.sub(/^\/#{Regexp.escape(namespace)}\//, '')
+      end
+      default_parameter_hash = pull_parameter_hash(parameter_list.join(" "), namespace)
+      namespaced_parameter_hash.merge(default_parameter_hash)
     end
     # rubocop:enable Naming/AccessorMethodName
 

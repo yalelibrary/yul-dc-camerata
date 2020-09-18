@@ -29,9 +29,16 @@ RSpec.describe Camerata::Parameters do
     expect(described_class.get(:ANYTHING)["Parameters"].first["Name"]).to eq 'ANYTHING'
   end
 
-  it "turns ssm params into hash" do
-    allow(described_class).to receive(:call_aws_ssm).and_return(File.open(File.join("spec", "fixtures", 'multiple_params.json')).read)
-    expect(described_class.pull_parameter_hash("name1 name2")["name2"]).to eq "value2"
+  context "pull_parameter_hash" do
+    it "turns ssm params into hash" do
+      allow(described_class).to receive(:call_aws_ssm).and_return(File.open(File.join("spec", "fixtures", 'default_params.json')).read)
+      expect(described_class.pull_parameter_hash("name1 name2", "")["name2"]).to eq "default2"
+    end
+
+    it "strips the prefix off the key" do
+      allow(described_class).to receive(:call_aws_ssm).with('"/TEST_NS/name1" "/TEST_NS/name2"').and_return(File.open(File.join("spec", "fixtures", "multiple_params.json")).read)
+      expect(described_class.pull_parameter_hash('"/TEST_NS/name1" "/TEST_NS/name2"', "TEST_NS")["name2"]).to eq "value2"
+    end
   end
 
   context "create_param_name" do
@@ -46,10 +53,24 @@ RSpec.describe Camerata::Parameters do
 
   context "get_all" do
     it "gets all ssm parameters for a namespace" do
-      expect(described_class).to receive(:call_aws_ssm).with('"/TEST_NS/name1" "/TEST_NS/name2"').and_return(File.open(File.join("spec", "fixtures", 'multiple_params.json')).read)
+      allow(described_class).to receive(:call_aws_ssm).with('"/TEST_NS/name1" "/TEST_NS/name2"').and_return(File.open(File.join("spec", "fixtures", 'multiple_params.json')).read)
       expect(described_class.get_all("TEST_NS")).to include("name1" => "value1", "name2" => "value2")
+      expect(described_class).to have_received(:call_aws_ssm).with('"/TEST_NS/name1" "/TEST_NS/name2"')
     end
 
+    it "gets top level ssm parameters" do
+      allow(described_class).to receive(:call_aws_ssm) do |arg|
+        case arg
+        when '"/TEST_NS/name1" "/TEST_NS/name2"'
+          File.open(File.join("spec", "fixtures", 'multiple_params.json')).read
+        when '"name1" "name2"'
+          File.open(File.join("spec", "fixtures", 'default_params.json')).read
+        end
+      end
+      expect(described_class.get_all("TEST_NS")).to include("name1" => "value1", "name2" => "value2", "name3" => "default3")
+      expect(described_class).to have_received(:call_aws_ssm).with('"/TEST_NS/name1" "/TEST_NS/name2"')
+      expect(described_class).to have_received(:call_aws_ssm).with('"name1" "name2"')
+    end
     # it "gets all ssm parameters from default namespace" do
     #   expect(described_class.get_all).to include("TEST_API_KEY" => 2, "TEST_API_KEY" => 1)
     # end
