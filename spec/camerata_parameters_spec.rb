@@ -2,24 +2,15 @@
 RSpec.describe Camerata::Parameters do
   before do
     allow(described_class).to receive(:put_parameter).and_return("{\n    \"Version\": 1,\n    \"Tier\": \"Standard\"\n}\n")
-    allow(described_class).to receive(:call_aws_ssm).and_return("{\n    \"Parameters\": [\n        {\n            \"Name\": \"BLACKLIGHT_VERSION\",\n            \"Value\": \"v1.15.1\"\n}]}")
     allow(Camerata::Secrets).to receive(:aws_secret_access_key).and_return("a-secret-key")
     allow(Camerata::Secrets).to receive(:aws_access_key_id).and_return("an-access-key-id")
     allow(Camerata::Secrets).to receive(:aws_access_key_id).and_return("an-access-key-id")
-    # Stubbing call to aws cli so this can be a unit test
-    allow(described_class).to receive(:call_aws_ssm).and_return(File.open(File.join("spec", "fixtures", 'camerata_version.json')).read)
     # stubbing the parameters method which is ordinarily provided by a subclass
     allow(described_class).to receive(:parameters).and_return(%w[
-                                                                BLACKLIGHT_VERSION
-                                                                IIIF_IMAGE_VERSION
-                                                                IIIF_MANIFEST_VERSION
-                                                                MANAGEMENT_VERSION
-                                                                POSTGRES_VERSION
-                                                                SOLR_VERSION
-                                                                CAMERATA_VERSION
+                                                                name1
+                                                                name2
                                                               ])
   end
-
   # moving aside the aws-related environment variables
   around do |example|
     profile = ENV['AWS_PROFILE']
@@ -31,21 +22,51 @@ RSpec.describe Camerata::Parameters do
     ENV['AWS_DEFAULT_REGION'] = region
   end
 
-  # it "gets a CAMERATA_VERSION" do
-  #   expect(described_class.get("ANYTHING")["Parameters"].first["Name"]).to eq "CAMERATA_VERSION"
-  # end
+  it "gets a parameter from the store" do
+    allow(described_class).to receive(:call_aws_ssm) do |arg|
+      "{\n    \"Parameters\": [\n        {\n            \"Name\": #{arg},\n            \"Value\": #{arg}\n}]}"
+    end
+    expect(described_class.get(:ANYTHING)["Parameters"].first["Name"]).to eq 'ANYTHING'
+  end
 
-  # it "turns ssm params into hash" do
-  #   expect(described_class.get_hash("ANYTHING")["CAMERATA_VERSION"]).to eq "v2.4.0"
-  # end
+  context "pull_parameter_hash" do
+    it "turns ssm params into hash" do
+      allow(described_class).to receive(:call_aws_ssm).and_return(File.open(File.join("spec", "fixtures", 'default_params.json')).read)
+      expect(described_class.pull_parameter_hash("name1 name2", "")["name2"]).to eq "default2"
+    end
+
+    it "strips the prefix off the key" do
+      allow(described_class).to receive(:call_aws_ssm).with('"/TEST_NS/name1" "/TEST_NS/name2"').and_return(File.open(File.join("spec", "fixtures", "multiple_params.json")).read)
+      expect(described_class.pull_parameter_hash('"/TEST_NS/name1" "/TEST_NS/name2"', "TEST_NS")["name2"]).to eq "value2"
+    end
+  end
 
   context "create_param_name" do
     it "creates a new ssm param name" do
-      expect(described_class.create_param_name("TARGET_NS", "SOURCE_NS", "SOURCE_NS_PARAM")).to match("TARGET_NS_PARAM")
+      expect(described_class.create_param_name("TARGET_NS", "SOURCE_NS", "/SOURCE_NS/PARAM")).to match("/TARGET_NS/PARAM")
     end
 
     it "creates appropriate ssm param name when source ns not provided" do
-      expect(described_class.create_param_name("TARGET_NS", "", "PARAM")).to match("TARGET_NS_PARAM")
+      expect(described_class.create_param_name("TARGET_NS", "", "PARAM")).to match("/TARGET_NS/PARAM")
     end
+  end
+
+  context "get_all" do
+    it "gets top and namespace level ssm parameters" do
+      allow(described_class).to receive(:call_aws_ssm) do |arg|
+        case arg
+        when '"/TEST_NS/name1" "/TEST_NS/name2"'
+          File.open(File.join("spec", "fixtures", 'multiple_params.json')).read
+        when '"name1" "name2"'
+          File.open(File.join("spec", "fixtures", 'default_params.json')).read
+        end
+      end
+      expect(described_class.get_all("TEST_NS")).to include("name1" => "value1", "name2" => "value2", "name3" => "default3")
+      expect(described_class).to have_received(:call_aws_ssm).with('"/TEST_NS/name1" "/TEST_NS/name2"')
+      expect(described_class).to have_received(:call_aws_ssm).with('"name1" "name2"')
+    end
+    # it "gets all ssm parameters from default namespace" do
+    #   expect(described_class.get_all).to include("TEST_API_KEY" => 2, "TEST_API_KEY" => 1)
+    # end
   end
 end
