@@ -36,3 +36,12 @@ RUN rm /etc/nginx/sites-enabled/default
 ENV APP_HOME /home/app/webapp
 RUN mkdir $APP_HOME && chown -R app $APP_HOME
 WORKDIR $APP_HOME
+
+COPY Gemfile.base $APP_HOME/Gemfile.base
+
+ENV BUNDLE_GEMFILE=$APP_HOME/Gemfile.base \
+BUNDLE_JOBS=4
+RUN gem install bundler -v 2.1.4
+
+COPY --chown=app Gemfile* $APP_HOME/
+RUN /sbin/setuser app bash -l -c "bundle check || bundle install"
