@@ -1,0 +1,23 @@
+{
+    "Parameters": [
+        {
+            "Name": "name1",
+            "Type": "String",
+            "Value": "value1",
+            "Version": 50,
+            "LastModifiedDate": "2020-09-17T15:47:19.587000-04:00",
+            "ARN": "arn:aws:ssm:us-east-1:000000000000:parameter/name1",
+            "DataType": "text"
+        },
+        {
+            "Name": "name2",
+            "Type": "String",
+            "Value": "value2",
+            "Version": 1,
+            "LastModifiedDate": "2020-09-08T12:21:24.334000-04:00",
+            "ARN": "arn:aws:ssm:us-east-1:000000000000:parameter/name2",
+            "DataType": "text"
+        }
+    ],
+    "InvalidParameters": []
+}

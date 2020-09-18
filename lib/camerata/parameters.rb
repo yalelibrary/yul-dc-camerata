@@ -29,7 +29,7 @@ module Camerata
     end
 
     # rubocop:disable Naming/AccessorMethodName
-    def self.get_hash(key)
+    def self.pull_parameter_hash(key)
       json = get(key)
       hash = {}
       json["Parameters"].each do |p|
@@ -50,7 +50,7 @@ module Camerata
         end
       end
       parameter_string = parameter_string.join(" ")
-      get_hash(parameter_string)
+      pull_parameter_hash(parameter_string)
     end
     # rubocop:enable Naming/AccessorMethodName
 
@@ -65,8 +65,8 @@ module Camerata
       type = secret ? 'SecureString' : 'String'
       `aws ssm put-parameter --name "#{key}" --type #{type} --value "#{value}" --overwrite`
     end
-# just babbling
-# default namespace /BLACKLIGHT_VERSION   cluster-specific namespace /YUL_TEST/BLACKLIGHT_VERSION
+
+    # default namespace /BLACKLIGHT_VERSION   cluster-specific namespace /YUL_TEST/BLACKLIGHT_VERSION
     def self.load_env
       get_all.each do |k, v|
         ENV[k] = v unless ENV[k] && !ENV[k].empty?
