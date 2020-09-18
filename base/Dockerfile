@@ -7,7 +7,10 @@ RUN echo 'Downloading Packages' && \
   apt-get update -qq && \
   apt-get install -y --no-install-recommends \
     build-essential \
+    imagemagick \
     libsasl2-dev \
+    libtiff-tools \
+    libvips-tools \
     nodejs \
     rsync \
     tzdata \
