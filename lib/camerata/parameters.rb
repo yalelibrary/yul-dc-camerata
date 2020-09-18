@@ -20,12 +20,9 @@ module Camerata
     end
 
     def self.create_param_name(target_ns, source_ns, name)
-      # Gets param name base by removing any ns prefixes from param name
-      # param_base of "/YUL_TEST/BLACKLIGHT_VERSION" --> "BLACKLIGHT_VERSION"
-      # param_base defaults to name if source_ns is empty
-      param_base = source_ns.strip.empty? ? name : name.split("/#{source_ns}/")[1]
       # Returns the new param name with /target_ns/ prefixed to base
-      "/#{target_ns}/#{param_base}"
+      stripped_name = name.sub(/^\/#{Regexp.escape(source_ns)}\//, '')
+      "/#{target_ns}/#{stripped_name}"
     end
 
     # rubocop:disable Naming/AccessorMethodName
@@ -43,17 +40,15 @@ module Camerata
 
     def self.get_all(namespace = "")
       parameter_list = parameters.map do |v|
-        # Pass prefix with namespace if it is provided
-        # Create both versions of param string
-        # Use sub verion: sub(/^\/#{Regexp.escape(namespace)}\//, '')
         "\"#{v}\""
       end
-      namespaced_parameter_hash = pull_parameter_hash(parameter_list.join(" "), namespace)
-      parameter_list = parameter_list.map do |p|
-        p.sub(/^\/#{Regexp.escape(namespace)}\//, '')
-      end
+      # Create both versions of param string
       default_parameter_hash = pull_parameter_hash(parameter_list.join(" "), namespace)
-      namespaced_parameter_hash.merge(default_parameter_hash)
+      parameter_list = parameters.map do |p|
+        "\"/#{namespace}/#{p}\""
+      end
+      namespaced_parameter_hash = pull_parameter_hash(parameter_list.join(" "), namespace)
+      default_parameter_hash.merge(namespaced_parameter_hash)
     end
     # rubocop:enable Naming/AccessorMethodName
 
@@ -70,8 +65,8 @@ module Camerata
     end
 
     # default namespace /BLACKLIGHT_VERSION   cluster-specific namespace /YUL_TEST/BLACKLIGHT_VERSION
-    def self.load_env
-      get_all.each do |k, v|
+    def self.load_env(namespace = "")
+      get_all(namespace).each do |k, v|
         ENV[k] = v unless ENV[k] && !ENV[k].empty?
       end
       ENV

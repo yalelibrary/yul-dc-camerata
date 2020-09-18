@@ -52,13 +52,7 @@ RSpec.describe Camerata::Parameters do
   end
 
   context "get_all" do
-    it "gets all ssm parameters for a namespace" do
-      allow(described_class).to receive(:call_aws_ssm).with('"/TEST_NS/name1" "/TEST_NS/name2"').and_return(File.open(File.join("spec", "fixtures", 'multiple_params.json')).read)
-      expect(described_class.get_all("TEST_NS")).to include("name1" => "value1", "name2" => "value2")
-      expect(described_class).to have_received(:call_aws_ssm).with('"/TEST_NS/name1" "/TEST_NS/name2"')
-    end
-
-    it "gets top level ssm parameters" do
+    it "gets top and namespace level ssm parameters" do
       allow(described_class).to receive(:call_aws_ssm) do |arg|
         case arg
         when '"/TEST_NS/name1" "/TEST_NS/name2"'

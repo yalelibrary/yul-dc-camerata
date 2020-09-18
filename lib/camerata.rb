@@ -19,6 +19,7 @@ module Camerata
   class Error < StandardError; end
   class CLI < Thor
     include Thor::Actions
+    @cluster_name = ''
 
     def self.source_root
       File.join(File.dirname(__FILE__), '..', 'templates')
@@ -158,7 +159,6 @@ module Camerata
       # Using the list from app_versions, create new params with the target_ns prefixed to param name
       # copy_param_set should be using create_param_name method to create the new namespaced param name
       Camerata::Parameters.copy_param_set(app_versions, target_ns, source_ns)
-
       # Using the list from secrets, create new params with the target_ns prefixed to param name
       # Also uses create_param_name to create the new namespaced param name
       secrets.each do |name, version|
@@ -226,6 +226,17 @@ module Camerata
     def version
       say "Camerata Version: #{Camerata::VERSION}"
     end
+
+    desc 'deploy_main CLUSTER_NAME', 'deploy the main group of microservices to your specified cluster'
+    def deploy_main(cluster_name)
+      meth = 'deploy-main'
+      bin_path = bin_path_for_method(meth)
+      @cluster_name = cluster_name
+      ensure_env('ecs')
+      cmd = (["COMPOSE_FILE=#{compose_path}", bin_path] + args).join(' ')
+      run(cmd)
+    end
+    map 'deploy-main' => :deploy_main
 
     desc 'deploy_solr CLUSTER_NAME', 'deploy solr to your specified cluster'
     def deploy_solr(*args)
@@ -407,9 +418,9 @@ module Camerata
       # TODO: remove writing these files once the env is confirmed all in memory
       template(".secrets.erb", secrets_path(type)) unless File.exist?(secrets_path(type))
       template(".env.erb", env_path(type)) unless File.exist?(env_path(type))
-      Camerata::AppVersions.load_env
-      Camerata::Secrets.load_env
-      Camerata::Cluster.load_env
+      Camerata::AppVersions.load_env(@cluster_name)
+      Camerata::Secrets.load_env(@cluster_name)
+      Camerata::Cluster.load_env(@cluster_name)
       build_compose(type)
     end
 
