@@ -26,24 +26,29 @@ module Camerata
     end
 
     # rubocop:disable Naming/AccessorMethodName
-    def self.pull_parameter_hash(key, namespace)
+    def self.pull_parameter_hash(key, namespace = nil)
       json = get(key)
       hash = {}
       json["Parameters"].each do |p|
         # Remove namespace before setting key
-        key = p['Name'].sub(/^\/#{Regexp.escape(namespace)}\//, '')
+        key = if namespace
+                p['Name'].sub(/^\/#{Regexp.escape(namespace)}\//, '')
+              else
+                p['Name']
+              end
         value = p['Value']
         hash[key] = value
       end
       hash
     end
 
-    def self.get_all(namespace = "")
+    def self.get_all(namespace = nil)
       parameter_list = parameters.map do |v|
         "\"#{v}\""
       end
       # Create both versions of param string
       default_parameter_hash = pull_parameter_hash(parameter_list.join(" "), namespace)
+      return default_parameter_hash unless namespace
       parameter_list = parameters.map do |p|
         "\"/#{namespace}/#{p}\""
       end
@@ -65,7 +70,7 @@ module Camerata
     end
 
     # default namespace /BLACKLIGHT_VERSION   cluster-specific namespace /YUL_TEST/BLACKLIGHT_VERSION
-    def self.load_env(namespace = "")
+    def self.load_env(namespace = nil)
       get_all(namespace).each do |k, v|
         ENV[k] = v unless ENV[k] && !ENV[k].empty?
       end

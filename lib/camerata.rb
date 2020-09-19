@@ -19,7 +19,7 @@ module Camerata
   class Error < StandardError; end
   class CLI < Thor
     include Thor::Actions
-    @cluster_name = ''
+    @cluster_name = nil
 
     def self.source_root
       File.join(File.dirname(__FILE__), '..', 'templates')

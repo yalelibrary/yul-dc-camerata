@@ -39,6 +39,11 @@ RSpec.describe Camerata::Parameters do
       allow(described_class).to receive(:call_aws_ssm).with('"/TEST_NS/name1" "/TEST_NS/name2"').and_return(File.open(File.join("spec", "fixtures", "multiple_params.json")).read)
       expect(described_class.pull_parameter_hash('"/TEST_NS/name1" "/TEST_NS/name2"', "TEST_NS")["name2"]).to eq "value2"
     end
+
+    it "tolerates an empty namespace argument" do
+      allow(described_class).to receive(:call_aws_ssm).with('"name1" "name2"').and_return(File.open(File.join("spec", "fixtures", 'default_params.json')).read)
+      expect(described_class.pull_parameter_hash('"name1" "name2"')["name1"]).to eq "default1"
+    end
   end
 
   context "create_param_name" do
@@ -65,8 +70,9 @@ RSpec.describe Camerata::Parameters do
       expect(described_class).to have_received(:call_aws_ssm).with('"/TEST_NS/name1" "/TEST_NS/name2"')
       expect(described_class).to have_received(:call_aws_ssm).with('"name1" "name2"')
     end
-    # it "gets all ssm parameters from default namespace" do
-    #   expect(described_class.get_all).to include("TEST_API_KEY" => 2, "TEST_API_KEY" => 1)
-    # end
+    it "tolerates an empty namespace" do
+      allow(described_class).to receive(:call_aws_ssm).with('"name1" "name2"').and_return(File.open(File.join("spec", "fixtures", 'default_params.json')).read)
+      expect(described_class.get_all).to include("name1" => "default1", "name2" => "default2")
+    end
   end
 end
