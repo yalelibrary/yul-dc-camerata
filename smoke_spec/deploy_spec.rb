@@ -46,7 +46,7 @@ ssl_context.verify_mode = OpenSSL::SSL::VERIFY_NONE
 RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
   describe "The blacklight site at #{blacklight_url}" do
     let(:uri) { "#{blacklight_url}/" }
-    it 'loads the home page for local environments', deployed:false do
+    it 'loads the home page for local environments', deployed: false do
       visit uri
       expect(page).to have_selector(".blacklight-catalog"), "not blocked by basic auth"
       expect(page).to have_selector(".blacklight-language_ssim"), "a language facet is present"
@@ -62,7 +62,7 @@ RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
       click_on 'search'
       expect(page).to have_selector("[aria-label='Go to page 5']"), "an open search has at least 5 pages"
     end
-    it 'has a valid SSL certificate', deployed:true do
+    it 'has a valid SSL certificate', deployed: true do
       # this method is using the HTTP gem instead of capybara because
       # capybara.rb is configured to accept insecure certs to allow testing
       # deploys to ephemeral clusters
@@ -80,7 +80,7 @@ RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
     describe 'has a yale-only item' do
       let(:uri) { "#{blacklight_url}/catalog/2000002107188" }
       xit 'that does not show Universal Viewer' do
-        #test needs updating once we have real yale-only items
+        # test needs updating once we have real yale-only items
         visit uri
         expect(page).not_to have_selector(".universal-viewer-iframe")
       end
@@ -104,7 +104,7 @@ RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
           "sequence contains two canvases"
       end
     end
-    describe 'provides a manifest for item 16371253: ', deployed:true do
+    describe 'provides a manifest for item 16371253: ', deployed: true do
       let(:oid) { '16371253' }
       it 'has a sequence with nine canvases that links an image to a live URI' do
         response = HTTP.basic_auth(user: username,
