@@ -28,6 +28,13 @@ RSpec.describe Camerata::CLI do
       expect(output).to match(Camerata::VERSION)
     end
   end
+  context 'push_version' do
+    it "gives an error for unknown app name" do
+      byebug
+      output =  capture(:stdout) { cli.send('push_version', 'apples', 'v1.0.0') }
+      expect(output).to match("Did not find matching version string for ")
+    end
+  end
 
   context 'bin contents' do
     before do
