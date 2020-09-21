@@ -49,7 +49,7 @@ jobs:
       - run:
           name: smoke specs
           command:  |
-            bundle exec rspec smoke_spec
+            bundle exec rspec smoke_spec --tag ~deployed:true
   run-tests:
     docker:
       - image: circleci/ruby:2.6-stretch-node-browsers-legacy
@@ -109,7 +109,7 @@ jobs:
       - run:
           name: smoke
           command: |
-            YUL_DC_SERVER=collections-deploy.curationexperts.com bundle exec cam smoke
+            YUL_DC_SERVER=collections-deploy.curationexperts.com bundle exec cam smoke --tag ~deployed:false
 orbs:
   docker: circleci/docker@1.0.1
 version: 2.1
