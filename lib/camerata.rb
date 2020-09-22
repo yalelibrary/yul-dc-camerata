@@ -21,6 +21,9 @@ module Camerata
     @cluster_name ||= ENV['CLUSTER_NAME']
   end
 
+  def self.set_cluster_name(name)
+    @cluster_name = name
+  end
   # TODO: use cluster env variable
   def self.gather_env(source_ns)
     { "app_versions" => Camerata::AppVersions.get_all(source_ns),
@@ -249,7 +252,7 @@ module Camerata
     def deploy_main(this_cluster)
       meth = 'deploy-main'
       bin_path = bin_path_for_method(meth)
-      @cluster_name = this_cluster
+      Camerata.set_cluster_name(this_cluster)
       ensure_env('ecs')
       cmd = (["COMPOSE_FILE=#{compose_path}", bin_path] + args).join(' ')
       run(cmd)
