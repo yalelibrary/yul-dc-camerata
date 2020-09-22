@@ -51,7 +51,7 @@ AWS_CUSTOM_SECURITY_GROUP_ID=$(yq r manifestly-ecs-params.yml 'run_params.networ
 AWS_EC2_INSTANCE_ID=$(aws ec2 run-instances \
 --image-id $AWS_AMI_ID \
 --instance-type t2.micro \
---key-name myvpc-keypair \
+--key-name $CLUSTER_NAME-keypair \
 --associate-public-ip-address \
 --monitoring "Enabled=false" \
 --security-group-ids $AWS_CUSTOM_SECURITY_GROUP_ID \
