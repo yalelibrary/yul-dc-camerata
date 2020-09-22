@@ -1,6 +1,6 @@
 version: '3'
 services:
-  management:
+  management_worker:
     environment:
       HTTP_USERNAME: ${HTTP_USERNAME}
       HTTP_PASSWORD: ${HTTP_PASSWORD}
@@ -8,7 +8,7 @@ services:
       IIIF_MANIFESTS_BASE_URL: 'https://collections-test.library.yale.edu/manifests'
       MC_USER: ${MC_USER}
       MC_PW: ${MC_PW}
-      METADATA_CLOUD_HOST:
+      METADATA_CLOUD_HOST: 
       RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
       HONEYBADGER_API_KEY_MANAGEMENT: ${HONEYBADGER_API_KEY_MANAGEMENT}
       POSTGRES_DB: management_yul_production
@@ -23,4 +23,4 @@ services:
       options:
         awslogs-group: ${CLUSTER_NAME}
         awslogs-region: ${AWS_DEFAULT_REGION}
-        awslogs-stream-prefix: management
+        awslogs-stream-prefix: management_worker

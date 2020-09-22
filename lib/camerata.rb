@@ -262,6 +262,13 @@ module Camerata
     end
     map 'deploy-psql' => :deploy_db
 
+    desc 'deploy_worker CLUSTER_NAME', 'deploy the management worker to your specified cluster'
+    def deploy_worker(*args)
+      meth = 'deploy-worker'
+      exit(1) unless check_and_run_bin(meth, args)
+    end
+    map 'deploy-worker' => :deploy_worker
+
     def method_missing(meth, *args) # rubocop:disable Style/MethodMissingSuper
       # Check if a .sh script exists for this command
       if bin_exists?(meth)
@@ -292,6 +299,8 @@ module Camerata
         db_only_compose
       when 'deploy-solr'
         solr_only_compose
+      when 'deploy-worker'
+        worker_only_compose
       end
     end
 
@@ -307,6 +316,13 @@ module Camerata
       build_files = [
         "solr-compose.yml",
         "solr-compose.ecs.yml"
+      ]
+      merge_compose(compose_path, *build_files)
+    end
+    def worker_only_compose
+      build_files = [
+        "worker-compose.yml",
+        "worker-compose.ecs.yml"
       ]
       merge_compose(compose_path, *build_files)
     end
