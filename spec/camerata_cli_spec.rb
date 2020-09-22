@@ -1,10 +1,15 @@
 # frozen_string_literal: true
 RSpec.describe Camerata::CLI do
+  # Warning: these tests abort without being counted as failures sometimes
   subject(:cli) { described_class.new }
   before do
     app_versions = class_double('Camerata::AppVersions').as_stubbed_const(transfer_nested_constants: true)
     allow(app_versions).to receive(:load_env).and_return({})
     allow(app_versions).to receive(:get_all).and_return({})
+    allow(app_versions).to receive(:parameters).and_return(%w[
+                                                                name1
+                                                                name2
+                                                              ])
     cluster = class_double('Camerata::Cluster').as_stubbed_const(transfer_nested_constants: true)
     allow(cluster).to receive(:load_env).and_return({})
     allow(cluster).to receive(:get_all).and_return({})
@@ -15,8 +20,19 @@ RSpec.describe Camerata::CLI do
     allow(secrets).to receive(:get_all).and_return({})
     allow(secrets).to receive(:get).and_return({ "Parameters" => [{ "Name" => "TEST_PARAM", "Type" => "String", "Value" => "TEST_VAL" }] })
     allow(described_class).to receive(:exit_on_failure?).and_return(false)
+    # DotRc can do almost anything so better for the tests if it does nothing
+    dot_rc = class_double('Camerata::DotRC').as_stubbed_const(transfer_nested_constants: true)
+    allow(dot_rc).to receive(:new).and_return(nil)
   end
-
+  around do |example|
+    aws_profile = ENV['AWS_PROFILE']
+    aws_default_region = ENV['AWS_DEFAULT_REGION']
+    ENV['AWS_PROFILE'] = 'a-user'
+    ENV['AWS_DEFAULT_REGION'] = 'somestring'
+    example.run
+    ENV['AWS_PROFILE'] = aws_profile
+    ENV['AWS_DEFAULT_REGION'] = aws_default_region
+  end
   context 'version' do
     let(:output) { capture(:stdout) { cli.version } }
 
@@ -26,13 +42,6 @@ RSpec.describe Camerata::CLI do
 
     it "has a working version command which prints the correct version" do
       expect(output).to match(Camerata::VERSION)
-    end
-  end
-  context 'push_version' do
-    it "gives an error for unknown app name" do
-      byebug
-      output =  capture(:stdout) { cli.send('push_version', 'apples', 'v1.0.0') }
-      expect(output).to match("Did not find matching version string for ")
     end
   end
 

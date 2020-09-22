@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 RSpec.describe Camerata::Parameters do
   before do
-    allow(described_class).to receive(:put_parameter).and_return("{\n    \"Version\": 1,\n    \"Tier\": \"Standard\"\n}\n")
+    allow(described_class).to receive(:put_parameter) do |arg1, arg2|
+      "{\n    \"Parameters\": [\n        {\n            \"Name\": \"#{arg1}\",\n            \"Value\": \"#{arg2}\"\n}]}"
+    end
     allow(Camerata::Secrets).to receive(:aws_secret_access_key).and_return("a-secret-key")
     allow(Camerata::Secrets).to receive(:aws_access_key_id).and_return("an-access-key-id")
     allow(Camerata::Secrets).to receive(:aws_access_key_id).and_return("an-access-key-id")
@@ -22,6 +24,10 @@ RSpec.describe Camerata::Parameters do
     ENV['AWS_DEFAULT_REGION'] = region
   end
 
+  it "sets a parameter in the store" do
+    expect(described_class.set('key1', 'value1')["Parameters"].first["Name"]).to eq('key1')
+    expect(described_class.set('key1', 'value1')['Parameters'].first['Value']).to eq('value1')
+  end
   it "gets a parameter from the store" do
     allow(described_class).to receive(:call_aws_ssm) do |arg|
       "{\n    \"Parameters\": [\n        {\n            \"Name\": #{arg},\n            \"Value\": #{arg}\n}]}"
