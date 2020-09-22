@@ -7,9 +7,9 @@ RSpec.describe Camerata::CLI do
     allow(app_versions).to receive(:load_env).and_return({})
     allow(app_versions).to receive(:get_all).and_return({})
     allow(app_versions).to receive(:parameters).and_return(%w[
-                                                                name1
-                                                                name2
-                                                              ])
+                                                             name1
+                                                             name2
+                                                           ])
     cluster = class_double('Camerata::Cluster').as_stubbed_const(transfer_nested_constants: true)
     allow(cluster).to receive(:load_env).and_return({})
     allow(cluster).to receive(:get_all).and_return({})

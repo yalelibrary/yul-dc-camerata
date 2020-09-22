@@ -16,9 +16,11 @@ require "camerata/taggable_app"
 
 # rubocop:disable Metrics/ClassLength
 module Camerata
-  def cluster_name
+  @cluster_name = nil
+  def self.cluster_name
     @cluster_name ||= ENV['CLUSTER_NAME']
   end
+
   # TODO: use cluster env variable
   def self.gather_env(source_ns)
     { "app_versions" => Camerata::AppVersions.get_all(source_ns),
@@ -26,10 +28,26 @@ module Camerata
       "secrets" => Camerata::Secrets.get_all(source_ns) }
   end
 
+  def self.copy_param_sets(parameter_sets, target_ns, source_ns)
+    # Using the list from app_versions, create new params with the target_ns prefixed to param name
+    # copy_param_set should be using create_param_name method to create the new namespaced param name
+    Camerata::Parameters.copy_param_set(parameter_sets['app_versions'], target_ns, source_ns)
+    Camerata::Parameters.copy_param_set(parameter_sets['cluster'], target_ns, source_ns)
+    # Using the list from secrets, create new params with the target_ns prefixed to param name
+    # Also uses create_param_name to create the new namespaced param name
+    parameter_sets['secrets'].each do |key, value|
+      # Skip set when looking at AWS Credentials
+      Camerata::Parameters.set(Camerata::Parameters.create_param_name(target_ns, source_ns, key), value, true) unless key == "AWS_ACCESS_KEY_ID" || key == "AWS_SECRET_ACCESS_KEY"
+    end
+  end
+
+  def self.set_version(app_name, version)
+    Camerata::AppVersions.set(Parameters.create_param_name(cluster_name, '', app_name), version)
+  end
+
   class Error < StandardError; end
   class CLI < Thor
     include Thor::Actions
-
 
     def self.source_root
       File.join(File.dirname(__FILE__), '..', 'templates')
@@ -164,17 +182,7 @@ module Camerata
            "\n App versions: #{parameter_sets['app_versions']}" \
            "\n Cluster specific values: #{parameter_sets['cluster']}" \
            "\n Secrets: #{parameter_sets['secrets']}"
-
-      # Using the list from app_versions, create new params with the target_ns prefixed to param name
-      # copy_param_set should be using create_param_name method to create the new namespaced param name
-      Camerata::Parameters.copy_param_set(parameter_sets['app_versions'], target_ns, source_ns)
-      Camerata::Parameters.copy_param_set(parameter_sets['cluster'], target_ns, source_ns)
-      # Using the list from secrets, create new params with the target_ns prefixed to param name
-      # Also uses create_param_name to create the new namespaced param name
-      parameter_sets['secrets'].each do |key, value|
-        # Skip set when looking at AWS Credentials
-        Camerata::Parameters.set(Camerata::Parameters.create_param_name(target_ns, source_ns, key), value, true) unless key == "AWS_ACCESS_KEY_ID" || key == "AWS_SECRET_ACCESS_KEY"
-      end
+      Camerata.copy_param_sets(parameter_sets, target_ns, source_ns)
     end
 
     desc "env_get KEY", "get value of a parameter"
@@ -200,12 +208,12 @@ module Camerata
 
     desc "push_version APP VERSION", "Set a new version string for release of an application. For example `cam push_version blacklight v2.5.1`"
     def push_version(app, version)
-      version_string = Camerata::AppVersions.parameters.detect { |v| v.match(app.upcase) }
-      unless version_string
+      app_name = Camerata::AppVersions.parameters.detect { |v| v.match(app.upcase) }
+      unless app_name
         puts "Did not find matching version string for #{app}"
         exit(1)
       end
-      Camerata::AppVersions.set(version_string, version)
+      Camerata.set_version(app_name, version)
     end
 
     ##
@@ -428,9 +436,9 @@ module Camerata
       # TODO: remove writing these files once the env is confirmed all in memory
       template(".secrets.erb", secrets_path(type)) unless File.exist?(secrets_path(type))
       template(".env.erb", env_path(type)) unless File.exist?(env_path(type))
-      Camerata::AppVersions.load_env()
-      Camerata::Secrets.load_env()
-      Camerata::Cluster.load_env()
+      Camerata::AppVersions.load_env
+      Camerata::Secrets.load_env
+      Camerata::Cluster.load_env
       build_compose(type)
     end
 
