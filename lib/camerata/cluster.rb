@@ -6,6 +6,8 @@ module Camerata
         VPN
         SAMPLE_BUCKET
         S3_SOURCE_BUCKET_NAME
+        METADATA_CLOUD_HOST
+        BLACKLIGHT_PASSWORD_PROTECT
       ]
     end
   end

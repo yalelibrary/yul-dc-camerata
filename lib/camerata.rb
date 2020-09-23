@@ -19,6 +19,7 @@ module Camerata
   class Error < StandardError; end
   class CLI < Thor
     include Thor::Actions
+    @cluster_name = nil
 
     def self.source_root
       File.join(File.dirname(__FILE__), '..', 'templates')
@@ -158,7 +159,6 @@ module Camerata
       # Using the list from app_versions, create new params with the target_ns prefixed to param name
       # copy_param_set should be using create_param_name method to create the new namespaced param name
       Camerata::Parameters.copy_param_set(app_versions, target_ns, source_ns)
-
       # Using the list from secrets, create new params with the target_ns prefixed to param name
       # Also uses create_param_name to create the new namespaced param name
       secrets.each do |name, version|
@@ -167,7 +167,6 @@ module Camerata
       end
     end
 
-    # what does env_copy do
     desc "env_get KEY", "get value of a parameter"
     def env_get(key)
       result = Camerata::Parameters.get(key)
@@ -202,10 +201,9 @@ module Camerata
     ##
     # Tag a release of a microservice, E.g., cam release blacklight
     # This will:
-    # 1. Check for merged PRs not yet in a release
-    # 2. Determine whether any of them are features or breaking changes, and increment the version number accordingly
-    # 3. Auto-generate release notes for the new version
-    # 4. Tag the release in github with the new version number and the release notes
+    # 1. Auto-generate release notes for the new version
+    # 2. Determine whether there are any features or breaking changes, and increment the version number accordingly
+    # 3. Tag the release in github with the new version number and the release notes
     desc "release APP", "tag a release of a microservice, e.g., cam release blacklight"
     def release(app)
       puts "You must set CHANGELOG_GITHUB_TOKEN. See https://github.com/github-changelog-generator/github-changelog-generator#github-token" unless ENV['CHANGELOG_GITHUB_TOKEN']
@@ -217,10 +215,9 @@ module Camerata
       end
       taggable_app = Camerata::TaggableApp.new(app)
       unless taggable_app.release_needed?
-        puts "No new PRs to release for #{app}"
+        puts "No new release needed for #{app}"
         exit(0)
       end
-      puts "New PRs to release: #{taggable_app.release_prs.size}"
       taggable_app.release
       puts "Released #{app} #{taggable_app.new_version_number}"
     end
@@ -229,6 +226,17 @@ module Camerata
     def version
       say "Camerata Version: #{Camerata::VERSION}"
     end
+
+    desc 'deploy_main CLUSTER_NAME', 'deploy the main group of microservices to your specified cluster'
+    def deploy_main(cluster_name)
+      meth = 'deploy-main'
+      bin_path = bin_path_for_method(meth)
+      @cluster_name = cluster_name
+      ensure_env('ecs')
+      cmd = (["COMPOSE_FILE=#{compose_path}", bin_path] + args).join(' ')
+      run(cmd)
+    end
+    map 'deploy-main' => :deploy_main
 
     desc 'deploy_solr CLUSTER_NAME', 'deploy solr to your specified cluster'
     def deploy_solr(*args)
@@ -410,9 +418,9 @@ module Camerata
       # TODO: remove writing these files once the env is confirmed all in memory
       template(".secrets.erb", secrets_path(type)) unless File.exist?(secrets_path(type))
       template(".env.erb", env_path(type)) unless File.exist?(env_path(type))
-      Camerata::AppVersions.load_env
-      Camerata::Secrets.load_env
-      Camerata::Cluster.load_env
+      Camerata::AppVersions.load_env(@cluster_name)
+      Camerata::Secrets.load_env(@cluster_name)
+      Camerata::Cluster.load_env(@cluster_name)
       build_compose(type)
     end
 
