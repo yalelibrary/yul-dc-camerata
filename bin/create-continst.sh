@@ -47,6 +47,9 @@ chmod 400 $CLUSTER_NAME-keypair.pem
 AWS_SUBNET_PUBLIC_ID=$(yq r manifestly-ecs-params.yml 'run_params.network_configuration.awsvpc_configuration.subnets[0]') 
 AWS_CUSTOM_SECURITY_GROUP_ID=$(yq r manifestly-ecs-params.yml 'run_params.network_configuration.awsvpc_configuration.security_groups[0]') 
 
+USERDATA=$(echo "#!/bin/bash
+echo ECS_CLUSTER=$CLUSTER_NAME >> /etc/ecs/ecs.config " | base64)
+
 ## Create one EC2 instance in the public subnet
 AWS_EC2_INSTANCE_ID=$(aws ec2 run-instances \
 --image-id $AWS_AMI_ID \
@@ -57,7 +60,7 @@ AWS_EC2_INSTANCE_ID=$(aws ec2 run-instances \
 --security-group-ids $AWS_CUSTOM_SECURITY_GROUP_ID \
 --subnet-id $AWS_SUBNET_PUBLIC_ID \
 --iam-instance-profile Arn=$AWS_IAM_INSTANCE_PROFILE_ARN \
---user-data "echo ECS_CLUSTER=$CLUSTER_NAME >> /etc/ecs/ecs.config" \
+--user-data $USERDATA \
 --query 'Instances[0].InstanceId' \
 --output text)
 
