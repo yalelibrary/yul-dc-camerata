@@ -341,6 +341,7 @@ module Camerata
       ]
       merge_compose(compose_path, *build_files)
     end
+
     def worker_only_compose
       build_files = [
         "worker-compose.yml",
