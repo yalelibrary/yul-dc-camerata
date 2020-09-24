@@ -22,7 +22,6 @@ services:
       <%- end -%>
       <%- unless without.match(/solr/) -%>
       - solr
-      - management
       <%- end -%>
 
 <%- if in_management? -%>

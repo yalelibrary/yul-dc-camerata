@@ -405,7 +405,9 @@ module Camerata
           "db-compose.yml",
           "db-compose.#{type}.yml",
           "solr-compose.yml",
-          "solr-compose.#{type}.yml"
+          "solr-compose.#{type}.yml",
+          "worker-compose.yml",
+          "worker-compose.#{type}.yml"
         ]
       end
 
