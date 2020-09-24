@@ -1,10 +1,10 @@
-#!/bin/bash -ex
+#!/bin/bash -e
 . $(dirname "$0")/shared-checks.sh
 . $(dirname "$0")/efs-fun.sh
 
 if check_profile && check_region && check_cluster $1 && all_pass ; then
 CLUSTER_NAME=$1
-  ## Create a policy for ecsInstanceRole IAM Role
+  # Policy doc, in case we need it
   ROLEDOC='{
     "Version": "2008-10-17",
     "Statement": [
@@ -37,16 +37,19 @@ CLUSTER_NAME=$1
     --output text)
   }
 
+  #fetches role arn into variable, or else creates it and fetches it into a variable
+  #could probably just call check role from inside create role, but this way lies madness.
   function check_role {
-    echo "Checking for ecsInstanceRole"
     AWS_IAM_INSTANCE_PROFILE_ARN=$(aws iam list-instance-profiles-for-role \
     --role-name ecsInstanceRole \
     --query 'InstanceProfiles[0].Arn' \
     --output text) || create_role
   }
 
+  #create a keypair, store it in a file named after the cluster. Don't lose this keypair, or you'll
+  #have to delete the kp already defined & recreate all the ec2 instances (not the end of the world, 
+  #but annoying)
   function create_key {
-    echo "Creating new keypair for ${CLUSTER_NAME}-keypair.pem"
     aws ec2 create-key-pair --key-name $CLUSTER_NAME-keypair  --query 'KeyMaterial' \
       --output text > $CLUSTER_NAME-keypair.pem && chmod 400 $CLUSTER_NAME-keypair.pem
   }
@@ -54,26 +57,48 @@ CLUSTER_NAME=$1
 
   check_role
 
+  #bail out here if we haven't found the instance profile arn yet
   if [ -z "${AWS_IAM_INSTANCE_PROFILE_ARN}" ];then
     echo "Could not obtain instance profile."
     exit 1
   fi
 
 
+  #use latest & greatest amazon-recommended AMI
   AWS_AMI_ID=$(aws ssm get-parameters --names '/aws/service/ecs/optimized-ami/amazon-linux-2/recommended/image_id' \
     --query 'Parameters[0].Value' --output text)
 
+  #bail if we can't find the latest AMI
   if [ -z "${AWS_AMI_ID}" ] ; then
     echo "Could not retrieve latest AMI"
     exit 1
   fi
 
 
-  aws ec2 describe-key-pairs --key-names $CLUSTER_NAME-keypair ||  create_key
+  #create new keypair if not found. all cluster ec2 hosts will have same keypair
+  aws ec2 describe-key-pairs --key-names $CLUSTER_NAME-keypair > /dev/null ||  create_key
 
+  #gaffle the  subnet & sg from the existing ecs-params file. change the index here if you want to use some other one
+  #or rearrange/update the params file (probably easier)
   AWS_SUBNET_PUBLIC_ID=$(yq r $CLUSTER_NAME-ecs-params.yml 'run_params.network_configuration.awsvpc_configuration.subnets[0]') 
   AWS_CUSTOM_SECURITY_GROUP_ID=$(yq r $CLUSTER_NAME-ecs-params.yml 'run_params.network_configuration.awsvpc_configuration.security_groups[0]') 
 
+
+  #the instance boot script. runs as root. /etc/ecs/ecs.config registers
+  #this instance with the cluster. should work as long as the instance
+  #lives in the same vpc as the cluster
+  #we are also mounting storage@yale nfs mounts
+  #be cautious to escape shell significant characters, to avoid double
+  #interpretation problems
+  #this should probalby not hardcode stuff like hostnames some day
+  #NB. this is limited to 16kb before encoding
+  #NB. the base64 -w0 does not have the w0 flag, change remove that arg to run on 
+  #macos (don't check that in though!) (fun fact, the homebrew base64 is yet another
+  #incompatible version. i assume the linux version is from those gnu clowns)
+  B6ARG='-w0'
+  if [[ $OSTYPE=="darwin"* ]];then
+    B6ARG=''
+  fi
   USERDATA=$(echo "#!/bin/bash
   echo ECS_CLUSTER=$CLUSTER_NAME >> /etc/ecs/ecs.config && yum update -y
   for i in {0..10}
@@ -81,7 +106,7 @@ CLUSTER_NAME=$1
     t=\`printf '%02d' \$i\`
     mkdir -p /data/\$t
     mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 wcsfs00.its.yale.internal:/yul_dc_nfs_store_\$i /data/\$t
-  done" | base64 -w0)
+  done" | base64 $B6ARG)
 
   ## Create one EC2 instance in the public subnet
   AWS_EC2_INSTANCE_ID=$(aws ec2 run-instances \
@@ -100,6 +125,6 @@ CLUSTER_NAME=$1
 
   ## Check if the instance one is running
   ## It will take some time for the instance to get ready
-  aws ec2 describe-instance-status \
-  --instance-ids $AWS_EC2_INSTANCE_ID --output text
+  aws ec2 describe-instances \
+  --instance-ids $AWS_EC2_INSTANCE_ID --output text | grep INSTANCES | awk -v derp="$CLUSTER_NAME" '{print $9 " ssh -i " derp "-keypair.pem ec2-user@" $16}'
 fi
