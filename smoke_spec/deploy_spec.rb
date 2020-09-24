@@ -49,7 +49,7 @@ RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
     it 'loads the home page for local environments', deployed: false do
       visit uri
       expect(page).to have_selector(".blacklight-catalog"), "not blocked by basic auth"
-      expect(page).to have_selector(".blacklight-language_ssim"), "a language facet is present"
+      expect(page).to have_selector(".blacklight-format"), "a format facet is present"
       expect(page).to have_selector(".branch-name", text: /v\d+\.\d+\.\d+/)
       click_on 'search'
       expect(page).to have_selector(".document-position-0"), "an open search has at least 1 item"
