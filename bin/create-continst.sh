@@ -85,7 +85,7 @@ CLUSTER_NAME=$1
   ## Create one EC2 instance in the public subnet
   AWS_EC2_INSTANCE_ID=$(aws ec2 run-instances \
   --image-id $AWS_AMI_ID \
-  --instance-type t2.large \
+  --instance-type ${INSTANCE_TYPE:-t2.large} \
   --tag-specifications "ResourceType=instance,Tags=[{Key=Name, Value=$CLUSTER_NAME-container-instance}]" \
   --key-name $CLUSTER_NAME-keypair \
   --associate-public-ip-address \
