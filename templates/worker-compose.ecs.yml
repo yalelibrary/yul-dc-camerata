@@ -18,9 +18,14 @@ services:
       SAMPLE_BUCKET:
       SOLR_BASE_URL: http://${CLUSTER_NAME}-solr.${CLUSTER_NAME}:8983/solr
       POSTGRES_HOST: ${CLUSTER_NAME}-psql.${CLUSTER_NAME}
+    volumes:
+      - /data:/data
     logging:
       driver: awslogs
       options:
         awslogs-group: ${CLUSTER_NAME}
         awslogs-region: ${AWS_DEFAULT_REGION}
         awslogs-stream-prefix: management_worker
+
+# volumes:
+#   data_nfs
