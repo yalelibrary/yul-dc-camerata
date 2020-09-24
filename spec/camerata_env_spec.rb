@@ -29,17 +29,12 @@ RSpec.describe Camerata::CLI do
   context 'env_set' do
     let(:output) { capture(:stdout) { cli.env_set("TEST_PARAM", "TEST_VALUE", true) } }
     it 'sets a param in the param store' do
-      expect(output).to match("")
+      expect(output).to match("Setting TEST_PARAM param value to TEST_VALUE. Secret: true\n")
     end
   end
 
   context 'env_copy' do
     let(:output) { capture(:stdout) { cli.env_copy "TEST_TARGET_NS" } }
-
-    it 'requires a target "namespace"' do
-      expect { capture(:stdout) { cli.env_copy } }.to raise_error(ArgumentError)
-    end
-
     it 'copies a set of params over to a new set of namespaced params' do
       expect(output).to match('Copying following parameters from source to TEST_TARGET_NS namespace:')
     end

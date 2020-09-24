@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 RSpec.describe Camerata::Parameters do
   before do
-    allow(described_class).to receive(:put_parameter).and_return("{\n    \"Version\": 1,\n    \"Tier\": \"Standard\"\n}\n")
+    allow(described_class).to receive(:put_parameter) do |arg1, arg2|
+      "{\n    \"Parameters\": [\n        {\n            \"Name\": \"#{arg1}\",\n            \"Value\": \"#{arg2}\"\n}]}"
+    end
     allow(Camerata::Secrets).to receive(:aws_secret_access_key).and_return("a-secret-key")
     allow(Camerata::Secrets).to receive(:aws_access_key_id).and_return("an-access-key-id")
     allow(Camerata::Secrets).to receive(:aws_access_key_id).and_return("an-access-key-id")
@@ -15,13 +17,20 @@ RSpec.describe Camerata::Parameters do
   around do |example|
     profile = ENV['AWS_PROFILE']
     region = ENV['AWS_DEFAULT_REGION']
+    cluster = ENV['CLUSTER_NAME']
     ENV['AWS_PROFILE'] = 'nobody'
     ENV['AWS_DEFAULT_REGION'] = 'nowhere'
+    ENV['CLUSTER_NAME'] = 'nocluster'
     example.run
+    ENV['CLUSTER_NAME'] = cluster
     ENV['AWS_PROFILE'] = profile
     ENV['AWS_DEFAULT_REGION'] = region
   end
 
+  it "sets a parameter in the store" do
+    expect(described_class.set('key1', 'value1')["Parameters"].first["Name"]).to eq('key1')
+    expect(described_class.set('key1', 'value1')['Parameters'].first['Value']).to eq('value1')
+  end
   it "gets a parameter from the store" do
     allow(described_class).to receive(:call_aws_ssm) do |arg|
       "{\n    \"Parameters\": [\n        {\n            \"Name\": #{arg},\n            \"Value\": #{arg}\n}]}"
@@ -69,6 +78,12 @@ RSpec.describe Camerata::Parameters do
       expect(described_class.get_all("TEST_NS")).to include("name1" => "value1", "name2" => "value2", "name3" => "default3")
       expect(described_class).to have_received(:call_aws_ssm).with('"/TEST_NS/name1" "/TEST_NS/name2"')
       expect(described_class).to have_received(:call_aws_ssm).with('"name1" "name2"')
+    end
+    around do |example|
+      cluster = ENV['CLUSTER_NAME']
+      ENV['CLUSTER_NAME'] = nil
+      example.run
+      ENV['CLUSTER_NAME'] = cluster
     end
     it "tolerates an empty namespace" do
       allow(described_class).to receive(:call_aws_ssm).with('"name1" "name2"').and_return(File.open(File.join("spec", "fixtures", 'default_params.json')).read)
