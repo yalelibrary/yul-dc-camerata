@@ -49,7 +49,7 @@ RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
     it 'loads the home page for local environments', deployed: false do
       visit uri
       expect(page).to have_selector(".blacklight-catalog"), "not blocked by basic auth"
-      expect(page).to have_selector(".blacklight-language_ssim"), "a language facet is present"
+      expect(page).to have_selector(".blacklight-format"), "a format facet is present"
       expect(page).to have_selector(".branch-name", text: /v\d+\.\d+\.\d+/)
       click_on 'search'
       expect(page).to have_selector(".document-position-0"), "an open search has at least 1 item"
@@ -132,7 +132,9 @@ RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
     end
   end
   describe "The management index page at #{management_url}" do
-    it "has version numbers in the table" do
+    # This information is now protected behind CAS authentication.
+    # Removing this test for now. We will restore it when we have a CAS account.
+    xit "has version numbers in the table" do
       visit management_url
       expect(page).to have_selector("#management_version", text: /v\d+.\d+.\d+/)
       expect(page).to have_selector("#postgres_version", text: /v\d+.\d+.\d+/)
@@ -141,6 +143,10 @@ RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
       expect(page).to have_selector("#iiif_image_version", text: /v\d+.\d+.\d+/)
       expect(page).to have_selector("#iiif_manifest_version", text: /v\d+.\d+.\d+/)
       expect(page).to have_selector("#camerata_version", text: /v\d+.\d+.\d+/)
+    end
+    it "prompts the user to sign in" do
+      visit management_url
+      expect(page).to have_content('Sign In')
     end
   end
 end

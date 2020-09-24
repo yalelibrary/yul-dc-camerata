@@ -1,4 +1,5 @@
 # frozen_string_literal: true
 module Camerata
-  VERSION = '3.0.4'
+  VERSION = '3.1.1'
+
 end

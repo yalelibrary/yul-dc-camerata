@@ -22,6 +22,7 @@ module Camerata
     def self.create_param_name(target_ns, source_ns, name)
       # Returns the new param name with /target_ns/ prefixed to base
       stripped_name = name.sub(/^\/#{Regexp.escape(source_ns)}\//, '')
+      return stripped_name unless target_ns
       "/#{target_ns}/#{stripped_name}"
     end
 
@@ -43,6 +44,7 @@ module Camerata
     end
 
     def self.get_all(namespace = nil)
+      namespace ||= Camerata.cluster_name
       parameter_list = parameters.map do |v|
         "\"#{v}\""
       end
