@@ -75,12 +75,17 @@ CLUSTER_NAME=$1
   AWS_CUSTOM_SECURITY_GROUP_ID=$(yq r $CLUSTER_NAME-ecs-params.yml 'run_params.network_configuration.awsvpc_configuration.security_groups[0]') 
 
   USERDATA=$(echo "#!/bin/bash
-  echo ECS_CLUSTER=$CLUSTER_NAME >> /etc/ecs/ecs.config && yum update -y" | base64)
+  echo ECS_CLUSTER=$CLUSTER_NAME >> /etc/ecs/ecs.config && yum update -y
+  for i in {0..10}
+  do
+    mkdir -p /data/yul_dc_store_\$i
+    mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 wcsfs00.its.yale.internal:/yul_dc_nfs_store_\$i /data/yul_dc_store_\$i
+  done" | base64 -w0)
 
   ## Create one EC2 instance in the public subnet
   AWS_EC2_INSTANCE_ID=$(aws ec2 run-instances \
   --image-id $AWS_AMI_ID \
-  --instance-type t2.micro \
+  --instance-type t2.large \
   --tag-specifications "ResourceType=instance,Tags=[{Key=Name, Value=$CLUSTER_NAME-container-instance}]" \
   --key-name $CLUSTER_NAME-keypair \
   --associate-public-ip-address \
