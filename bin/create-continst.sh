@@ -92,9 +92,7 @@ CLUSTER_NAME=$1
   #interpretation problems
   #this should probalby not hardcode stuff like hostnames some day
   #NB. this is limited to 16kb before encoding
-  #NB. the base64 -w0 does not have the w0 flag, change remove that arg to run on 
-  #macos (don't check that in though!) (fun fact, the homebrew base64 is yet another
-  #incompatible version. i assume the linux version is from those gnu clowns)
+  #NB. the macos base64 not have the w0 flag hence the b6arg nonsense.
   B6ARG='-w0'
   if [[ $OSTYPE=="darwin"* ]];then
     B6ARG=''
