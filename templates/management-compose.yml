@@ -4,9 +4,7 @@ services:
     image: yalelibraryit/dc-management:${MANAGEMENT_VERSION}
     environment:
       ACCESS_MASTER_MOUNT: "s3" # The path to the mounted drive, or "s3"
-      AWS_ACCESS_KEY_ID:
       AWS_DEFAULT_REGION: us-east-1
-      AWS_SECRET_ACCESS_KEY:
       IIIF_IMAGE_BASE_URL: ${IIIF_IMAGE_BASE_URL:-http://localhost:8182/iiif}
       IIIF_MANIFESTS_BASE_URL: ${IIIF_MANIFESTS_BASE_URL:-http://localhost/manifests/}
       MC_USER:
@@ -41,9 +39,7 @@ services:
     command: /sbin/setuser app bash -l -c "bin/delayed_job_blocking -n 10"
     environment:
       ACCESS_MASTER_MOUNT: "s3" # The path to the mounted drive, or "s3"
-      AWS_ACCESS_KEY_ID:
       AWS_DEFAULT_REGION: us-east-1
-      AWS_SECRET_ACCESS_KEY:
       IIIF_IMAGE_BASE_URL: ${IIIF_IMAGE_BASE_URL:-http://localhost:8182/iiif}
       IIIF_MANIFESTS_BASE_URL: ${IIIF_MANIFESTS_BASE_URL:-http://localhost/manifests/}
       MC_USER:
