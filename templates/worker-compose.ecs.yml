@@ -27,6 +27,3 @@ services:
         awslogs-group: ${CLUSTER_NAME}
         awslogs-region: ${AWS_DEFAULT_REGION}
         awslogs-stream-prefix: management_worker
-
-# volumes:
-#   data_nfs
