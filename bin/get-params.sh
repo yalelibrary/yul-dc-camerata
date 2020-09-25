@@ -131,6 +131,7 @@ ECS_PARAMS
   cat <<ECS_PARAMS > ${1}-ecs-params.yml
 version: 1
 task_definition:
+  task_role_arn: arn:aws:iam::229792048549:role/ecsRoleForYaleS3
   task_execution_role: ecsTaskExecutionRole
   ecs_network_mode: awsvpc
   task_size:
