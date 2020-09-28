@@ -7,7 +7,8 @@ services:
     <%- end -%>
     environment:
       ACCESS_MASTER_MOUNT: "s3" # The path to the mounted drive, or "S3"
-      PASSENGER_APP_ENV: development
+      PASSENGER_APP_ENV: ${PASSENGER_APP_ENV:-development}
+      RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
       POSTGRES_MULTIPLE_DATABASES: management_yul_development
       SOLR_TEST_CORE: blacklight-test
     <%- if in_management? -%>
@@ -34,7 +35,8 @@ services:
     <%- end -%>
     environment:
       ACCESS_MASTER_MOUNT: "s3" # The path to the mounted drive, or "S3"
-      PASSENGER_APP_ENV: development
+      PASSENGER_APP_ENV: ${PASSENGER_APP_ENV:-development}
+      RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
       POSTGRES_MULTIPLE_DATABASES: management_yul_development
       SOLR_TEST_CORE: blacklight-test
     <%- if in_management? -%>
