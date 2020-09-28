@@ -8,6 +8,8 @@ module Camerata
         S3_SOURCE_BUCKET_NAME
         METADATA_CLOUD_HOST
         BLACKLIGHT_PASSWORD_PROTECT
+        IIIF_IMAGE_BASE_URL
+        IIIF_MANIFESTS_BASE_URL
       ]
     end
   end
