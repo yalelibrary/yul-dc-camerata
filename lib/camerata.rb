@@ -416,6 +416,15 @@ module Camerata
       options[:without] || ''
     end
 
+    def app_urls
+      @app_urls ||= <<-END
+      IIIF_IMAGE_BASE_URL: ${IIIF_IMAGE_BASE_URL:-http://localhost:8182/iiif}
+      IIIF_MANIFESTS_BASE_URL: ${IIIF_MANIFESTS_BASE_URL:-http://localhost/manifests/}
+      SOLR_BASE_URL: http://solr:8983/solr
+      BLACKLIGHT_BASE_URL: ${BLACKLIGHT_BASE_URL:-http://localhost:3000}
+      END
+    end
+
     def secrets_path(type)
       if type == 'ecs'
         File.expand_path(File.join(__dir__, '..', 'tmp', '.secrets'))

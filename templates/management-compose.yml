@@ -3,12 +3,11 @@ services:
   management:
     image: yalelibraryit/dc-management:${MANAGEMENT_VERSION}
     environment:
+      <%= app_urls %>
       ACCESS_MASTER_MOUNT: "s3" # The path to the mounted drive, or "s3"
       AWS_ACCESS_KEY_ID:
       AWS_DEFAULT_REGION: us-east-1
       AWS_SECRET_ACCESS_KEY:
-      IIIF_IMAGE_BASE_URL: ${IIIF_IMAGE_BASE_URL:-http://localhost:8182/iiif}
-      IIIF_MANIFESTS_BASE_URL: ${IIIF_MANIFESTS_BASE_URL:-http://localhost/manifests/}
       MC_USER:
       MC_PW:
       METADATA_CLOUD_HOST:
@@ -21,7 +20,6 @@ services:
       RAILS_RELATIVE_URL_ROOT: /management
       S3_SOURCE_BUCKET_NAME:
       SAMPLE_BUCKET: yul-development-samples
-      SOLR_BASE_URL: http://solr:8983/solr
       SOLR_CORE: blacklight-core
       VPN:
       MC_USER:
@@ -40,12 +38,11 @@ services:
     image: yalelibraryit/dc-management:${MANAGEMENT_VERSION}
     command: /sbin/setuser app bash -l -c "bin/delayed_job_blocking -n 10"
     environment:
+      <%= app_urls %>
       ACCESS_MASTER_MOUNT: "s3" # The path to the mounted drive, or "s3"
       AWS_ACCESS_KEY_ID:
       AWS_DEFAULT_REGION: us-east-1
       AWS_SECRET_ACCESS_KEY:
-      IIIF_IMAGE_BASE_URL: ${IIIF_IMAGE_BASE_URL:-http://localhost:8182/iiif}
-      IIIF_MANIFESTS_BASE_URL: ${IIIF_MANIFESTS_BASE_URL:-http://localhost/manifests/}
       MC_USER:
       MC_PW:
       METADATA_CLOUD_HOST:
@@ -58,7 +55,6 @@ services:
       RAILS_RELATIVE_URL_ROOT: /management
       S3_SOURCE_BUCKET_NAME:
       SAMPLE_BUCKET: yul-development-samples
-      SOLR_BASE_URL: http://solr:8983/solr
       SOLR_CORE: blacklight-core
       VPN:
       MC_USER:
