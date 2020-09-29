@@ -16,4 +16,4 @@ services:
       POSTGRES_USER: postgres
       RAILS_LOG_TO_STDOUT: 'true'
       RAILS_RELATIVE_URL_ROOT: /manifests
-      SAMPLE_BUCKET: yul-development-samples
+      SAMPLE_BUCKET: 
