@@ -118,17 +118,3 @@ workflows:
     jobs:
       - run-tests:
           context: yul-dc
-  every-four-hours:
-    triggers:
-      - schedule:
-          cron: "40 1,5,9,13,17,21 * * *"
-          filters:
-            branches:
-              only:
-                - master
-                - smoke-scheduled-only
-    jobs:
-      - deploy-smoke:
-          context: yul-dc
-      - local-smoke:
-          context: yul-dc
