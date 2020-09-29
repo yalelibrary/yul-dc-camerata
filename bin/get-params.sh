@@ -24,7 +24,7 @@ then
   echo "      mem_limit=${memory}"
   echo "      cpu_limit=${cpu}\n"
 
-  if [ "$VPC_ID" ] 
+  if [ "$VPC_ID" ]
   then
     if [ -z "$SUBNET0" ] | [ -z "$SUBNET1" ]
     then
@@ -131,7 +131,7 @@ ECS_PARAMS
   cat <<ECS_PARAMS > ${1}-ecs-params.yml
 version: 1
 task_definition:
-  task_role_arn: arn:aws:iam::229792048549:role/ecsRoleForYaleS3
+  task_role_arn: arn:aws:iam::106281100175:role/ECSRoleForTestDC
   task_execution_role: ecsTaskExecutionRole
   ecs_network_mode: awsvpc
   task_size:
