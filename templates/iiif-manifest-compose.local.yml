@@ -8,6 +8,7 @@ services:
     environment:
       PASSENGER_APP_ENV: development
       POSTGRES_MULTIPLE_DATABASES: iiif_manifest_yul_development
+      SAMPLE_BUCKET: yul-dc-development-samples
     <%- if in_manifest? -%>
     volumes:
       - .:/home/app/webapp:cached
