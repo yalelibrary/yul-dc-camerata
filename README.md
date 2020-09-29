@@ -45,7 +45,7 @@ variables like so:
 
 ```ruby
 ENV['AWS_DEFAULT_REGION'] = 'us-east-1'
-ENV['AWS_PROFILE'] = 'dce'
+ENV['AWS_PROFILE'] = 'your_profile'
 ```
 
 ## General Use
@@ -143,8 +143,8 @@ file                           | contents
 `blacklight-compose.yml`       | compose definitions that are shared between all environments
 `blacklight-compose.local.yml` | compose definitions required exclusively in a local docker environment
 `blacklight-compose.ecs.yml`   | compose definitions required for deployment to AWS ECS
-`.env`                         | No longer used. All env should be in Amazon SSM
-`.secrets`                     | No longer used. All secrets should be in Amazon SSM
+`.env`                         | No longer used. All env are in Amazon SSM
+`.secrets`                     | No longer used. All secrets are in Amazon SSM
 
 For more detail on multiple compose files see <https://docs.docker.com/compose/extends/#multiple-compose-files>.
 
@@ -252,7 +252,7 @@ These servers have significant persistent state; an existing cluster will not us
 cam deploy-main $CLUSTER_NAME
 ```
 
-This command deploys the rest of the Yale stack to the named cluster. This includes the management and blacklight Rails apps and the IIIF image and manifest servers. You must have a valid params file obtained by running `cam get-params` against your cluster first. You must also create a `.secrets` file with valid S3, basic auth, and Honeybadger credentials; see `secrets-template` for the correct format. For deployments to complete succesfully you also need to set a 16-byte (32 character) RAILS_MASTER_KEY provided by your team lead.
+This command deploys the rest of the Yale stack to the named cluster. This includes the management and blacklight Rails apps and the IIIF image and manifest servers.
 
 ### Configure a load balancer
 
