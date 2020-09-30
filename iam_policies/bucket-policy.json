@@ -15,9 +15,20 @@
             "Effect": "Allow",
             "Action": "s3:*",
             "Resource": [
-                "arn:aws:s3:::<bucket-name>",
-                "arn:aws:s3:::<bucket-name>/*"
-            ]
+                "arn:aws:s3:::<test-bucket-name>",
+                "arn:aws:s3:::<test-bucket-name>/*"
+            ],
+            "Condition": { "StringEquals": { "ecs:cluster": [ "<test-cluster-name>", "<uat-cluster-name>" ] } }
+        },
+        {
+            "Sid": "AllowObjectManagementYaleBucket",
+            "Effect": "Allow",
+            "Action": "s3:*",
+            "Resource": [
+                "arn:aws:s3:::<prod-bucket-name>",
+                "arn:aws:s3:::<prod-bucket-name>/*"
+            ],
+            "Condition": { "StringEquals": { "ecs:cluster": [ "<demo-cluster-name>", "<prod-cluster-name>" ] } }
         }
     ]
 }
