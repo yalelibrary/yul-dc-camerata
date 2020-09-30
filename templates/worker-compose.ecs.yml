@@ -4,8 +4,8 @@ services:
     environment:
       HTTP_USERNAME: ${HTTP_USERNAME}
       HTTP_PASSWORD: ${HTTP_PASSWORD}
-      IIIF_IMAGE_BASE_URL: 'https://collections-test.library.yale.edu/iiif'
-      IIIF_MANIFESTS_BASE_URL: 'https://collections-test.library.yale.edu/manifests'
+      IIIF_IMAGE_BASE_URL:
+      IIIF_MANIFESTS_BASE_URL:
       MC_USER: ${MC_USER}
       MC_PW: ${MC_PW}
       METADATA_CLOUD_HOST: 
