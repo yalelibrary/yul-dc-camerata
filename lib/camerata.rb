@@ -288,7 +288,7 @@ module Camerata
     def deploy_worker(this_cluster)
       meth = 'deploy-worker'
       Camerata.cluster_name = this_cluster
-      exit(1) unless check_and_run_bin(meth, this_cluster)
+      exit(1) unless check_and_run_bin(meth, [this_cluster])
     end
     map 'deploy-worker' => :deploy_worker
 
