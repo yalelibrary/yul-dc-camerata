@@ -285,9 +285,10 @@ module Camerata
     map 'deploy-psql' => :deploy_db
 
     desc 'deploy_worker CLUSTER_NAME', 'deploy the management worker to your specified cluster'
-    def deploy_worker(*args)
+    def deploy_worker(this_cluster)
       meth = 'deploy-worker'
-      exit(1) unless check_and_run_bin(meth, args)
+      Camerata.cluster_name = this_cluster
+      exit(1) unless check_and_run_bin(meth, this_cluster)
     end
     map 'deploy-worker' => :deploy_worker
 
