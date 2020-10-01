@@ -424,31 +424,12 @@ module Camerata
       BLACKLIGHT_BASE_URL: ${BLACKLIGHT_BASE_URL:-http://localhost:3000}
       END
     end
-
-    def secrets_path(type)
-      if type == 'ecs'
-        File.expand_path(File.join(__dir__, '..', 'tmp', '.secrets'))
-      else
-        '.secrets'
-      end
-    end
-
-    def env_path(type)
-      if type == 'ecs'
-        File.expand_path(File.join(__dir__, '..', 'tmp', '.env'))
-      else
-        '.env'
-      end
-    end
-
+    
     ##
     # Generate secrets and .env files that are expected by deploy scripts and
     # docker-compose files
     def ensure_env(type = 'local')
       DotRc.new
-      # TODO: remove writing these files once the env is confirmed all in memory
-      template(".secrets.erb", secrets_path(type)) unless File.exist?(secrets_path(type))
-      template(".env.erb", env_path(type)) unless File.exist?(env_path(type))
       Camerata::AppVersions.load_env
       Camerata::Secrets.load_env
       Camerata::Cluster.load_env
