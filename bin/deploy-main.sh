@@ -3,7 +3,7 @@
 export CLUSTER_NAME=$1
 . $(dirname "$0")/shared-checks.sh
 
-if check_profile && check_region && check_cluster $1 && all_pass
+if check_profile && check_region && check_cluster $1 && check_master_key && all_pass
 then
   echo "Target cluster: ${CLUSTER_NAME}"
   echo "Using AWS_PROFILE=${AWS_PROFILE}";
