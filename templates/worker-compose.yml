@@ -1,7 +1,8 @@
 version: '3'
 services:
-  management:
+  management_worker:
     image: yalelibraryit/dc-management:${MANAGEMENT_VERSION}
+    command: /sbin/setuser app bash -l -c "bin/delayed_job_blocking -n 10"
     environment:
       ACCESS_MASTER_MOUNT: "s3" # The path to the mounted drive, or "s3"
       AWS_ACCESS_KEY_ID:
@@ -20,7 +21,7 @@ services:
       RAILS_LOG_TO_STDOUT: 'true'
       RAILS_RELATIVE_URL_ROOT: /management
       S3_SOURCE_BUCKET_NAME:
-      SAMPLE_BUCKET:
+      SAMPLE_BUCKET: yul-development-samples
       SOLR_BASE_URL: http://solr:8983/solr
       SOLR_CORE: blacklight-core
       VPN:
@@ -34,5 +35,3 @@ services:
       BLACKLIGHT_VERSION:
       MANAGEMENT_VERSION:
       CAMERATA_VERSION:
-    ports:
-      - "3001:3001"
