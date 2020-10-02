@@ -10,12 +10,6 @@ then
   echo "Using AWS_PROFILE=${AWS_PROFILE}";
   echo "      AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}";
 
-  if [[ ! -f ${1}-ecs-params.yml ]]
-  then
-    export PUBLIC_IP
-    $(dirname "$0")/get-params.sh ${1}
-  fi
-
   if [[ $(aws ecs describe-services --cluster $1 --services $1-worker) = *MISSING* ]]
   then
     discovery="--enable-service-discovery"
@@ -34,7 +28,7 @@ then
   ecs-cli compose  \
     --region $AWS_DEFAULT_REGION \
     --project-name ${CLUSTER_NAME}-worker\
-    --ecs-params ${CLUSTER_NAME}-ecs-params.yml \
+    --ecs-params ${CLUSTER_NAME}-worker-params.yml \
     service up --launch-type EC2 \
     $2 \
     $discovery $log \
