@@ -27,7 +27,7 @@ then
   # Launch the service and register containers with the loadbalancer
   ecs-cli compose  \
     --region $AWS_DEFAULT_REGION \
-    --project-name ${CLUSTER_NAME}-worker\
+    --project-name ${CLUSTER_NAME}-worker \
     --ecs-params ${CLUSTER_NAME}-worker-params.yml \
     service up --launch-type EC2 \
     $2 \
