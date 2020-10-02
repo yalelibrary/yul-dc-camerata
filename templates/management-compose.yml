@@ -5,9 +5,7 @@ services:
     environment:
       <%= app_urls %>
       ACCESS_MASTER_MOUNT: "s3" # The path to the mounted drive, or "s3"
-      AWS_ACCESS_KEY_ID:
       AWS_DEFAULT_REGION: us-east-1
-      AWS_SECRET_ACCESS_KEY:
       MC_USER:
       MC_PW:
       METADATA_CLOUD_HOST:

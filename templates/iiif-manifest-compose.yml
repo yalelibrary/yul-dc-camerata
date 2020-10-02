@@ -5,9 +5,7 @@ services:
     ports:
       - '80:80'
     environment:
-      AWS_ACCESS_KEY_ID:
       AWS_DEFAULT_REGION: us-east-1
-      AWS_SECRET_ACCESS_KEY:
       IIIF_MANIFEST_VERSION:
       PASSENGER_APP_ENV: development # development
       POSTGRES_DB: iiif_manifest_yul_development
