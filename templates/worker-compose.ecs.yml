@@ -1,8 +1,7 @@
 version: '3'
 services:
-  management:
+  management_worker:
     environment:
-      ACCESS_MASTER_MOUNT: "/data" # The path to the mounted drive, or "s3"
       HTTP_USERNAME: ${HTTP_USERNAME}
       HTTP_PASSWORD: ${HTTP_PASSWORD}
       IIIF_IMAGE_BASE_URL:
@@ -10,6 +9,7 @@ services:
       MC_USER: ${MC_USER}
       MC_PW: ${MC_PW}
       METADATA_CLOUD_HOST:
+      ACCESS_MASTER_MOUNT: "/data" # The path to the mounted drive, or "s3"
       RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
       HONEYBADGER_API_KEY_MANAGEMENT: ${HONEYBADGER_API_KEY_MANAGEMENT}
       POSTGRES_DB: management_yul_production
@@ -19,9 +19,11 @@ services:
       SAMPLE_BUCKET:
       SOLR_BASE_URL: http://${CLUSTER_NAME}-solr.${CLUSTER_NAME}:8983/solr
       POSTGRES_HOST: ${CLUSTER_NAME}-psql.${CLUSTER_NAME}
+    volumes:
+      - /data:/data
     logging:
       driver: awslogs
       options:
         awslogs-group: ${CLUSTER_NAME}
         awslogs-region: ${AWS_DEFAULT_REGION}
-        awslogs-stream-prefix: management
+        awslogs-stream-prefix: management_worker

@@ -3,10 +3,12 @@ services:
   blacklight:
     image: yalelibraryit/dc-blacklight:${BLACKLIGHT_VERSION}
     environment:
+      <%= app_urls %>
       POSTGRES_HOST: db
       POSTGRES_PASSWORD: password
       POSTGRES_USER: postgres
       SOLR_URL: http://solr:8983/solr/blacklight-core
+      SOLR_CORE: blacklight-core
       BLACKLIGHT_VERSION:
     ports:
       - '3000:3000'

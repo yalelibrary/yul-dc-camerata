@@ -4,14 +4,14 @@ CLUSTER_NAME=$1
 
 if [[ -z $2 ]]
 then
-  memory='8GB'
+  memory='4096'
 else
   memory=$2
 fi
 
 if [[ -z $3 ]]
 then
-  cpu='2048'
+  cpu='1024'
 else
   cpu=$3
 fi
@@ -137,6 +137,9 @@ task_definition:
   task_size:
     mem_limit: $memory
     cpu_limit: $cpu
+  services:
+    management_worker:
+      mem_limit: 2048
 run_params:
   network_configuration:
     awsvpc_configuration:
