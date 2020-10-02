@@ -436,6 +436,16 @@ module Camerata
       options[:without] || ''
     end
 
+    # Note: First app purposefully outdented to keep yml happy.
+    def app_urls
+      @app_urls ||= <<-END
+IIIF_IMAGE_BASE_URL: ${IIIF_IMAGE_BASE_URL:-http://localhost:8182/iiif}
+      IIIF_MANIFESTS_BASE_URL: ${IIIF_MANIFESTS_BASE_URL:-http://localhost/manifests/}
+      SOLR_BASE_URL: http://solr:8983/solr
+      BLACKLIGHT_BASE_URL: ${BLACKLIGHT_BASE_URL:-http://localhost:3000}
+      END
+    end
+
     ##
     # Generate secrets and .env files that are expected by deploy scripts and
     # docker-compose files
