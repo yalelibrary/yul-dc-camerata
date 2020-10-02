@@ -10,6 +10,12 @@ then
   echo "Using AWS_PROFILE=${AWS_PROFILE}";
   echo "      AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}";
 
+  if [[ ! -f ${1}-ecs-params.yml ]]
+  then
+    export PUBLIC_IP
+    $(dirname "$0")/get-params.sh ${1}
+  fi
+
   if [[ $(aws ecs describe-services --cluster $1 --services $1-worker) = *MISSING* ]]
   then
     discovery="--enable-service-discovery"
@@ -24,6 +30,8 @@ then
     export COMPOSE_FILE=worker-compose.yml
   fi
 
+  #remove unnecessary and problematic task level memory constraints
+  yq delete ${CLUSTER_NAME}-ecs-params.yml  'task_definition.task_size' > $CLUSTER_NAME-worker-params.yml
   # Launch the service and register containers with the loadbalancer
   ecs-cli compose  \
     --region $AWS_DEFAULT_REGION \
