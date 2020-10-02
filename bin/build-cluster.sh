@@ -133,9 +133,27 @@ task_definition:
   task_size:
     mem_limit: 4096
     cpu_limit: 1024
-  services:
-    management_worker:
-      mem_limit: 2048
+run_params:
+  network_configuration: awsvpc_configuration:
+      subnets:
+        - $SUBNET0
+        - $SUBNET1
+      security_groups:
+        - $SG_ID
+      assign_public_ip: $PUBLIC_IPS
+  service_discovery:
+    private_dns_namespace:
+      name: $CLUSTER_NAME
+      vpc: $VPC_ID
+ECS_PARAMS
+cat <<WORKER_PARAMS > ${CLUSTER_NAME}-worker-params.yml
+version: 1
+task_definition:
+  task_execution_role: ecsTaskExecutionRole
+  ecs_network_mode: awsvpc
+  task_size:
+    mem_limit: 4096
+    cpu_limit: 1024
 run_params:
   network_configuration:
     awsvpc_configuration:
@@ -149,6 +167,6 @@ run_params:
     private_dns_namespace:
       name: $CLUSTER_NAME
       vpc: $VPC_ID
-ECS_PARAMS
+WORKER_PARAMS
 
 fi
