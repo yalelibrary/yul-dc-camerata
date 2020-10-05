@@ -11,15 +11,7 @@ CLUSTER_URL=( ["yul-dc-test"]="collections-test.library.yale.edu"
 
 gem install bundler
 
-#./bin/setup
-
 bundle install --quiet
-
-#BR commented per R Kadel Copy secrets_template to secrets
-#cp secrets-template ./.secrets
-
-#sed -i 's/^HTTP_USERNAME/HTTP_USERNAME=yul-dc/g' .secrets
-#sed -i 's/^HTTP_PASSWORD/HTTP_PASSWORD=nocrawl/g' .secrets
 
 #install camerata gem
 rake install
