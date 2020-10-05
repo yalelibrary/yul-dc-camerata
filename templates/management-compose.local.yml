@@ -7,9 +7,12 @@ services:
     <%- end -%>
     environment:
       ACCESS_MASTER_MOUNT: "s3" # The path to the mounted drive, or "S3"
+      BLACKLIGHT_BASE_URL: "http://localhost:3000"
+      IIIF_IMAGE_BASE_URL: "http://localhost:8182/iiif"
+      IIIF_MANIFESTS_BASE_URL: "http://localhost/manifests/"
       PASSENGER_APP_ENV: ${PASSENGER_APP_ENV:-development}
-      RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
       POSTGRES_MULTIPLE_DATABASES: management_yul_development
+      RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
       SAMPLE_BUCKET: yul-dc-development-samples
       SOLR_TEST_CORE: blacklight-test
     <%- if in_management? -%>
