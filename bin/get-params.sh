@@ -137,9 +137,6 @@ task_definition:
   task_size:
     mem_limit: $memory
     cpu_limit: $cpu
-  services:
-    management_worker:
-      mem_limit: 2048
 run_params:
   network_configuration:
     awsvpc_configuration:
@@ -154,6 +151,30 @@ run_params:
       name: $CLUSTER_NAME
       vpc: $VPC_ID
 ECS_PARAMS
+
+  cat <<WORKER_PARAMS > ${1}-worker-params.yml
+version: 1
+task_definition:
+  task_execution_role: ecsTaskExecutionRole
+  ecs_network_mode: awsvpc
+  task_size:
+    mem_limit: 4GB
+    cpu_limit: 1024
+run_params:
+  network_configuration:
+    awsvpc_configuration:
+      subnets:
+        - $SUBNET0
+        - $SUBNET1
+      security_groups:
+        - $SG_ID
+      assign_public_ip: $PUBLIC_IP
+  service_discovery:
+    private_dns_namespace:
+      name: $CLUSTER_NAME
+      vpc: $VPC_ID
+WORKER_PARAMS
+
 else
   echo "\nUSAGE: bin/cluster-ps.sh \$CLUSTER_NAME [memory] [cpu]\n" # Parameters not set correctly
 fi
