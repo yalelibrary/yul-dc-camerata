@@ -53,6 +53,13 @@ then
     --description "$CLUSTER_NAME Cluster applications" \
     --group-name $CLUSTER_NAME-sg \
     --vpc-id $VPC_ID | jq -r ".GroupId"`
+
+    # allow all traffic from within it's own security group
+    aws ec2 authorize-security-group-ingress \
+    --group-id $SG_ID \
+    --protocol all \
+    --source-group $SG_ID
+
     fi
 
   echo "  $SG_ID"
