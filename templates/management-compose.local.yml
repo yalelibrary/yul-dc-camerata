@@ -11,6 +11,7 @@ services:
       AWS_ACCESS_KEY_ID:
       AWS_SECRET_ACCESS_KEY:
       BLACKLIGHT_BASE_URL: "http://localhost:3000"
+      GOOBI_MOUNT: "data"
       IIIF_IMAGE_BASE_URL: "http://localhost:8182/iiif"
       IIIF_MANIFESTS_BASE_URL: "http://localhost/manifests/"
       PASSENGER_APP_ENV: ${PASSENGER_APP_ENV:-development}
