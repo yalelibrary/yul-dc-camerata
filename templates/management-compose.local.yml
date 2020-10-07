@@ -8,6 +8,7 @@ services:
     environment:
       ACCESS_MASTER_MOUNT: "s3" # The path to the mounted drive, or "S3"
       BLACKLIGHT_BASE_URL: "http://localhost:3000"
+      GOOBI_MOUNT: "data"
       IIIF_IMAGE_BASE_URL: "http://localhost:8182/iiif"
       IIIF_MANIFESTS_BASE_URL: "http://localhost/manifests/"
       PASSENGER_APP_ENV: ${PASSENGER_APP_ENV:-development}
