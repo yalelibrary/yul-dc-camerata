@@ -64,6 +64,8 @@ then
 
   echo "  $SG_ID"
 
+  echo "Creating cluster S3 bucket"
+
   create_fs $CLUSTER_NAME $AWS_DEFAULT_REGION
   put_policy
   create_mount_target $SUBNET0 $SG_ID
