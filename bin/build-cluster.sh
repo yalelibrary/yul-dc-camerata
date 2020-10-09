@@ -65,6 +65,18 @@ then
   echo "  $SG_ID"
 
   echo "Creating cluster S3 bucket"
+  if [[ `aws s3 ls | grep ${CLUSTER_NAME}-samples` ]]
+  then
+    echo "S3 bucket: ${CLUSTER_NAME}-samples already exists"
+  else
+    aws s3api create-bucket --bucket "${CLUSTER_NAME}-samples" --region $AWS_DEFAULT_REGION
+
+    # Check if bucket createing successed
+    if [ ! $? == 0 ]
+    then
+      echo "Failed to create S3 bucket ${CLUSTER_NAME}-samples"
+    fi
+  fi
 
   create_fs $CLUSTER_NAME $AWS_DEFAULT_REGION
   put_policy
