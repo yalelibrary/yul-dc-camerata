@@ -1,4 +1,4 @@
-FROM phusion/passenger-ruby26:1.0.10
+FROM phusion/passenger-ruby26:1.1.0
 
 RUN echo 'Downloading Packages' && \
   curl -sL https://deb.nodesource.com/setup_12.x | bash - && \
@@ -32,6 +32,9 @@ RUN yarn && \
   yarn config set silent
 
 RUN rm /etc/nginx/sites-enabled/default
+
+COPY --from=nhd42358.live.dynatrace.com/linux/oneagent-codemodules:all / /
+ENV LD_PRELOAD /opt/dynatrace/oneagent/agent/lib64/liboneagentproc.so
 
 ENV APP_HOME /home/app/webapp
 RUN mkdir $APP_HOME && chown -R app $APP_HOME
