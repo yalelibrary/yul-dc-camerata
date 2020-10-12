@@ -1,4 +1,4 @@
-FROM phusion/passenger-ruby26:1.1.0
+FROM phusion/passenger-ruby26:1.0.10
 
 RUN echo 'Downloading Packages' && \
   curl -sL https://deb.nodesource.com/setup_12.x | bash - && \
