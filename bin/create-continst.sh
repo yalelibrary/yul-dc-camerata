@@ -104,7 +104,7 @@ CLUSTER_NAME=$1
   yum install -y wget
   wget -O Dynatrace-OneAgent-Linux-1.201.129.sh \
     \"https://nhd42358.live.dynatrace.com/api/v1/deployment/installer/agent/unix/default/latest?arch=x86&flavor=default\" \
-    --header=\"Authorization: Api-Token 2S4ZegTjTj-De5OuVXqMc\"
+    --header=\"Authorization: Api-Token ${DYNATRACE_TOKEN}\"
   /bin/sh Dynatrace-OneAgent-Linux-1.201.129.sh --set-app-log-content-access=true --set-infra-only=false --set-host-group=DC
 
   for i in {0..10}
