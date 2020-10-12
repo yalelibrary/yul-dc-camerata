@@ -20,7 +20,7 @@ It will ask you for a password. This is the PaaS token associated with Yale's Dy
 It can be accessed via 
 
 ```bash
-cam env_get DYNATRACE_TOKEN
+cam env_get /yul-dc-ingest/DYNATRACE_TOKEN
 ```
 
 Once you've logged in successfully you will need to rebuild your image. 
