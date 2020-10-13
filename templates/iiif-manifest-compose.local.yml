@@ -15,7 +15,7 @@ services:
     <%- end -%>
     stdin_open: true
     tty: true
+    <%- unless without.match(/db/) -%>
     depends_on:
-      <%- unless without.match(/db/) -%>
       - db
-      <%- end -%>
+    <%- end -%>
