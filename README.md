@@ -46,6 +46,7 @@ variables like so:
 ```ruby
 ENV['AWS_DEFAULT_REGION'] = 'us-east-1'
 ENV['AWS_PROFILE'] = 'your_profile'
+ENV['CLUSTER_NAME'] = 'yul-test'
 ```
 
 ## General Use

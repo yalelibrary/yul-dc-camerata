@@ -2,6 +2,7 @@ version: '3'
 services:
   management_worker:
     environment:
+      GOOBI_MOUNT:
       HTTP_USERNAME: ${HTTP_USERNAME}
       HTTP_PASSWORD: ${HTTP_PASSWORD}
       IIIF_IMAGE_BASE_URL:
