@@ -12,6 +12,7 @@ module Camerata
         MC_USER
         MC_PW
         RAILS_MASTER_KEY
+        DYNATRACE_TOKEN
       ]
     end
 
