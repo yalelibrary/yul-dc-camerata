@@ -53,9 +53,30 @@ then
     --description "$CLUSTER_NAME Cluster applications" \
     --group-name $CLUSTER_NAME-sg \
     --vpc-id $VPC_ID | jq -r ".GroupId"`
+
+    # allow all traffic from within it's own security group
+    aws ec2 authorize-security-group-ingress \
+    --group-id $SG_ID \
+    --protocol all \
+    --source-group $SG_ID
+
     fi
 
   echo "  $SG_ID"
+
+  echo "Creating cluster S3 bucket"
+  if [[ `aws s3 ls | grep ${CLUSTER_NAME}-samples` ]]
+  then
+    echo "S3 bucket: ${CLUSTER_NAME}-samples already exists"
+  else
+    aws s3api create-bucket --bucket "${CLUSTER_NAME}-samples" --region $AWS_DEFAULT_REGION
+
+    # Check if bucket createing successed
+    if [ ! $? == 0 ]
+    then
+      echo "Failed to create S3 bucket ${CLUSTER_NAME}-samples"
+    fi
+  fi
 
   create_fs $CLUSTER_NAME $AWS_DEFAULT_REGION
   put_policy
@@ -152,7 +173,7 @@ task_definition:
   task_execution_role: ecsTaskExecutionRole
   ecs_network_mode: awsvpc
   task_size:
-    mem_limit: 4096
+    mem_limit: 3072
     cpu_limit: 1024
 run_params:
   network_configuration:

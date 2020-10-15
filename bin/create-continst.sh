@@ -17,14 +17,14 @@ CLUSTER_NAME=$1
       }
     ]
   }'
-   
+
   function create_role {
     aws iam create-role --role-name ecsInstanceRole \
     --assume-role-policy-document "$ROLEDOC" \
     --query 'Role.Arn' \
     --output text && aws iam attach-role-policy \
     --policy-arn arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role \
-    --role-name ecsInstanceRole 
+    --role-name ecsInstanceRole
 
     aws iam create-instance-profile \
     --instance-profile-name ecsInstanceProfileRole &&
@@ -47,7 +47,7 @@ CLUSTER_NAME=$1
   }
 
   #create a keypair, store it in a file named after the cluster. Don't lose this keypair, or you'll
-  #have to delete the kp already defined & recreate all the ec2 instances (not the end of the world, 
+  #have to delete the kp already defined & recreate all the ec2 instances (not the end of the world,
   #but annoying)
   function create_key {
     aws ec2 create-key-pair --key-name $CLUSTER_NAME-keypair  --query 'KeyMaterial' \
@@ -80,8 +80,8 @@ CLUSTER_NAME=$1
 
   #gaffle the  subnet & sg from the existing ecs-params file. change the index here if you want to use some other one
   #or rearrange/update the params file (probably easier)
-  AWS_SUBNET_PUBLIC_ID=$(yq r $CLUSTER_NAME-ecs-params.yml 'run_params.network_configuration.awsvpc_configuration.subnets[0]') 
-  AWS_CUSTOM_SECURITY_GROUP_ID=$(yq r $CLUSTER_NAME-ecs-params.yml 'run_params.network_configuration.awsvpc_configuration.security_groups[0]') 
+  AWS_SUBNET_PUBLIC_ID=$(yq r $CLUSTER_NAME-ecs-params.yml 'run_params.network_configuration.awsvpc_configuration.subnets[0]')
+  AWS_CUSTOM_SECURITY_GROUP_ID=$(yq r $CLUSTER_NAME-ecs-params.yml 'run_params.network_configuration.awsvpc_configuration.security_groups[0]')
 
 
   #the instance boot script. runs as root. /etc/ecs/ecs.config registers
@@ -99,12 +99,20 @@ CLUSTER_NAME=$1
   fi
   USERDATA=$(echo "#!/bin/bash
   echo ECS_CLUSTER=$CLUSTER_NAME >> /etc/ecs/ecs.config && yum update -y
+
+  # Install Dynatrace OneAgent client
+  yum install -y wget
+  wget -O Dynatrace-OneAgent-Linux-1.201.129.sh \
+    \"https://nhd42358.live.dynatrace.com/api/v1/deployment/installer/agent/unix/default/latest?arch=x86&flavor=default\" \
+    --header=\"Authorization: Api-Token ${DYNATRACE_TOKEN}\"
+  /bin/sh Dynatrace-OneAgent-Linux-1.201.129.sh --set-app-log-content-access=true --set-infra-only=false --set-host-group=DC
+
   for i in {0..10}
   do
     t=\`printf '%02d' \$i\`
     mkdir -p /data/\$t
     mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 wcsfs00.its.yale.internal:/yul_dc_nfs_store_\$i /data/\$t
-  done" | base64 $B6ARG)
+  done" | base64 -w0)
 
   ## Create one EC2 instance in the public subnet
   AWS_EC2_INSTANCE_ID=$(aws ec2 run-instances \
