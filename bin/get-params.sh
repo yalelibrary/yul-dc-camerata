@@ -68,6 +68,7 @@ then
   cat <<ECS_PARAMS > ${1}-solr-params.yml
 version: 1
 task_definition:
+  task_role_arn: arn:aws:iam::106281100175:role/ECSRoleForTestDC
   task_execution_role: ecsTaskExecutionRole
   ecs_network_mode: awsvpc
   task_size:
@@ -99,6 +100,7 @@ ECS_PARAMS
   cat <<ECS_PARAMS > ${1}-psql-params.yml
 version: 1
 task_definition:
+  task_role_arn: arn:aws:iam::106281100175:role/ECSRoleForTestDC
   task_execution_role: ecsTaskExecutionRole
   ecs_network_mode: awsvpc
   task_size:
@@ -155,6 +157,7 @@ ECS_PARAMS
   cat <<WORKER_PARAMS > ${1}-worker-params.yml
 version: 1
 task_definition:
+  task_role_arn: arn:aws:iam::106281100175:role/ECSRoleForTestDC
   task_execution_role: ecsTaskExecutionRole
   ecs_network_mode: awsvpc
   task_size:
