@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 ##
 # A taggable app is microservice that we know how to make a new release for
+require_relative './spec_helper'
 
 RSpec.describe Camerata::TaggableApp, type: :github_api do
   before do
