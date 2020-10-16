@@ -9,6 +9,7 @@ cluster-ids.txt
 docker-compose-merged.yml
 *-psql-params.yml
 *-solr-params.yml
+*-worker-params.yml
 .byebug_history
 
 /.bundle/

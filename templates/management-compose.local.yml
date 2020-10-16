@@ -30,5 +30,5 @@ services:
       <%- end -%>
       <%- unless without.match(/solr/) -%>
       - solr
-      - management_worker
       <%- end -%>
+      - management_worker
