@@ -110,7 +110,8 @@ then
     --health-check-timeout-seconds 75 \
       | grep -Eo -m 1 'arn:aws:elasticloadbalancing[^\"]*'`
 
-  # Create a target group to associate the MANIFEST listener to clusters
+  # Create a target group to associate the MANIFEST listener to clusters: 
+  # Must add HTTP/302 and change path to / to tg health check to avoid flapping on empty/new clusters
   MFST_TG_ARN=`aws elbv2 create-target-group \
     --name tg-${1}-manifests \
     --target-type ip \
@@ -121,16 +122,16 @@ then
       | grep -Eo -m 1 'arn:aws:elasticloadbalancing[^\"]*'`
 
 #  # Create a target group to associate the MANAGEMENT listener to clusters
-#  MGMT_TG_ARN=`aws elbv2 create-target-group \
-#    --name tg-${1}-management \
-#    --target-type ip \
-#    --protocol HTTP \
-#    --port 3001 \
-#    --vpc-id $VPC_ID \
-#    --health-check-interval-seconds 90 \
-#    --health-check-timeout-seconds 75 \
-#    --health-check-path /management \
-#      | grep -Eo -m 1 'arn:aws:elasticloadbalancing[^\"]*'`
+  MGMT_TG_ARN=`aws elbv2 create-target-group \
+    --name tg-${1}-management \
+    --target-type ip \
+    --protocol HTTP \
+    --port 3001 \
+    --vpc-id $VPC_ID \
+    --health-check-interval-seconds 90 \
+    --health-check-timeout-seconds 75 \
+    --health-check-path /management \
+      | grep -Eo -m 1 'arn:aws:elasticloadbalancing[^\"]*'`
 
   # Create an HTTP listener on port 80that redirects all traffice to HTTPS (port 443)
   HTTP_LISTENER_ARN=`aws elbv2 create-listener \
@@ -171,11 +172,12 @@ then
       --actions Type=forward,TargetGroupArn=$MFST_TG_ARN > /dev/null
 
   # Add a rule to the HTTPS listener to route requests to the /management/ path to the MANAGEMENT target
-#  aws elbv2 create-rule \
-#      --listener-arn $HTTPS_LISTENER_ARN \
-#      --priority 21 \
-#      --conditions "Field=path-pattern,PathPatternConfig={Values=['/management*']}" \
-#      --actions Type=forward,TargetGroupArn=$MGMT_TG_ARN > /dev/null
+  aws elbv2 create-rule --listener-arn $HTTPS_LISTENER_ARN \
+      --listener-arn $HTTPS_LISTENER_ARN \
+      --priority 21 \
+      --conditions "Field=path-pattern,PathPatternConfig={Values=['/management*']}" \
+                   "Field=source-ip,SourceIpConfig={Values=['130.132.0.0/16','128.36.0.0/16','172.16.0.0/12']}" \
+      --actions Type=forward,TargetGroupArn=$MGMT_TG_ARN
 
   echo "Newly created resources:"
   echo "  Load Balancer:     $ALB_ARN"
