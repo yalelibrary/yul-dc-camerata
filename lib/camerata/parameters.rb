@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 module Camerata
   class Parameters
-    # key can be any list of names, comma seperated
+    # key can be any list of names, comma separated
     def self.get(key)
       raise 'please set your AWS_PROFILE and AWS_DEFAULT_REGION' unless ENV['AWS_DEFAULT_REGION'] && ENV['AWS_PROFILE']
       key = "\"#{key}\"" unless key.match?('"')
@@ -26,7 +26,6 @@ module Camerata
       "/#{target_ns}/#{stripped_name}"
     end
 
-    # rubocop:disable Naming/AccessorMethodName
     def self.pull_parameter_hash(key, namespace = nil)
       json = get(key)
       hash = {}
