@@ -33,6 +33,9 @@ RUN yarn && \
 
 RUN rm /etc/nginx/sites-enabled/default
 
+COPY --from=nhd42358.live.dynatrace.com/linux/oneagent-codemodules:all / /
+RUN echo "/opt/dynatrace/oneagent/agent/lib64/liboneagentproc.so" > /etc/ld.so.preload
+
 ENV APP_HOME /home/app/webapp
 RUN mkdir $APP_HOME && chown -R app $APP_HOME
 WORKDIR $APP_HOME
