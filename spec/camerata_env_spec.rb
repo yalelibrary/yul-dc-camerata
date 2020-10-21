@@ -1,4 +1,6 @@
 # frozen_string_literal: true
+require_relative './spec_helper'
+
 RSpec.describe Camerata::CLI do
   subject(:cli) { described_class.new }
   before do

@@ -1,4 +1,6 @@
 # frozen_string_literal: true
+require_relative './spec_helper'
+
 RSpec.describe Camerata::Parameters do
   before do
     allow(described_class).to receive(:put_parameter) do |arg1, arg2|
