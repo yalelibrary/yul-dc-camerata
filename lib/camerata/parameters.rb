@@ -12,10 +12,10 @@ module Camerata
     def self.get_list(parameter_list)
       raise 'please set your AWS_PROFILE and AWS_DEFAULT_REGION' unless ENV['AWS_DEFAULT_REGION'] && ENV['AWS_PROFILE']
       result_list = []
-      parameter_list.each_slice(10){|slice|
+      parameter_list.each_slice(10) do |slice|
         result = call_aws_ssm(slice.join(" "))
         result_list << JSON.parse(result) if result && !result.empty?
-      }
+      end
       result_list
     end
 
