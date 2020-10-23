@@ -1,4 +1,6 @@
 # frozen_string_literal: true
+require_relative './spec_helper'
+
 RSpec.describe Camerata::CLI do
   # Warning: these tests abort without being counted as failures sometimes
   subject(:cli) { described_class.new }
