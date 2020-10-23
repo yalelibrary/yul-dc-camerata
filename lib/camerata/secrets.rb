@@ -13,8 +13,6 @@ module Camerata
         MC_PW
         RAILS_MASTER_KEY
         DYNATRACE_TOKEN
-        DEPLOY_KEY_ID
-        DEPLOY_ACCESS_KEY
       ]
     end
 

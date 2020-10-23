@@ -14,6 +14,8 @@ if File.exist?('.secrets')
     username = v.split("=")[1] if v.split("=")[0] == 'HTTP_USERNAME'
     password = v.split("=")[1] if v.split("=")[0] == 'HTTP_PASSWORD'
   end
+else
+  puts "No .secrets file found. Test suite is running with default basic auth credentials"
 end
 
 puts "Current Blacklight basic auth settings: " \
@@ -36,6 +38,8 @@ else
 end
 
 # use this SSLContext to use https URLs without verifying certificates
+# @ssl_context = OpenSSL::SSL::SSLContext.new
+# @ssl_context.verify_mode = OpenSSL::SSL::VERIFY_NONE
 ssl_context = OpenSSL::SSL::SSLContext.new
 ssl_context.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
