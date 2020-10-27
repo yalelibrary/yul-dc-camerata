@@ -16,6 +16,7 @@ services:
       RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
       SAMPLE_BUCKET: yul-dc-development-samples
       SOLR_TEST_CORE: blacklight-test
+      LD_PRELOAD: ""
     <%- if in_management? -%>
     volumes:
       - .:/home/app/webapp:cached
