@@ -250,15 +250,41 @@ module Camerata
     end
 
     desc 'deploy_main CLUSTER_NAME', 'deploy the main group of microservices to your specified cluster'
-    def deploy_main(this_cluster)
-      meth = 'deploy-main'
-      bin_path = bin_path_for_method(meth)
-      Camerata.cluster_name = this_cluster
-      ensure_env('ecs')
-      cmd = (["COMPOSE_FILE=#{compose_path}", bin_path] + args).join(' ')
-      run(cmd)
+    def deploy_main(*args)
+      deploy_mft(args)
+      deploy_mgmt(args)
+      deploy_images(args)
+      deploy_blacklight(args)
     end
     map 'deploy-main' => :deploy_main
+
+    desc 'deploy_mft CLUSTER_NAME', 'deploy manifest service to your specified cluster'
+    def deploy_mft(*args)
+      merge_compose(compose_path, 'iiif-manifest-compose.yml', 'iiif-manifest-compose.ecs.yml')
+      check_and_run_bin('deploy-mft', args)
+    end
+    map 'deploy-mft' => :deploy_mft
+
+    desc 'deploy_mgmt CLUSTER_NAME', 'deploy management service to your specified cluster'
+    def deploy_mgmt(*args)
+      merge_compose(compose_path, "management-compose.yml", "management-compose.ecs.yml")
+      check_and_run_bin('deploy-mgmt', args)
+    end
+    map 'deploy-mgmt' => :deploy_mgmt
+
+    desc 'deploy_blacklight CLUSTER_NAME', 'deploy blacklight service to your specified cluster'
+    def deploy_blacklight(*args)
+      merge_compose(compose_path, 'blacklight-compose.ecs.yml', 'blacklight-compose.yml')
+      check_and_run_bin('deploy-blacklight', args)
+    end
+    map 'deploy-blacklight' => :deploy_blacklight
+
+    desc 'deploy_blacklight CLUSTER_NAME', 'deploy iiif-images service to your specified cluster'
+    def deploy_images(*args)
+      merge_compose(compose_path, 'iiif-images-compose.ecs.yml', 'iiif-images-compose.yml')
+      check_and_run_bin('deploy-images', args)
+    end
+    map 'deploy-images' => :deploy_images
 
     desc 'deploy_solr CLUSTER_NAME', 'deploy solr to your specified cluster'
     def deploy_solr(*args)
@@ -268,7 +294,9 @@ module Camerata
         exit(1)
       end
       meth = 'deploy-solr'
-      exit(1) unless check_and_run_bin(meth, args)
+
+      merge_compose(compose_path, 'solr-compose.yml', 'solr-compose.ecs.yml')
+      check_and_run_bin(meth, args) or exit 1
     end
     map 'deploy-solr' => :deploy_solr
 
@@ -280,7 +308,8 @@ module Camerata
         exit(1)
       end
       meth = 'deploy-psql'
-      exit(1) unless check_and_run_bin(meth, args)
+      merge_compose(compose_path, 'db-compose.yml', 'db-compose.ecs.yml')
+      check_and_run_bin(meth, args) or exit(1)
     end
     map 'deploy-psql' => :deploy_db
 
@@ -288,7 +317,8 @@ module Camerata
     def deploy_worker(this_cluster)
       meth = 'deploy-worker'
       Camerata.cluster_name = this_cluster
-      exit(1) unless check_and_run_bin(meth, [this_cluster])
+      merge_compose(compose_path, 'worker-compose.yml', 'worker-compose.ecs.yml')
+      check_and_run_bin(meth, [this_cluster]) or exit(1)
     end
     map 'deploy-worker' => :deploy_worker
 
@@ -310,45 +340,8 @@ module Camerata
     def check_and_run_bin(meth, args = [])
       bin_path = bin_path_for_method(meth)
       ensure_env('ecs')
-      check_for_special_compose(meth)
       cmd = (["COMPOSE_FILE=#{compose_path}", bin_path] + args).join(' ')
       run(cmd)
-    end
-
-    def check_for_special_compose(meth)
-      method_name = method_for(meth)
-      case method_name
-      when 'deploy-psql'
-        db_only_compose
-      when 'deploy-solr'
-        solr_only_compose
-      when 'deploy-worker'
-        worker_only_compose
-      end
-    end
-
-    def db_only_compose
-      build_files = [
-        "db-compose.yml",
-        "db-compose.ecs.yml"
-      ]
-      merge_compose(compose_path, *build_files)
-    end
-
-    def solr_only_compose
-      build_files = [
-        "solr-compose.yml",
-        "solr-compose.ecs.yml"
-      ]
-      merge_compose(compose_path, *build_files)
-    end
-
-    def worker_only_compose
-      build_files = [
-        "worker-compose.yml",
-        "worker-compose.ecs.yml"
-      ]
-      merge_compose(compose_path, *build_files)
     end
 
     def method_for(meth)
@@ -369,6 +362,7 @@ module Camerata
     end
 
     def merge_compose(out, *inputs)
+      return if inputs.empty?
       result = {}
       inputs.each do |input|
         file_path = File.join(self.class.source_root, input)
@@ -395,25 +389,24 @@ module Camerata
 
     # rubocop:disable Metrics/MethodLength
     def build_compose(type)
-      build_files = [
-        "blacklight-compose.yml",
-        "blacklight-compose.#{type}.yml",
-        "iiif-images-compose.yml",
-        "iiif-images-compose.#{type}.yml",
-        "iiif-manifest-compose.yml",
-        "iiif-manifest-compose.#{type}.yml",
-        "management-compose.yml",
-        "management-compose.#{type}.yml"
-      ]
+      build_files = []
 
       if type == 'local'
-        build_files += [
+        build_files = [
+          "blacklight-compose.yml",
+          "blacklight-compose.local.yml",
+          "iiif-images-compose.yml",
+          "iiif-images-compose.local.yml",
           "db-compose.yml",
-          "db-compose.#{type}.yml",
+          "db-compose.local.yml",
           "solr-compose.yml",
-          "solr-compose.#{type}.yml",
+          "solr-compose.local.yml",
           "worker-compose.yml",
-          "worker-compose.#{type}.yml"
+          "worker-compose.local.yml",
+          "iiif-manifest-compose.yml",
+          "iiif-manifest-compose.local.yml",
+          "management-compose.yml",
+          "management-compose.local.yml"
         ]
       end
 
