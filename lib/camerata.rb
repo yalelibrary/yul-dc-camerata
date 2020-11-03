@@ -314,11 +314,10 @@ module Camerata
     map 'deploy-psql' => :deploy_db
 
     desc 'deploy_worker CLUSTER_NAME', 'deploy the management worker to your specified cluster'
-    def deploy_worker(this_cluster)
+    def deploy_worker(*args)
       meth = 'deploy-worker'
-      Camerata.cluster_name = this_cluster
       merge_compose(compose_path, 'worker-compose.yml', 'worker-compose.ecs.yml')
-      check_and_run_bin(meth, [this_cluster]) or exit(1)
+      check_and_run_bin(meth, args) or exit(1)
     end
     map 'deploy-worker' => :deploy_worker
 
@@ -338,6 +337,7 @@ module Camerata
     private
 
     def check_and_run_bin(meth, args = [])
+      Camerata.cluster_name=args.first
       bin_path = bin_path_for_method(meth)
       ensure_env('ecs')
       cmd = (["COMPOSE_FILE=#{compose_path}", bin_path] + args).join(' ')
