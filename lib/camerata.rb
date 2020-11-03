@@ -337,7 +337,7 @@ module Camerata
     private
 
     def check_and_run_bin(meth, args = [])
-      Camerata.cluster_name=args.first
+      Camerata.cluster_name = args.first
       bin_path = bin_path_for_method(meth)
       ensure_env('ecs')
       cmd = (["COMPOSE_FILE=#{compose_path}", bin_path] + args).join(' ')
