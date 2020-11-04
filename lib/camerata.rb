@@ -279,7 +279,7 @@ module Camerata
     end
     map 'deploy-blacklight' => :deploy_blacklight
 
-    desc 'deploy_blacklight CLUSTER_NAME', 'deploy iiif-images service to your specified cluster'
+    desc 'deploy_images CLUSTER_NAME', 'deploy iiif-images service to your specified cluster'
     def deploy_images(*args)
       merge_compose(compose_path, 'iiif-images-compose.ecs.yml', 'iiif-images-compose.yml')
       check_and_run_bin('deploy-images', args)
