@@ -34,7 +34,9 @@ then
     --region $AWS_DEFAULT_REGION \
     --project-name ${CLUSTER_NAME}-worker \
     --ecs-params ${CLUSTER_NAME}-worker-params.yml \
-    service up --launch-type EC2 \
+    service up \
+    --deployment-min-healthy-percent 50 \
+    --launch-type EC2 \
     $2 \
     $discovery $log \
     --force-deployment \
