@@ -105,7 +105,7 @@ CLUSTER_NAME=$1
   wget -O Dynatrace-OneAgent-Linux-1.201.129.sh \
     \"https://nhd42358.live.dynatrace.com/api/v1/deployment/installer/agent/unix/default/latest?arch=x86&flavor=default\" \
     --header=\"Authorization: Api-Token ${DYNATRACE_TOKEN}\"
-  /bin/sh Dynatrace-OneAgent-Linux-1.201.129.sh --set-app-log-content-access=true --set-infra-only=false --set-host-group=DC
+  /bin/sh Dynatrace-OneAgent-Linux-1.201.129.sh --set-app-log-content-access=true --set-infra-only=true --set-host-group=DC --set-host-name=${CLUSTER_NAME}-worker
 
   for i in {0..10}
   do
@@ -120,7 +120,6 @@ CLUSTER_NAME=$1
   --instance-type ${INSTANCE_TYPE:-t2.large} \
   --tag-specifications "ResourceType=instance,Tags=[{Key=Name, Value=$CLUSTER_NAME-container-instance}]" \
   --key-name $CLUSTER_NAME-keypair \
-  --associate-public-ip-address \
   --monitoring "Enabled=false" \
   --security-group-ids $AWS_CUSTOM_SECURITY_GROUP_ID \
   --subnet-id $AWS_SUBNET_PUBLIC_ID \
@@ -132,5 +131,5 @@ CLUSTER_NAME=$1
   ## Check if the instance one is running
   ## It will take some time for the instance to get ready
   aws ec2 describe-instances \
-  --instance-ids $AWS_EC2_INSTANCE_ID --output text | grep INSTANCES | awk -v derp="$CLUSTER_NAME" '{print $9 " ssh -i " derp "-keypair.pem ec2-user@" $16}'
+  --instance-ids $AWS_EC2_INSTANCE_ID --output text | grep INSTANCES | awk -v derp="$CLUSTER_NAME" '{print $9 " ssh -i " derp "-keypair.pem ec2-user@" $14}'
 fi

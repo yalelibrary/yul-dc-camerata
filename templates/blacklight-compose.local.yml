@@ -11,6 +11,7 @@ services:
       IIIF_MANIFESTS_BASE_URL: "http://localhost/manifests/"
       PASSENGER_APP_ENV: development
       POSTGRES_DB: blacklight_yul_development
+      LD_PRELOAD: ""
     <%- if in_blacklight? -%>
     volumes:
       - .:/home/app/webapp:cached

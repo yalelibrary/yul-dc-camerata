@@ -1,4 +1,6 @@
 # frozen_string_literal: true
+require_relative './spec_helper'
+
 RSpec.describe Camerata::Parameters do
   before do
     allow(described_class).to receive(:put_parameter) do |arg1, arg2|
@@ -41,17 +43,17 @@ RSpec.describe Camerata::Parameters do
   context "pull_parameter_hash" do
     it "turns ssm params into hash" do
       allow(described_class).to receive(:call_aws_ssm).and_return(File.open(File.join("spec", "fixtures", 'default_params.json')).read)
-      expect(described_class.pull_parameter_hash("name1 name2", "")["name2"]).to eq "default2"
+      expect(described_class.pull_parameter_hash(["name1", "name2"], "")["name2"]).to eq "default2"
     end
 
     it "strips the prefix off the key" do
       allow(described_class).to receive(:call_aws_ssm).with('"/TEST_NS/name1" "/TEST_NS/name2"').and_return(File.open(File.join("spec", "fixtures", "multiple_params.json")).read)
-      expect(described_class.pull_parameter_hash('"/TEST_NS/name1" "/TEST_NS/name2"', "TEST_NS")["name2"]).to eq "value2"
+      expect(described_class.pull_parameter_hash(['"/TEST_NS/name1"', '"/TEST_NS/name2"'], "TEST_NS")["name2"]).to eq "value2"
     end
 
     it "tolerates an empty namespace argument" do
       allow(described_class).to receive(:call_aws_ssm).with('"name1" "name2"').and_return(File.open(File.join("spec", "fixtures", 'default_params.json')).read)
-      expect(described_class.pull_parameter_hash('"name1" "name2"')["name1"]).to eq "default1"
+      expect(described_class.pull_parameter_hash(['"name1"', '"name2"'])["name1"]).to eq "default1"
     end
   end
 

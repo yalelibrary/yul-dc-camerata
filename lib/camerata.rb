@@ -207,7 +207,7 @@ module Camerata
     desc "smoke ARGS", "Run the smoke tests against a running stack"
     def smoke(*args)
       ensure_env
-      run_with_exit("rspec #{smoke_path} #{args.join(' ')}")
+      run_with_exit("cd #{gem_install_path} && rspec #{smoke_path} #{args.join(' ')}")
     end
 
     desc "push_version APP VERSION", "Set a new version string for release of an application. For example `cam push_version blacklight v2.5.1`"
@@ -249,14 +249,9 @@ module Camerata
       say "Camerata Version: #{Camerata::VERSION}"
     end
 
-    desc 'deploy_main CLUSTER_NAME', 'deploy the main group of microservices to your specified cluster'
-    def deploy_main(this_cluster)
-      meth = 'deploy-main'
-      bin_path = bin_path_for_method(meth)
-      Camerata.cluster_name = this_cluster
-      ensure_env('ecs')
-      cmd = (["COMPOSE_FILE=#{compose_path}", bin_path] + args).join(' ')
-      run(cmd)
+    desc 'deploy_main CLUSTER_NAME [any additional arguments)', 'deploy the main group of microservices to your specified cluster'
+    def deploy_main(*args)
+      check_and_run_bin("deploy-main", args)
     end
     map 'deploy-main' => :deploy_main
 
@@ -308,6 +303,7 @@ module Camerata
     private
 
     def check_and_run_bin(meth, args = [])
+      Camerata.cluster_name = args.first
       bin_path = bin_path_for_method(meth)
       ensure_env('ecs')
       check_for_special_compose(meth)
@@ -381,12 +377,16 @@ module Camerata
       end
     end
 
+    def gem_install_path
+      @gem_install_path ||= File.expand_path(File.join(__dir__, '..'))
+    end
+
     def smoke_path
-      @smoke_path ||= File.expand_path(File.join(__dir__, '..', 'smoke_spec'))
+      @smoke_path ||= File.join(gem_install_path, 'smoke_spec')
     end
 
     def compose_path
-      @compose_path ||= File.expand_path(File.join(__dir__, '..', 'tmp', 'docker-compose.yml'))
+      @compose_path ||= File.join(gem_install_path, 'tmp', 'docker-compose.yml')
     end
 
     # rubocop:disable Metrics/MethodLength

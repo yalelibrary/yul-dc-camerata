@@ -2,4 +2,4 @@ version: '3'
 services:
   base:
     build: .
-    image: yalelibraryit/dc-base:v1.1.0
+    image: yalelibraryit/dc-base:v1.1.1
