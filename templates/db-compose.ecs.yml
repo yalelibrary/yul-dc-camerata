@@ -3,6 +3,7 @@ services:
   db:
     environment:
       POSTGRES_MULTIPLE_DATABASES: blacklight_yul_${RAILS_ENV:-production},management_yul_${RAILS_ENV:-production},iiif_manifest_yul_${RAILS_ENV:-production}
+      DYNATRACE_TOKEN: ${DYNATRACE_TOKEN}
     command: postgres -c 'max_connections=500'
     logging:
       driver: awslogs
