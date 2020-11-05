@@ -83,7 +83,7 @@ module Camerata
     end
 
     # default namespace /BLACKLIGHT_VERSION   cluster-specific namespace /YUL_TEST/BLACKLIGHT_VERSION
-    def self.load_env(namespace = nil)
+    def self.load_env(namespace = "")
       get_all(namespace).each do |k, v|
         ENV[k] = v unless ENV[k] && !ENV[k].empty?
       end
