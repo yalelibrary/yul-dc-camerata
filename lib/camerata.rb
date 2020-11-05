@@ -249,7 +249,6 @@ module Camerata
       say "Camerata Version: #{Camerata::VERSION}"
     end
 
-    desc 'deploy_main CLUSTER_NAME', 'deploy the main group of microservices to your specified cluster'
     def deploy_main(*args)
       deploy_mft(args)
       deploy_mgmt(args)
