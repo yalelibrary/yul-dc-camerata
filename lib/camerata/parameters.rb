@@ -54,14 +54,14 @@ module Camerata
       hash
     end
 
-    def self.get_all(namespace = nil)
-      namespace ||= Camerata.cluster_name
+    def self.get_all(namespace = "")
       parameter_list = parameters.map do |v|
         "\"#{v}\""
       end
       # Create both versions of param string
       default_parameter_hash = pull_parameter_hash(parameter_list, namespace)
-      return default_parameter_hash unless namespace
+      return default_parameter_hash if namespace.empty?
+
       parameter_list = parameters.map do |p|
         "\"/#{namespace}/#{p}\""
       end

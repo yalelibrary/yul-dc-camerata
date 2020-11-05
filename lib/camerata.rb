@@ -16,15 +16,6 @@ require "camerata/taggable_app"
 
 # rubocop:disable Metrics/ClassLength
 module Camerata
-  @cluster_name = nil
-  def self.cluster_name
-    @cluster_name ||= ENV['CLUSTER_NAME']
-  end
-
-  def self.cluster_name=(name)
-    @cluster_name = name
-  end
-
   # TODO: use cluster env variable
   def self.gather_env(source_ns)
     { "app_versions" => Camerata::AppVersions.get_all(source_ns),
@@ -45,7 +36,7 @@ module Camerata
     end
   end
 
-  def self.set_version(app_name, version)
+  def self.set_version(cluster_name, app_name, version)
     Camerata::AppVersions.set(Parameters.create_param_name(cluster_name, '', app_name), version)
   end
 
@@ -217,7 +208,7 @@ module Camerata
         puts "Did not find matching version string for #{app}"
         exit(1)
       end
-      Camerata.set_version(app_name, version)
+      Camerata.set_version(ENV['CLUSTER_NAME'] || "development", app_name, version)
     end
 
     ##
@@ -249,6 +240,7 @@ module Camerata
       say "Camerata Version: #{Camerata::VERSION}"
     end
 
+    desc 'deploy_main CLUSTER_NAME', 'deploy all the things (except solr & postgres) to your cluster'
     def deploy_main(*args)
       deploy_mft(args)
       deploy_mgmt(args)
@@ -336,7 +328,6 @@ module Camerata
     private
 
     def check_and_run_bin(meth, args = [])
-      Camerata.cluster_name = args.first
       bin_path = bin_path_for_method(meth)
       ensure_env('ecs')
       cmd = (["COMPOSE_FILE=#{compose_path}", bin_path] + args).join(' ')
