@@ -249,14 +249,9 @@ module Camerata
       say "Camerata Version: #{Camerata::VERSION}"
     end
 
-    desc 'deploy_main CLUSTER_NAME', 'deploy the main group of microservices to your specified cluster'
-    def deploy_main(this_cluster)
-      meth = 'deploy-main'
-      bin_path = bin_path_for_method(meth)
-      Camerata.cluster_name = this_cluster
-      ensure_env('ecs')
-      cmd = (["COMPOSE_FILE=#{compose_path}", bin_path] + args).join(' ')
-      run(cmd)
+    desc 'deploy_main CLUSTER_NAME [any additional arguments)', 'deploy the main group of microservices to your specified cluster'
+    def deploy_main(*args)
+      check_and_run_bin("deploy-main", args)
     end
     map 'deploy-main' => :deploy_main
 
@@ -308,6 +303,7 @@ module Camerata
     private
 
     def check_and_run_bin(meth, args = [])
+      Camerata.cluster_name = args.first
       bin_path = bin_path_for_method(meth)
       ensure_env('ecs')
       check_for_special_compose(meth)
