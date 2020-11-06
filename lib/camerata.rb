@@ -52,30 +52,34 @@ module Camerata
       true
     end
 
+    def namespace
+      ENV['CLUSTER_NAME'] || "yul-dc-development"
+    end
+
     method_option :without, default: '', type: :string, aliases: '-no'
     desc "up", "starts docker-compose with orphan removal, defaults to blacklight"
     def up(*args)
-      ensure_env
+      ensure_env(namespace)
       output = default_options(args, ['--remove-orphans'])
       run_with_exit("#{docker_compose} up #{output.join(' ')}")
     end
 
     desc "stop", "stops the specified running local service, defaults to all"
     def stop(*args)
-      ensure_env
+      ensure_env(namespace)
       run("#{docker_compose} stop #{args.join(' ')}")
       run_with_exit("rm -rf tmp/pids/*")
     end
 
     desc "restart", "restarts the specified running local service, defaults to all"
     def restart(*args)
-      ensure_env
+      ensure_env(namespace)
       run_with_exit("#{docker_compose} restart #{args.join(' ')}")
     end
 
     desc "down", "complete local down, removes containers, volumes and orphans"
     def down
-      ensure_env
+      ensure_env(namespace)
       output = ['--remove-orphans', '-v']
       run("#{docker_compose} down #{output.join(' ')}")
       run_with_exit("rm -rf tmp/pids/*")
@@ -83,33 +87,33 @@ module Camerata
 
     desc "build", "builds specified local service, defaults to blacklight"
     def build(*args)
-      ensure_env
+      ensure_env(namespace)
       options = default_options(args)
       run_with_exit("#{docker_compose} build #{options.join(' ')}")
     end
 
     desc "push ARGS", "wraps docker-compose push"
     def push(*args)
-      ensure_env
+      ensure_env(namespace)
       run_with_exit("#{docker_compose} push #{args.join(' ')}")
     end
 
     desc "pull ARGS", "wraps docker-compose pull"
     def pull(*args)
-      ensure_env
+      ensure_env(namespace)
       run_with_exit("#{docker_compose} pull #{args.join(' ')}")
     end
 
     desc "ps ARGS", "wraps docker-compose status"
     def ps(*args)
-      ensure_env
+      ensure_env(namespace)
       run_with_exit("#{docker_compose} ps #{args.join(' ')}")
     end
     map status: :ps
 
     desc "logs ARGS", "wraps docker-compose logs"
     def logs(*args)
-      ensure_env
+      ensure_env(namespace)
       run_with_exit("#{docker_compose} logs #{args.join(' ')}")
     end
     map log: :logs
@@ -117,14 +121,14 @@ module Camerata
     method_option :user, default: 'app', type: :string, alias: '-u'
     desc "bundle SERVICE", "runs bundle inside the running container, specify the serivce as blacklight or management"
     def bundle(service = 'blacklight')
-      ensure_env
+      ensure_env(namespace)
       user = options.dup.delete(:user)
       run_with_exit("#{docker_compose} exec -u #{user} #{service} bundle")
     end
 
     desc "walk ARGS", "wraps docker-compose run, 'run' is not an allowed thor command, thus walk"
     def walk(*args)
-      ensure_env
+      ensure_env(namespace)
       options = default_options(args)
       run_with_exit("#{docker_compose} run #{options.join(' ')}")
     end
@@ -132,7 +136,7 @@ module Camerata
     method_option :user, default: 'app', type: :string, alias: '-u'
     desc "exec ARGS", "wraps docker-compose exec"
     def exec(*args)
-      ensure_env
+      ensure_env(namespace)
       user = options.dup.delete(:user)
       options = default_options(args)
       run_with_exit("#{docker_compose} exec -u #{user} #{options.join(' ')}")
@@ -142,7 +146,7 @@ module Camerata
     method_option :user, default: 'app', type: :string, alias: '-u'
     desc 'sh ARGS', "launch a shell using docker-compose exec, sets tty properly"
     def sh(*args)
-      ensure_env
+      ensure_env(namespace)
       user = options.dup.delete(:user)
       options = default_options(args, ["-e COLUMNS=\"\`tput cols\`\" -e LINES=\"\`tput lines\`\""])
       run_with_exit("#{docker_compose} exec -u #{user} #{options.join(' ')} bundle exec bash")
@@ -151,7 +155,7 @@ module Camerata
     method_option :user, default: 'app', type: :string, alias: '-u'
     desc "bundle_exec ARGS", "wraps docker-compose exec SERVICE bundle exec ARGS"
     def bundle_exec(service, *args)
-      ensure_env
+      ensure_env(namespace)
       user = options[:user]
       run_with_exit("#{docker_compose} exec -u #{user} #{service} bundle exec #{args.join(' ')}")
     end
@@ -160,7 +164,7 @@ module Camerata
     method_option :user, default: 'app', type: :string, alias: '-u'
     desc "console ARGS", "shortcut to start rails console"
     def console(service, *args)
-      ensure_env
+      ensure_env(namespace)
       user = options[:user]
       run_with_exit("#{docker_compose} exec -u #{user} #{service} bundle exec rails console #{args.join(' ')}")
     end
@@ -197,7 +201,7 @@ module Camerata
 
     desc "smoke ARGS", "Run the smoke tests against a running stack"
     def smoke(*args)
-      ensure_env
+      ensure_env(namespace)
       run_with_exit("cd #{gem_install_path} && rspec #{smoke_path} #{args.join(' ')}")
     end
 
@@ -329,7 +333,7 @@ module Camerata
 
     def check_and_run_bin(meth, args = [])
       bin_path = bin_path_for_method(meth)
-      ensure_env('ecs')
+      ensure_env(namespace, 'ecs')
       cmd = (["COMPOSE_FILE=#{compose_path}", bin_path] + args).join(' ')
       run(cmd)
     end
@@ -436,11 +440,11 @@ IIIF_IMAGE_BASE_URL: ${IIIF_IMAGE_BASE_URL:-http://localhost:8182/iiif}
     ##
     # Generate secrets and .env files that are expected by deploy scripts and
     # docker-compose files
-    def ensure_env(type = 'local')
+    def ensure_env(namespace, type = 'local')
       DotRc.new
-      Camerata::AppVersions.load_env
-      Camerata::Secrets.load_env
-      Camerata::Cluster.load_env
+      Camerata::AppVersions.load_env(namespace)
+      Camerata::Secrets.load_env(namespace)
+      Camerata::Cluster.load_env(namespace)
       build_compose(type)
     end
 
