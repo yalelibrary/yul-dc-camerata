@@ -52,9 +52,6 @@ module Camerata
       true
     end
 
-    def namespace
-      ENV['CLUSTER_NAME'] || "yul-dc-development"
-    end
 
     method_option :without, default: '', type: :string, aliases: '-no'
     desc "up", "starts docker-compose with orphan removal, defaults to blacklight"
@@ -330,10 +327,13 @@ module Camerata
     end
 
     private
+    def namespace
+      ENV['CLUSTER_NAME'] || "yul-dc-development"
+    end
 
     def check_and_run_bin(meth, args = [])
       bin_path = bin_path_for_method(meth)
-      ensure_env(namespace, 'ecs')
+      ensure_env(args.first, 'ecs')
       cmd = (["COMPOSE_FILE=#{compose_path}", bin_path] + args).join(' ')
       run(cmd)
     end
