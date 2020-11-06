@@ -10,6 +10,7 @@ services:
       POSTGRES_MULTIPLE_DATABASES: iiif_manifest_yul_development
       SAMPLE_BUCKET: yul-dc-development-samples # manifests
       S3_SOURCE_BUCKET_NAME: yul-dc-dev-image-samples # image and ptiffs
+      LD_PRELOAD: ""
     <%- if in_manifest? -%>
     volumes:
       - .:/home/app/webapp:cached

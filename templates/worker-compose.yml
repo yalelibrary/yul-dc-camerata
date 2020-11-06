@@ -2,7 +2,7 @@ version: '3'
 services:
   management_worker:
     image: yalelibraryit/dc-management:${MANAGEMENT_VERSION}
-    command: /sbin/setuser app bash -l -c "bin/delayed_job_blocking -n 10"
+    command: /sbin/setuser app bash -l -c "bin/delayed_job_blocking -n ${WORKER_COUNT:- 1}"
     environment:
       <%= app_urls %>
       ACCESS_MASTER_MOUNT: "s3" # The path to the mounted drive, or "s3"

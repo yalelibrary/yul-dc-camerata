@@ -1,9 +1,11 @@
 version: '3'
 services:
   db:
+    command: /bin/bash -c '/boot.sh'
     environment:
       POSTGRES_MULTIPLE_DATABASES: blacklight_yul_${RAILS_ENV:-production},management_yul_${RAILS_ENV:-production},iiif_manifest_yul_${RAILS_ENV:-production}
-    command: postgres -c 'max_connections=500'
+      DYNATRACE_TOKEN: ${DYNATRACE_TOKEN}
+      CLUSTER_NAME: ${CLUSTER_NAME}
     logging:
       driver: awslogs
       options:

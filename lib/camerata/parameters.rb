@@ -1,12 +1,22 @@
 # frozen_string_literal: true
 module Camerata
   class Parameters
-    # key can be any list of names, comma seperated
+    # key can be any list of up to ten names, separated by spaces
     def self.get(key)
       raise 'please set your AWS_PROFILE and AWS_DEFAULT_REGION' unless ENV['AWS_DEFAULT_REGION'] && ENV['AWS_PROFILE']
       key = "\"#{key}\"" unless key.match?('"')
       result = call_aws_ssm(key)
       JSON.parse(result) if result && !result.empty?
+    end
+
+    def self.get_list(parameter_list)
+      raise 'please set your AWS_PROFILE and AWS_DEFAULT_REGION' unless ENV['AWS_DEFAULT_REGION'] && ENV['AWS_PROFILE']
+      result_list = []
+      parameter_list.each_slice(10) do |slice|
+        result = call_aws_ssm(slice.join(" "))
+        result_list << JSON.parse(result) if result && !result.empty?
+      end
+      result_list
     end
 
     def self.call_aws_ssm(key)
@@ -26,35 +36,36 @@ module Camerata
       "/#{target_ns}/#{stripped_name}"
     end
 
-    # rubocop:disable Naming/AccessorMethodName
-    def self.pull_parameter_hash(key, namespace = nil)
-      json = get(key)
+    def self.pull_parameter_hash(parameter_list, namespace = nil)
+      json_list = get_list(parameter_list)
       hash = {}
-      json["Parameters"].each do |p|
-        # Remove namespace before setting key
-        key = if namespace
-                p['Name'].sub(/^\/#{Regexp.escape(namespace)}\//, '')
-              else
-                p['Name']
-              end
-        value = p['Value']
-        hash[key] = value
+      json_list.each do |json|
+        json["Parameters"].each do |p|
+          # Remove namespace before setting key
+          key = if namespace
+                  p['Name'].sub(/^\/#{Regexp.escape(namespace)}\//, '')
+                else
+                  p['Name']
+                end
+          value = p['Value']
+          hash[key] = value
+        end
       end
       hash
     end
 
-    def self.get_all(namespace = nil)
-      namespace ||= Camerata.cluster_name
+    def self.get_all(namespace = "")
       parameter_list = parameters.map do |v|
         "\"#{v}\""
       end
       # Create both versions of param string
-      default_parameter_hash = pull_parameter_hash(parameter_list.join(" "), namespace)
-      return default_parameter_hash unless namespace
+      default_parameter_hash = pull_parameter_hash(parameter_list, namespace)
+      return default_parameter_hash if namespace.empty?
+
       parameter_list = parameters.map do |p|
         "\"/#{namespace}/#{p}\""
       end
-      namespaced_parameter_hash = pull_parameter_hash(parameter_list.join(" "), namespace)
+      namespaced_parameter_hash = pull_parameter_hash(parameter_list, namespace)
       default_parameter_hash.merge(namespaced_parameter_hash)
     end
     # rubocop:enable Naming/AccessorMethodName
@@ -71,8 +82,7 @@ module Camerata
       `aws ssm put-parameter --name "#{key}" --type #{type} --value "#{value}" --overwrite`
     end
 
-    # default namespace /BLACKLIGHT_VERSION   cluster-specific namespace /YUL_TEST/BLACKLIGHT_VERSION
-    def self.load_env(namespace = nil)
+    def self.load_env(namespace)
       get_all(namespace).each do |k, v|
         ENV[k] = v unless ENV[k] && !ENV[k].empty?
       end
