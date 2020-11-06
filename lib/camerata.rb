@@ -52,7 +52,6 @@ module Camerata
       true
     end
 
-
     method_option :without, default: '', type: :string, aliases: '-no'
     desc "up", "starts docker-compose with orphan removal, defaults to blacklight"
     def up(*args)
@@ -327,6 +326,7 @@ module Camerata
     end
 
     private
+
     def namespace
       ENV['CLUSTER_NAME'] || "yul-dc-development"
     end

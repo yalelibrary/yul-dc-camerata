@@ -82,7 +82,7 @@ module Camerata
       `aws ssm put-parameter --name "#{key}" --type #{type} --value "#{value}" --overwrite`
     end
 
-    def self.load_env(namespace) 
+    def self.load_env(namespace)
       get_all(namespace).each do |k, v|
         ENV[k] = v unless ENV[k] && !ENV[k].empty?
       end
