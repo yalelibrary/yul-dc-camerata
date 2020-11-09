@@ -1,6 +1,7 @@
 version: '3'
 services:
   solr:
+    command: /bin/bash -c '/boot.sh'
     logging:
       driver: awslogs
       options:
@@ -12,6 +13,8 @@ services:
     command: bash -c 'cp -rn /opt/config/ /var/solr/data/$${SOLR_CORE}/conf && touch /var/solr/data/$${SOLR_CORE}/core.properties && exec solr -f'
     environment:
       SOLR_CORE: blacklight-core
+      DYNATRACE_TOKEN: ${DYNATRACE_TOKEN}
+      CLUSTER_NAME: ${CLUSTER_NAME}
 
 volumes:
   solr_efs:

@@ -7,3 +7,4 @@ services:
     command: bash -c 'precreate-core blacklight-core /opt/config; precreate-core blacklight-test /opt/config; exec solr -f'
     environment:
       SOLR_VERSION:
+      DYNATRACE_TOKEN: ${DYNATRACE_TOKEN}
