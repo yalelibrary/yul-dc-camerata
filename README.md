@@ -302,33 +302,6 @@ Example:
 7. `cam deploy-psql $CLUSTER_NAME --enable-service-discovery`
 8. `cam deploy-main $CLUSTER_NAME --enable-service-discovery` to deploy the application
 
-
-### Updating a single service
-In order to update or deploy a single service, run the various \*-deploy command, eg:
-`cam deploy-mft mycluster` will only deploy the manifest service to the mycluster environment
-
-The available commands are: `deploy-mft, deploy-solr, deploy-blacklight, deploy-psql, deploy-images, deploy-mgmt`
-
-
-### Ingest workers
-
-Ingest workers run in an EC2 Deployment mode (as opposed to Fargate). As such, they are deployed differently.
-
-1. deploy an EC2 instance, and associate it with your cluster: 
-    `cam deploy-continst clustername`.
-  * optionally, an instance type can be specified by setting the INSTANCE_TYPE variable
-2. Deploy worker container(s) `cam deploy-worker`
-  * optionally, the number of job processes executed inside the
-  worker container can be specified by setting the WORKER_COUNT
-  variable. It defaults to 1
-
-The number of worker instances can be scaled up or down as demand
-increases or decreases. The number of worker containers is limited
-by the capacity of container instances present in your cluster. No
-container instance can host more than 3 container instances (due
-to ENI constraints).
-
-
 ## Running the deployment test against a deployed cluster
 
 The deployment testing suite lives in `smoke_spec/deploy_spec.rb` at the root of this repo.

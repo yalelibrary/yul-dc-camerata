@@ -54,14 +54,14 @@ module Camerata
       hash
     end
 
-    def self.get_all(namespace = "")
+    def self.get_all(namespace = nil)
+      namespace ||= Camerata.cluster_name
       parameter_list = parameters.map do |v|
         "\"#{v}\""
       end
       # Create both versions of param string
       default_parameter_hash = pull_parameter_hash(parameter_list, namespace)
-      return default_parameter_hash if namespace.empty?
-
+      return default_parameter_hash unless namespace
       parameter_list = parameters.map do |p|
         "\"/#{namespace}/#{p}\""
       end
@@ -82,7 +82,8 @@ module Camerata
       `aws ssm put-parameter --name "#{key}" --type #{type} --value "#{value}" --overwrite`
     end
 
-    def self.load_env(namespace)
+    # default namespace /BLACKLIGHT_VERSION   cluster-specific namespace /YUL_TEST/BLACKLIGHT_VERSION
+    def self.load_env(namespace = nil)
       get_all(namespace).each do |k, v|
         ENV[k] = v unless ENV[k] && !ENV[k].empty?
       end
