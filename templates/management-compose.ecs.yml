@@ -11,7 +11,7 @@ services:
       HTTP_PASSWORD: ${HTTP_PASSWORD}
       IIIF_IMAGE_BASE_URL:
       IIIF_MANIFESTS_BASE_URL:
-      PDF_BASE_URL:
+      PDF_BASE_URL: https://collections.library.yale.edu/pdfs
       MC_USER: ${MC_USER}
       MC_PW: ${MC_PW}
       METADATA_CLOUD_HOST:
