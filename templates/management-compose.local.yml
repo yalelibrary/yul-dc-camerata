@@ -11,6 +11,7 @@ services:
       GOOBI_MOUNT: "data"
       IIIF_IMAGE_BASE_URL: "http://localhost:8182/iiif"
       IIIF_MANIFESTS_BASE_URL: "http://localhost/manifests/"
+      PDF_BASE_URL: "http://localhost/pdfs/"
       PASSENGER_APP_ENV: ${PASSENGER_APP_ENV:-development}
       POSTGRES_MULTIPLE_DATABASES: management_yul_development
       RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}

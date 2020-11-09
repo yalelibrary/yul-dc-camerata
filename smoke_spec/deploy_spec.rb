@@ -24,6 +24,7 @@ puts "Current Blacklight basic auth settings: " \
 if ENV['YUL_DC_SERVER']
   blacklight_url = "https://#{username}:#{password}@#{ENV['YUL_DC_SERVER']}"
   iiif_manifest_url = "https://#{ENV['YUL_DC_SERVER']}"
+  pdf_url = "https://#{ENV['YUL_DC_SERVER']}"
   iiif_image_url = "https://#{ENV['YUL_DC_SERVER']}"
   management_url = "https://#{ENV['YUL_DC_SERVER']}/management"
 else
@@ -31,6 +32,7 @@ else
   # Sets to local development defaults if none are found
   blacklight_url = ENV['BLACKLIGHT_URL'] || "http://#{username}:#{password}@localhost:3000"
   iiif_manifest_url = ENV['IIIF_MANIFEST_URL'] || 'http://localhost:80'
+  pdf_url = ENV['PDF_URL'] || 'http://localhost:80'
   iiif_image_url = ENV['IIIF_IMAGE_URL'] || 'http://localhost:8182'
   management_url = ENV['MANAGEMENT_URL'] || 'http://localhost:3001/management'
 end

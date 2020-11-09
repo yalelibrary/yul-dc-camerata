@@ -8,6 +8,7 @@ services:
       HTTP_USERNAME: ${HTTP_USERNAME}
       IIIF_IMAGE_BASE_URL:
       IIIF_MANIFESTS_BASE_URL: /manifests/
+      PDF_BASE_URL: /pdfs/
       PASSENGER_APP_ENV: ${RAILS_ENV:-production}
       POSTGRES_HOST: ${CLUSTER_NAME}-psql.${CLUSTER_NAME}
       RAILS_ENV: ${RAILS_ENV:-production}
