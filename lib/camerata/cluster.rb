@@ -11,6 +11,7 @@ module Camerata
         BLACKLIGHT_BASE_URL
         IIIF_IMAGE_BASE_URL
         IIIF_MANIFESTS_BASE_URL
+        PDF_BASE_URL
       ]
     end
   end

@@ -15,5 +15,5 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_USER: postgres
       RAILS_LOG_TO_STDOUT: 'true'
-      RAILS_RELATIVE_URL_ROOT: /manifests
-      SAMPLE_BUCKET: 
+      S3_SOURCE_BUCKET_NAME:
+      SAMPLE_BUCKET:
