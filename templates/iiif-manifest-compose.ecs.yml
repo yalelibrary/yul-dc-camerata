@@ -7,8 +7,8 @@ services:
       AWS_DEFAULT_REGION: us-east-1
       AWS_SECRET_ACCESS_KEY: ${DEPLOY_ACCESS_KEY}
       IIIF_IMAGE_BASE_URL:
-      IIIF_MANIFESTS_BASE_URL:
-      PDF_BASE_URL:
+      IIIF_MANIFESTS_BASE_URL: /manifests/
+      PDF_BASE_URL: /pdfs/
       PASSENGER_APP_ENV: ${RAILS_ENV:-production}
       POSTGRES_DB: iiif_manifest_yul_production
       POSTGRES_HOST: ${CLUSTER_NAME}-psql.${CLUSTER_NAME}
