@@ -9,7 +9,7 @@ services:
         awslogs-stream-prefix: solr
     volumes:
       - solr_efs:/var/solr/data/blacklight-core #this appears to not support variable expansion :/
-    command: /boot.sh
+    command: /bin/bash -c '/boot.sh'
     environment:
       SOLR_CORE: blacklight-core
       DYNATRACE_TOKEN: ${DYNATRACE_TOKEN}

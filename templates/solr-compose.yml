@@ -4,6 +4,6 @@ services:
     image: yalelibraryit/dc-solr:${SOLR_VERSION}
     ports:
       - '8983:8983'
-    command: /boot.sh
+    command: /bin/bash -c '/boot.sh'
     environment:
       SOLR_VERSION:
