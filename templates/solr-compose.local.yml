@@ -1,8 +1,6 @@
 version: '3'
 services:
   solr:
-    environment:
-      DYNATRACE_TOKEN:
     volumes:
       # think this may need to be changed to /var/solr/data
       - solr:/opt/solr/server/solr/mycores
