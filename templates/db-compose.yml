@@ -3,7 +3,6 @@ services:
   db:
     image: yalelibraryit/dc-postgres:${POSTGRES_VERSION}
     environment:
-      DYNATRACE_TOKEN: ${DYNATRACE_TOKEN}
       POSTGRES_HOST: db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
