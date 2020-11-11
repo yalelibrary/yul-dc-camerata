@@ -1,6 +1,7 @@
 version: '3'
 services:
   blacklight:
+    command: /bin/bash -c '/boot.sh'
     environment:
       HONEYBADGER_API_KEY_BLACKLIGHT: ${HONEYBADGER_API_KEY_BLACKLIGHT}
       HTTP_PASSWORD: ${HTTP_PASSWORD}
@@ -14,7 +15,8 @@ services:
       RAILS_ENV: ${RAILS_ENV:-production}
       RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
       SOLR_URL: http://${CLUSTER_NAME}-solr.${CLUSTER_NAME}:8983/solr/blacklight-core
-    command: bash -c "echo $$(date -u +%FT%TZ) > DEPLOYED_AT && sleep 30 && /sbin/my_init" # server
+      DYNATRACE_TOKEN: ${DYNATRACE_TOKEN}
+      CLUSTER_NAME: ${CLUSTER_NAME}
     logging:
       driver: awslogs
       options:
