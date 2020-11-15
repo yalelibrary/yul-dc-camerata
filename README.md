@@ -94,7 +94,7 @@ docker-compose push
 If you receive a `please set your AWS_PROFILE and AWS_DEFAULT_REGION (RuntimeError)` error when you `cam up`, you will need to set your AWS credentials. Credentials can be set in the `~/.aws/credentials` file in the following format:
 
 ```bash
-[dce-hosting]
+[yale]
 aws_access_key_id=YOUR_ACCESS_KEY
 aws_secret_access_key=YOUR_SECRET_ACCESS_KEY
 ```
@@ -102,7 +102,7 @@ aws_secret_access_key=YOUR_SECRET_ACCESS_KEY
 AWS credentials can also be set from the command line:
 
 ```bash
-aws configure --profile dce-hosting
+aws configure --profile yale
 # Enter your credentials as follows:
 AWS Access Key ID [None]: YOUR_AWS_ACCESS_KEY_ID
 AWS Secret Access Key [None]: YOUR_AWS_SECRET_ACCESS_KEY
@@ -113,10 +113,10 @@ Default output format [None]: json
 After your credentials have been set, you will need to export the following settings via the command line:
 
 ```bash
-export AWS_PROFILE=dce-hosting && export AWS_DEFAULT_REGION=us-east-1
+export AWS_PROFILE=yale && export AWS_DEFAULT_REGION=us-east-1
 ```
 
-Note: AWS_PROFILE name needs to match the credentials profile name (`[dce-hosting]`). After you set the credentials, you will need to re-install camerata: `rake install`
+Note: AWS_PROFILE name needs to match the credentials profile name (`[yale]`). After you set the credentials, you will need to re-install camerata: `rake install`
 
 Confirm aws-cli and ecs-cli are installed
 
@@ -128,7 +128,7 @@ ecs-cli version must be 1.19 or above in order to successfully deploy solr and p
 Confirm that your aws cli credentials are set correctly
 
 ```bash
-aws iam get-user --profile dce-hosting
+aws iam get-user --profile yale
 # should return json with your account's user name
 ```
 
