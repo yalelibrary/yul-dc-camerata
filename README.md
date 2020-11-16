@@ -51,7 +51,7 @@ ENV['CLUSTER_NAME'] = 'yul-test'
 
 ## Dynatrace
 
-We've integrated Dynatrace OneAgent for monitoring our Docker container environments. 
+We've integrated Dynatrace OneAgent for monitoring our Docker container environments.
   - Instructions on configuring OneAgent can be found [here](https://github.com/yalelibrary/yul-dc-camerata/tree/master/base)
 
 ## General Use
@@ -308,7 +308,7 @@ The deployment testing suite lives in `smoke_spec/deploy_spec.rb` at the root of
 
 To run it against a deployed cluster:
 
-1. Set YUL_DC_SERVER to the domain name for your deployed cluster `export YUL_DC_SERVER=collections-test.curationexperts.com`
+1. Set YUL_DC_SERVER to the domain name for your deployed cluster `export YUL_DC_SERVER=collections-test.library.yale.edu`
 2. `cam smoke`
 
 ## Releasing a new dependency version
