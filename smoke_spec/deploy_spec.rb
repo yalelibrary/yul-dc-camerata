@@ -43,7 +43,7 @@ ssl_context.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
 RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
   describe "The blacklight site at #{blacklight_url}" do
-    let(:uri) { "#{blacklight_url}/" }
+    let(:uri) { "#{blacklight_url}/catalog/" }
     it 'loads the home page for local environments', deployed: false do
       visit uri
       expect(page).to have_selector(".blacklight-catalog"), "not blocked by basic auth"
