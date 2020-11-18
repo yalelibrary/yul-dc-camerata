@@ -27,6 +27,15 @@ RUN apt-get update && apt-get install -y wget && \
   rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
   echo 'Chrome installed'
 
+RUN echo 'Downloading Postgresql 12' && \
+sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list' && \
+wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - && \
+apt-get update && \
+apt-get -y install postgresql-12 && \
+  apt-get clean && \
+  rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
+  echo 'Postgres 12 Downloaded'
+
 RUN yarn && \
   yarn config set no-progress && \
   yarn config set silent
