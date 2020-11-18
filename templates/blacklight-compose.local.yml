@@ -15,6 +15,8 @@ services:
       SAMPLE_BUCKET: yul-dc-development-samples # manifests
       S3_SOURCE_BUCKET_NAME: yul-dc-dev-image-samples # image and ptiffs
       LD_PRELOAD: ""
+      DYNATRACE_TOKEN: ${DYNATRACE_TOKEN}
+      CLUSTER_NAME: ${CLUSTER_NAME}
     <%- if in_blacklight? -%>
     volumes:
       - .:/home/app/webapp:cached

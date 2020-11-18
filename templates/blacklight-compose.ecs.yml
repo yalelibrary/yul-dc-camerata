@@ -9,6 +9,8 @@ services:
       IIIF_IMAGE_BASE_URL:
       IIIF_MANIFESTS_BASE_URL: /manifests/
       PDF_BASE_URL: /pdfs/
+      DYNATRACE_TOKEN: ${DYNATRACE_TOKEN}
+      CLUSTER_NAME: ${CLUSTER_NAME}
       PASSENGER_APP_ENV: ${RAILS_ENV:-production}
       POSTGRES_HOST: ${CLUSTER_NAME}-psql.${CLUSTER_NAME}
       RAILS_ENV: ${RAILS_ENV:-production}

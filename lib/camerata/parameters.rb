@@ -36,13 +36,13 @@ module Camerata
       "/#{target_ns}/#{stripped_name}"
     end
 
-    def self.pull_parameter_hash(parameter_list, namespace = nil)
+    def self.pull_parameter_hash(parameter_list, namespace = "")
       json_list = get_list(parameter_list)
       hash = {}
       json_list.each do |json|
         json["Parameters"].each do |p|
           # Remove namespace before setting key
-          key = if namespace
+          key = if !namespace.empty?
                   p['Name'].sub(/^\/#{Regexp.escape(namespace)}\//, '')
                 else
                   p['Name']
@@ -54,14 +54,14 @@ module Camerata
       hash
     end
 
-    def self.get_all(namespace = nil)
-      namespace ||= Camerata.cluster_name
+    def self.get_all(namespace = "")
       parameter_list = parameters.map do |v|
         "\"#{v}\""
       end
       # Create both versions of param string
       default_parameter_hash = pull_parameter_hash(parameter_list, namespace)
-      return default_parameter_hash unless namespace
+      return default_parameter_hash if namespace.empty?
+
       parameter_list = parameters.map do |p|
         "\"/#{namespace}/#{p}\""
       end
@@ -82,8 +82,7 @@ module Camerata
       `aws ssm put-parameter --name "#{key}" --type #{type} --value "#{value}" --overwrite`
     end
 
-    # default namespace /BLACKLIGHT_VERSION   cluster-specific namespace /YUL_TEST/BLACKLIGHT_VERSION
-    def self.load_env(namespace = nil)
+    def self.load_env(namespace)
       get_all(namespace).each do |k, v|
         ENV[k] = v unless ENV[k] && !ENV[k].empty?
       end
