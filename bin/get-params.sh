@@ -128,7 +128,78 @@ run_params:
 
 ECS_PARAMS
 
-  cat <<ECS_PARAMS > ${1}-ecs-params.yml
+  cat <<ECS_PARAMS > ${1}-mgmt-params.yml
+version: 1
+task_definition:
+  task_execution_role: ecsTaskExecutionRole
+  ecs_network_mode: awsvpc
+  task_size:
+    mem_limit: $memory
+    cpu_limit: $cpu
+run_params:
+  network_configuration:
+    awsvpc_configuration:
+      subnets:
+        - $SUBNET0
+        - $SUBNET1
+      security_groups:
+        - $SG_ID
+      assign_public_ip: $PUBLIC_IP
+  service_discovery:
+    private_dns_namespace:
+      name: $CLUSTER_NAME
+      vpc: $VPC_ID
+ECS_PARAMS
+
+  cat <<ECS_PARAMS > ${1}-blacklight-params.yml
+version: 1
+task_definition:
+  task_execution_role: ecsTaskExecutionRole
+  ecs_network_mode: awsvpc
+  task_size:
+    mem_limit: $memory
+    cpu_limit: $cpu
+run_params:
+  network_configuration:
+    awsvpc_configuration:
+      subnets:
+        - $SUBNET0
+        - $SUBNET1
+      security_groups:
+        - $SG_ID
+      assign_public_ip: $PUBLIC_IP
+  service_discovery:
+    private_dns_namespace:
+      name: $CLUSTER_NAME
+      vpc: $VPC_ID
+ECS_PARAMS
+
+
+  cat <<ECS_PARAMS > ${1}-mft-params.yml
+version: 1
+task_definition:
+  task_execution_role: ecsTaskExecutionRole
+  ecs_network_mode: awsvpc
+  task_size:
+    mem_limit: $memory
+    cpu_limit: $cpu
+run_params:
+  network_configuration:
+    awsvpc_configuration:
+      subnets:
+        - $SUBNET0
+        - $SUBNET1
+      security_groups:
+        - $SG_ID
+      assign_public_ip: $PUBLIC_IP
+  service_discovery:
+    private_dns_namespace:
+      name: $CLUSTER_NAME
+      vpc: $VPC_ID
+ECS_PARAMS
+
+
+  cat <<ECS_PARAMS > ${1}-iiif-images-params.yml
 version: 1
 task_definition:
   task_execution_role: ecsTaskExecutionRole
