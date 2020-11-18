@@ -4,11 +4,16 @@ services:
     image: yalelibraryit/dc-blacklight:${BLACKLIGHT_VERSION}
     environment:
       <%= app_urls %>
+      AWS_ACCESS_KEY_ID:
+      AWS_DEFAULT_REGION: us-east-1
+      AWS_SECRET_ACCESS_KEY:
+      BLACKLIGHT_VERSION:
       POSTGRES_HOST: db
       POSTGRES_PASSWORD: password
       POSTGRES_USER: postgres
-      SOLR_URL: http://solr:8983/solr/blacklight-core
+      S3_SOURCE_BUCKET_NAME:
+      SAMPLE_BUCKET:
       SOLR_CORE: blacklight-core
-      BLACKLIGHT_VERSION:
+      SOLR_URL: http://solr:8983/solr/blacklight-core
     ports:
       - '3000:3000'
