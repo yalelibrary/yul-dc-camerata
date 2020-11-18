@@ -1,7 +1,6 @@
 version: '3'
 services:
   blacklight:
-    command: bash -c "echo $$(date -u +%FT%TZ) > DEPLOYED_AT && sleep 30 && /boot.sh" # server
     <%- if in_blacklight? -%>
     build: .
     image: yalelibraryit/dc-blacklight:master
