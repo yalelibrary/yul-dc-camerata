@@ -250,30 +250,30 @@ module Camerata
     map 'deploy-main' => :deploy_main
 
     desc 'deploy_mft CLUSTER_NAME', 'deploy manifest service to your specified cluster'
-    def deploy_mft(*args)
+    def deploy_mft(args)
       merge_compose(compose_path, 'iiif-manifest-compose.yml', 'iiif-manifest-compose.ecs.yml')
-      check_and_run_bin('deploy-mft', args)
+      check_and_run_bin('deploy-mft', Array(args))
     end
     map 'deploy-mft' => :deploy_mft
 
     desc 'deploy_mgmt CLUSTER_NAME', 'deploy management service to your specified cluster'
-    def deploy_mgmt(*args)
+    def deploy_mgmt(args)
       merge_compose(compose_path, "management-compose.yml", "management-compose.ecs.yml")
-      check_and_run_bin('deploy-mgmt', args)
+      check_and_run_bin('deploy-mgmt', Array(args))
     end
     map 'deploy-mgmt' => :deploy_mgmt
 
     desc 'deploy_blacklight CLUSTER_NAME', 'deploy blacklight service to your specified cluster'
-    def deploy_blacklight(*args)
+    def deploy_blacklight(args)
       merge_compose(compose_path, 'blacklight-compose.yml', 'blacklight-compose.ecs.yml')
-      check_and_run_bin('deploy-blacklight', args)
+      check_and_run_bin('deploy-blacklight', Array(args))
     end
     map 'deploy-blacklight' => :deploy_blacklight
 
     desc 'deploy_images CLUSTER_NAME', 'deploy iiif-images service to your specified cluster'
-    def deploy_images(*args)
+    def deploy_images(args)
       merge_compose(compose_path, 'iiif-images-compose.yml', 'iiif-images-compose.ecs.yml')
-      check_and_run_bin('deploy-images', args)
+      check_and_run_bin('deploy-images', Array(args))
     end
     map 'deploy-images' => :deploy_images
 
@@ -306,9 +306,8 @@ module Camerata
 
     desc 'deploy_worker CLUSTER_NAME', 'deploy the management worker to your specified cluster'
     def deploy_worker(*args)
-      meth = 'deploy-worker'
       merge_compose(compose_path, 'worker-compose.yml', 'worker-compose.ecs.yml')
-      check_and_run_bin(meth, args) or exit(1)
+      check_and_run_bin('deploy-worker', args) or exit(1)
     end
     map 'deploy-worker' => :deploy_worker
 
@@ -328,12 +327,13 @@ module Camerata
     private
 
     def namespace
+      # TODO: untangle this
       ENV['CLUSTER_NAME'] || "yul-dc-development"
     end
 
     def check_and_run_bin(meth, args = [])
       bin_path = bin_path_for_method(meth)
-      ensure_env(args.first, 'ecs')
+      ensure_env(namespace, 'ecs')
       cmd = (["COMPOSE_FILE=#{compose_path}", bin_path] + args).join(' ')
       run(cmd)
     end
@@ -432,6 +432,7 @@ module Camerata
       @app_urls ||= <<-END
 IIIF_IMAGE_BASE_URL: ${IIIF_IMAGE_BASE_URL:-http://localhost:8182/iiif}
       IIIF_MANIFESTS_BASE_URL: ${IIIF_MANIFESTS_BASE_URL:-http://localhost/manifests/}
+      PDF_BASE_URL: ${PDF_BASE_URL:-http://localhost/pdfs/}
       SOLR_BASE_URL: http://solr:8983/solr
       BLACKLIGHT_BASE_URL: ${BLACKLIGHT_BASE_URL:-http://localhost:3000}
       END
@@ -440,11 +441,13 @@ IIIF_IMAGE_BASE_URL: ${IIIF_IMAGE_BASE_URL:-http://localhost:8182/iiif}
     ##
     # Generate secrets and .env files that are expected by deploy scripts and
     # docker-compose files
-    def ensure_env(namespace, type = 'local')
+    def ensure_env(ns, type = 'local')
+      # TODO: untangle this nonsense. args can be an array sometimes, so we make it an  array always
+      # allways. load_env expects a string.
       DotRc.new
-      Camerata::AppVersions.load_env(namespace)
-      Camerata::Secrets.load_env(namespace)
-      Camerata::Cluster.load_env(namespace)
+      Camerata::AppVersions.load_env(ns)
+      Camerata::Secrets.load_env(ns)
+      Camerata::Cluster.load_env(ns)
       build_compose(type)
     end
 

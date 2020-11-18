@@ -36,13 +36,13 @@ module Camerata
       "/#{target_ns}/#{stripped_name}"
     end
 
-    def self.pull_parameter_hash(parameter_list, namespace = nil)
+    def self.pull_parameter_hash(parameter_list, namespace = "")
       json_list = get_list(parameter_list)
       hash = {}
       json_list.each do |json|
         json["Parameters"].each do |p|
           # Remove namespace before setting key
-          key = if namespace
+          key = if !namespace.empty?
                   p['Name'].sub(/^\/#{Regexp.escape(namespace)}\//, '')
                 else
                   p['Name']

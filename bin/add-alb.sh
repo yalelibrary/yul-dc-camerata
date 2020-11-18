@@ -110,7 +110,7 @@ then
     --health-check-timeout-seconds 75 \
       | grep -Eo -m 1 'arn:aws:elasticloadbalancing[^\"]*'`
 
-  # Create a target group to associate the MANIFEST listener to clusters: 
+  # Create a target group to associate the MANIFEST listener to clusters:
   # Must add HTTP/302 and change path to / to tg health check to avoid flapping on empty/new clusters
   MFST_TG_ARN=`aws elbv2 create-target-group \
     --name tg-${1}-manifests \
@@ -133,7 +133,7 @@ then
     --health-check-path /management \
       | grep -Eo -m 1 'arn:aws:elasticloadbalancing[^\"]*'`
 
-  # Create an HTTP listener on port 80that redirects all traffice to HTTPS (port 443)
+  # Create an HTTP listener on port 80 that redirects all traffice to HTTPS (port 443)
   HTTP_LISTENER_ARN=`aws elbv2 create-listener \
       --load-balancer-arn $ALB_ARN \
       --protocol HTTP \
@@ -169,6 +169,13 @@ then
       --listener-arn $HTTPS_LISTENER_ARN \
       --priority 20 \
       --conditions "Field=path-pattern,PathPatternConfig={Values=['/manifests*']}" \
+      --actions Type=forward,TargetGroupArn=$MFST_TG_ARN > /dev/null
+
+  # Add a rule to the HTTPS listener to route requests to the /pdfs/ path to the PDF target
+  aws elbv2 create-rule \
+      --listener-arn $HTTPS_LISTENER_ARN \
+      --priority 20 \
+      --conditions "Field=path-pattern,PathPatternConfig={Values=['/pdfs*']}" \
       --actions Type=forward,TargetGroupArn=$MFST_TG_ARN > /dev/null
 
   # Add a rule to the HTTPS listener to route requests to the /management/ path to the MANAGEMENT target
