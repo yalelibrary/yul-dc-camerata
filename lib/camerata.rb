@@ -182,6 +182,7 @@ module Camerata
 
     desc "env_get KEY", "get value of a parameter"
     def env_get(key)
+      DotRc.new
       result = Camerata::Parameters.get(key)
       if result["Parameters"].blank?
         puts "The requested #{key} param does not exist"
@@ -192,6 +193,7 @@ module Camerata
 
     desc "env_set ARGS", "set the value of a parameter"
     def env_set(*args)
+      DotRc.new
       Camerata::Parameters.set(*args)
     end
 
