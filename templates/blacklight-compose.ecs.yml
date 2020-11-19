@@ -2,19 +2,21 @@ version: '3'
 services:
   blacklight:
     environment:
+      AWS_ACCESS_KEY_ID: ${DEPLOY_KEY_ID}
+      AWS_DEFAULT_REGION: us-east-1
+      AWS_SECRET_ACCESS_KEY: ${DEPLOY_ACCESS_KEY}
+      CLUSTER_NAME: ${CLUSTER_NAME}
+      DYNATRACE_TOKEN: ${DYNATRACE_TOKEN}
       HONEYBADGER_API_KEY_BLACKLIGHT: ${HONEYBADGER_API_KEY_BLACKLIGHT}
       HTTP_PASSWORD: ${HTTP_PASSWORD}
       HTTP_PASSWORD_PROTECT: ${BLACKLIGHT_PASSWORD_PROTECT}
       HTTP_USERNAME: ${HTTP_USERNAME}
       IIIF_IMAGE_BASE_URL:
-      IIIF_MANIFESTS_BASE_URL: /manifests/
-      PDF_BASE_URL: /pdfs/
-      DYNATRACE_TOKEN: ${DYNATRACE_TOKEN}
-      CLUSTER_NAME: ${CLUSTER_NAME}
       PASSENGER_APP_ENV: ${RAILS_ENV:-production}
       POSTGRES_HOST: ${CLUSTER_NAME}-psql.${CLUSTER_NAME}
       RAILS_ENV: ${RAILS_ENV:-production}
       RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
+      SAMPLE_BUCKET:
       SOLR_URL: http://${CLUSTER_NAME}-solr.${CLUSTER_NAME}:8983/solr/blacklight-core
     command: bash -c "echo $$(date -u +%FT%TZ) > DEPLOYED_AT && sleep 30 && /sbin/my_init" # server
     logging:

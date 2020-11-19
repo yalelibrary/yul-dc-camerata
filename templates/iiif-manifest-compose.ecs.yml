@@ -2,10 +2,10 @@ version: '3'
 services:
   iiif_manifest:
     environment:
-      HONEYBADGER_API_KEY_MANIFEST: ${HONEYBADGER_API_KEY_MANIFEST}
       AWS_ACCESS_KEY_ID: ${DEPLOY_KEY_ID}
       AWS_DEFAULT_REGION: us-east-1
       AWS_SECRET_ACCESS_KEY: ${DEPLOY_ACCESS_KEY}
+      HONEYBADGER_API_KEY_MANIFEST: ${HONEYBADGER_API_KEY_MANIFEST}
       IIIF_IMAGE_BASE_URL:
       PASSENGER_APP_ENV: ${RAILS_ENV:-production}
       POSTGRES_DB: iiif_manifest_yul_production
