@@ -15,6 +15,7 @@ module Camerata
         DYNATRACE_TOKEN
         DEPLOY_KEY_ID
         DEPLOY_ACCESS_KEY
+        YALE_NETWORK_IPS
       ]
     end
 
