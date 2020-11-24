@@ -18,7 +18,6 @@ services:
       RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
       SAMPLE_BUCKET:
       SOLR_URL: http://${CLUSTER_NAME}-solr.${CLUSTER_NAME}:8983/solr/blacklight-core
-      YALE_NETWORK_IPS: ${YALE_NETWORK_IPS:-10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,127.0.0.1}
     command: bash -c "echo $$(date -u +%FT%TZ) > DEPLOYED_AT && sleep 30 && /sbin/my_init" # server
     logging:
       driver: awslogs

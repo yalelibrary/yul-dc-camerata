@@ -17,7 +17,6 @@ services:
       LD_PRELOAD: ""
       DYNATRACE_TOKEN: ${DYNATRACE_TOKEN}
       CLUSTER_NAME: ${CLUSTER_NAME}
-      YALE_NETWORK_IPS: ${YALE_NETWORK_IPS:-10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,127.0.0.1}
     <%- if in_blacklight? -%>
     volumes:
       - .:/home/app/webapp:cached
