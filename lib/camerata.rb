@@ -397,6 +397,8 @@ module Camerata
           "db-compose.local.yml",
           "solr-compose.yml",
           "solr-compose.local.yml",
+          "pdf-worker-compose.yml",
+          "pdf-worker-compose.local.yml",
           "worker-compose.yml",
           "worker-compose.local.yml",
           "iiif-manifest-compose.yml",

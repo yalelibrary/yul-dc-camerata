@@ -35,3 +35,4 @@ services:
       - solr
       <%- end -%>
       - management_worker
+      - pdf_worker
