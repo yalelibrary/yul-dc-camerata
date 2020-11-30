@@ -34,3 +34,5 @@ services:
       BLACKLIGHT_VERSION:
       MANAGEMENT_VERSION:
       CAMERATA_VERSION:
+      # Establish queues for workers to run
+      QUEUES: manifest,ptiff,zeros,metadata,solr_index rake jobs:work
