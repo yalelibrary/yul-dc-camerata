@@ -365,6 +365,7 @@ NOTE: APP = blacklight, camerata or management
 4. Follow the steps in [Deploy a branch](#deploy-a-branch). (This step is unneccesary when deploying camerata)
 
 5. Move any tickets that were included in this release from `For Deploy to Test` to `Review on Test` or from  `For Release` to `Ready for Acceptance`
+
 ### Deploy a branch
 NOTE: If you are deploying a feature branch, it should only be deployed to the test environment!
 
