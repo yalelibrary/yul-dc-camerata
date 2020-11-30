@@ -314,7 +314,7 @@ The available commands are: `deploy-mft, deploy-solr, deploy-blacklight, deploy-
 
 Ingest workers run in an EC2 Deployment mode (as opposed to Fargate). As such, they are deployed differently.
 
-1. deploy an EC2 instance, and associate it with your cluster: 
+1. deploy an EC2 instance, and associate it with your cluster:
     `cam deploy-continst clustername`.
   * optionally, an instance type can be specified by setting the INSTANCE_TYPE variable
 2. Deploy worker container(s) `cam deploy-worker`
@@ -345,7 +345,41 @@ To run it against a deployed cluster:
 3. Start the applications with the new version and run the smoke test
 4. Deploy the applications (see deployment above) Example: `cam deploy-main yul-test`
 
-## Releasing a version of Camerata
+## Releasing a new app version
+NOTE: ENV = test, uat, demo, staging, infra or prod
+NOTE: APP = blacklight, camerata or management
 
-1. Run the release command: `cam release camerata`
-2. Move any tickets that were included in this release from `For Release` to `Ready for Acceptance`
+1. Checkout to the `master` branch and run `git pull`
+
+2. Ensure you have a github personal access token.
+    Instructions here: <https://github.com/github-changelog-generator/github-changelog-generator#github-token> You will need to make your token available via an environment variable called `CHANGELOG_GITHUB_TOKEN`, e.g.:
+    ```
+    export CHANGELOG_GITHUB_TOKEN=YOUR_TOKEN_HERE
+    ```
+
+3. Increment the <APP> version and deploy using `cam release <APP>`, e.g.:
+    ```
+    cam release blacklight
+    ```
+
+4. Follow the steps in [Deploy a branch](#deploy-a-branch). (This step is unneccesary when deploying camerata)
+
+5. Move any tickets that were included in this release from `For Deploy to Test` to `Review on Test` or from  `For Release` to `Ready for Acceptance`
+### Deploy a branch
+NOTE: If you are deploying a feature branch, it should only be deployed to the test environment!
+
+  - Log on to VPN
+  - Go to the Jenkins website in your browser (there’s a link in the project wiki: https://github.com/yalelibrary/yul-dc-documentation/wiki)
+  - Click "YUL-DC-[ENV]-Deploy" on the dashboard
+  - Click "Build with Parameters" in the left side navigation panel
+  - In the "[APP]_VERSION" input box:
+    - If you are deploying the master branch, type in the version from step 3 of "Releasing a new app version". e.g.: `v1.2.3`
+    - If you are deploying a feature branch, type in the branch you want to release. e.g.: `i123-readme-updates`
+  - Next to the "DEPLOY" dropdown click deploy-[APP]
+  - Check the UPDATE_SSM box
+  - Press "Build"
+  - You will see your build in the "Build History" section in the left side navigation panel with a blinking blue circle, indicating it's in progress
+    - If you press the number associated with the build, you can see the details
+    - The build typically takes 10-15 minutes
+    - A successful build will show a solid blue circle when finished
+    - An unsuccessful build will show a solid red circle when finished
