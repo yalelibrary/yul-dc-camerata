@@ -1,40 +1,24 @@
 FROM phusion/passenger-ruby26:1.0.10
 
-RUN echo 'Downloading Packages' && \
-  curl -sL https://deb.nodesource.com/setup_12.x | bash - && \
-  curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
-  echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
-  apt-get update -qq && \
-  apt-get install -y --no-install-recommends \
+RUN curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
+  curl -sL https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - && \
+  curl -sL   https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - && \
+  echo "deb https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list && \
+  echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list && \
+  sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list' && \
+  curl -sL https://deb.nodesource.com/setup_12.x | bash - > /dev/null && \
+  DEBIAN_FRONTEND=noninteractive apt-get -qq install -y --no-install-recommends \
     build-essential \
     libsasl2-dev \
     nodejs \
     rsync \
     tzdata \
     yarn \
-  && \
-  apt-get clean && \
-  rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
-  echo 'Packages Downloaded'
+    postgresql-client-12 \
+    google-chrome-stable && \ 
+    apt-get autoremove -y && \
+    apt-get clean
 
-# Install Chrome so we can run system specs for Blacklight
-RUN apt-get update && apt-get install -y wget && \
-  wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - && \
-  sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list' && \
-  apt-get update && \
-  apt-get install -y google-chrome-stable && \
-  apt-get clean && \
-  rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
-  echo 'Chrome installed'
-
-RUN echo 'Downloading Postgresql 12' && \
-sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list' && \
-wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - && \
-apt-get update && \
-apt-get -y install postgresql-12 && \
-  apt-get clean && \
-  rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
-  echo 'Postgres 12 Downloaded'
 
 RUN yarn && \
   yarn config set no-progress && \
@@ -42,10 +26,8 @@ RUN yarn && \
 
 RUN rm /etc/nginx/sites-enabled/default
 
-COPY --from=nhd42358.live.dynatrace.com/linux/oneagent-codemodules:all / /
-ENV LD_PRELOAD /opt/dynatrace/oneagent/agent/lib64/liboneagentproc.so
-
-
 ENV APP_HOME /home/app/webapp
 RUN mkdir $APP_HOME && chown -R app $APP_HOME
+
+COPY ops/boot.sh /etc/rc.local 
 WORKDIR $APP_HOME
