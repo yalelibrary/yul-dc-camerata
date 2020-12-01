@@ -8,6 +8,7 @@ services:
     environment:
       BLACKLIGHT_BASE_URL: "http://localhost:3000"
       IIIF_IMAGE_BASE_URL: "http://localhost:8182/iiif"
+      IIIF_IMAGE_INTERNAL_URL: "http://iiif_image:8182/iiif"
       IIIF_MANIFESTS_BASE_URL: "http://localhost/manifests/"
       PDF_BASE_URL: "http://localhost/pdfs/"
       PASSENGER_APP_ENV: development
