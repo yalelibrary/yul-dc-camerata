@@ -152,6 +152,7 @@ then
       --load-balancer-arn $ALB_ARN \
       --protocol HTTPS \
       --port 443 \
+      --ssl-policy "ELBSecurityPolicy-TLS-1-1-2017-01" \
       --certificates CertificateArn=$CERT_ARN \
       --ssl-policy ELBSecurityPolicy-2016-08 \
       --default-actions "Type=forward,TargetGroupArn=${BL_TG_ARN}" \
@@ -161,22 +162,9 @@ then
   aws elbv2 create-rule \
       --listener-arn $HTTPS_LISTENER_ARN \
       --priority 10 \
-      --conditions "Field=path-pattern,PathPatternConfig={Values=['/iiif*']}" \
+      --conditions "Field=path-pattern,PathPatternConfig={Values=['/authorized-iiif*']}" \
+                   "Field=source-ip,SourceIpConfig={Values=['130.132.0.0/16','128.36.0.0/16','172.16.0.0/12']}" \
       --actions Type=forward,TargetGroupArn=$IMG_TG_ARN > /dev/null
-
-  # Add a rule to the HTTPS listener to route requests to the /manifest/ path to the MANIFEST target
-  aws elbv2 create-rule \
-      --listener-arn $HTTPS_LISTENER_ARN \
-      --priority 20 \
-      --conditions "Field=path-pattern,PathPatternConfig={Values=['/manifests*']}" \
-      --actions Type=forward,TargetGroupArn=$MFST_TG_ARN > /dev/null
-
-  # Add a rule to the HTTPS listener to route requests to the /pdfs/ path to the PDF target
-  aws elbv2 create-rule \
-      --listener-arn $HTTPS_LISTENER_ARN \
-      --priority 20 \
-      --conditions "Field=path-pattern,PathPatternConfig={Values=['/pdfs*']}" \
-      --actions Type=forward,TargetGroupArn=$MFST_TG_ARN > /dev/null
 
   # Add a rule to the HTTPS listener to route requests to the /management/ path to the MANAGEMENT target
   aws elbv2 create-rule --listener-arn $HTTPS_LISTENER_ARN \
