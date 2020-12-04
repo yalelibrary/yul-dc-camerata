@@ -10,7 +10,7 @@ then
   echo "Using AWS_PROFILE=${AWS_PROFILE}";
   echo "      AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}";
 
-  if [[ ! -f ${1}-ecs-params.yml ]]
+  if [[ ! -f ${1}-worker-params.yml ]]
   then
     export PUBLIC_IP
     $(dirname "$0")/get-params.sh ${1}

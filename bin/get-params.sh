@@ -1,6 +1,8 @@
 #!/bin/bash -e
 . $(dirname "$0")/shared-checks.sh
 CLUSTER_NAME=$1
+echo "Using cluster name=${CLUSTER_NAME}"
+
 
 if [[ -z $2 ]]
 then
@@ -16,6 +18,8 @@ else
   cpu=$3
 fi
 PUBLIC_IP=${PUBLIC_IP:-DISABLED}
+echo "Using public ip =${PUBLIC_IP}"
+echo "Using VPC id=${VPC_ID}"
 
 if check_profile && check_region && check_cluster $1 && all_pass
 then
@@ -24,7 +28,7 @@ then
   echo "      mem_limit=${memory}"
   echo "      cpu_limit=${cpu}\n"
 
-  if [ "$VPC_ID" ] 
+  if [ "$VPC_ID" ]
   then
     if [ -z "$SUBNET0" ] | [ -z "$SUBNET1" ]
     then
