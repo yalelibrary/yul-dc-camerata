@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    camerata (3.2.0)
+    camerata (3.2.1)
       activesupport (~> 6.0.0)
       capybara (~> 3.33.0)
       http (~> 4.4.1)
