@@ -154,7 +154,6 @@ then
       --port 443 \
       --ssl-policy "ELBSecurityPolicy-TLS-1-1-2017-01" \
       --certificates CertificateArn=$CERT_ARN \
-      --ssl-policy ELBSecurityPolicy-2016-08 \
       --default-actions "Type=forward,TargetGroupArn=${BL_TG_ARN}" \
         | grep -Eo -m 1 'arn:aws:elasticloadbalancing[^\"]*'`
 
