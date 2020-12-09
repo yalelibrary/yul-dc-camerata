@@ -11,8 +11,8 @@ services:
       - solr_efs:/var/solr/data/blacklight-core #this appears to not support variable expansion :/
     ulimits:
       nofile:
-        soft: 65000
-        hard: 65000
+        soft: '65000'
+        hard: '65000'
     command: bash -c 'cp -rn /opt/config/ /var/solr/data/$${SOLR_CORE}/conf && touch /var/solr/data/$${SOLR_CORE}/core.properties && exec solr -f'
     environment:
       SOLR_CORE: blacklight-core
