@@ -1,10 +1,7 @@
 version: '3'
 services:
   solr:
-    environment:
-      LD_PRELOAD: ""
     volumes:
-      # think this may need to be changed to /var/solr/data
       - solr:/opt/solr/server/solr/mycores
 volumes:
   solr:
