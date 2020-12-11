@@ -32,11 +32,11 @@ then
 
   # Define which queues the worker will pull jobs from
   # comman seperate like so pdf,ptiff,otherjob
-  export WORKER_QUEUES=default,manifest,ptiff,zeros,metadata,solr_index
+  export WORKER_QUEUES=pdf
 
   ecs-cli compose  \
     --region $AWS_DEFAULT_REGION \
-    --project-name ${CLUSTER_NAME}-worker \
+    --project-name ${CLUSTER_NAME}-long-running-worker \
     --ecs-params ${CLUSTER_NAME}-worker-params.yml \
     service up \
     --deployment-min-healthy-percent 50 \
