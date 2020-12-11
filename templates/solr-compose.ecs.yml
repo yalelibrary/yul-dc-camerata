@@ -9,11 +9,9 @@ services:
         awslogs-stream-prefix: solr
     volumes:
       - solr_efs:/var/solr/data/blacklight-core #this appears to not support variable expansion :/
-    command: bash -c 'cp -rn /opt/config/ /var/solr/data/$${SOLR_CORE}/conf && touch /var/solr/data/$${SOLR_CORE}/core.properties && exec /boot.sh'
+    command: bash -c 'cp -rn /opt/config/ /var/solr/data/$${SOLR_CORE}/conf && touch /var/solr/data/$${SOLR_CORE}/core.properties && exec solr -f'
     environment:
       SOLR_CORE: blacklight-core
-      CLUSTER_NAME: ${CLUSTER_NAME}
-      DYNATRACE_TOKEN: ${DYNATRACE_TOKEN}
 
 volumes:
   solr_efs:
