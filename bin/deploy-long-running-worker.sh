@@ -36,7 +36,7 @@ then
 
   ecs-cli compose  \
     --region $AWS_DEFAULT_REGION \
-    --project-name ${CLUSTER_NAME}-long-running-worker \
+    --project-name ${CLUSTER_NAME}-intensive-worker \
     --ecs-params ${CLUSTER_NAME}-worker-params.yml \
     service up \
     --deployment-min-healthy-percent 50 \
