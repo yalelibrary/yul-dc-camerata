@@ -4,6 +4,8 @@ services:
     image: yalelibraryit/dc-solr:${SOLR_VERSION}
     ports:
       - '8983:8983'
-    command: bash -c 'precreate-core blacklight-core /opt/config; precreate-core blacklight-test /opt/config; exec solr -f'
+    ulimits:
+      nofile: 65000
+    command: bash -c 'precreate-core blacklight-core /opt/config; precreate-core blacklight-test /opt/config; chown -R solr:solr /var/solr/data/ ; /boot.sh'
     environment:
       SOLR_VERSION:
