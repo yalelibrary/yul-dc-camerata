@@ -12,6 +12,5 @@ services:
     command: bash -c '/boot.sh'
     environment:
       SOLR_CORE: blacklight-core
-
 volumes:
   solr_efs:
