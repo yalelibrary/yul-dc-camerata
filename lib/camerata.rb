@@ -313,6 +313,13 @@ module Camerata
     end
     map 'deploy-worker' => :deploy_worker
 
+    desc 'deploy_intensive_worker CLUSTER_NAME', 'deploy the management worker to your specified cluster'
+    def deploy_intensive_worker(*args)
+      merge_compose(compose_path, 'worker-compose.yml', 'worker-compose.ecs.yml')
+      check_and_run_bin('deploy-intensive-worker', args) or exit(1)
+    end
+    map 'deploy-intensive-worker' => :deploy_intensive_worker
+
     def method_missing(meth, *args) # rubocop:disable Style/MethodMissingSuper
       # Check if a .sh script exists for this command
       if bin_exists?(meth)
