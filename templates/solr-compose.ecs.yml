@@ -12,5 +12,6 @@ services:
     command: bash -c '/boot.sh'
     environment:
       SOLR_CORE: blacklight-core
+      DYNATRACE_TOKEN: ${DYNATRACE_TOKEN}
 volumes:
   solr_efs:
