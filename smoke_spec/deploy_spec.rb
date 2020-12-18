@@ -23,9 +23,9 @@ puts "Current Blacklight basic auth settings: " \
 # Checked for a deployed cluster host in the environment
 if ENV['YUL_DC_SERVER']
   blacklight_url = "https://#{username}:#{password}@#{ENV['YUL_DC_SERVER']}"
-  iiif_manifest_url = "https://#{ENV['YUL_DC_SERVER']}"
-  _pdf_url = "https://#{ENV['YUL_DC_SERVER']}"
-  iiif_image_url = "https://#{ENV['YUL_DC_SERVER']}"
+  iiif_manifest_url = blacklight_url
+  _pdf_url = blacklight_url
+  iiif_image_url = blacklight_url
   management_url = "https://#{ENV['YUL_DC_SERVER']}/management"
 else
   # Checks for cluster urls in ENV
@@ -48,7 +48,7 @@ RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
       visit uri
       expect(page).to have_selector(".blacklight-catalog"), "not blocked by basic auth"
       expect(page).to have_selector(".blacklight-format"), "a format facet is present"
-      expect(page).to have_selector(".branch-name", text: /v\d+\.\d+\.\d+/)
+      expect(page).to have_selector(".branch-name", text: /Branch:\w+/)
       click_on 'search'
       expect(page).to have_selector(".document-position-0"), "an open search has at least 1 item"
     end
@@ -56,7 +56,7 @@ RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
       visit uri
       expect(page).to have_selector(".blacklight-catalog"), "not blocked by basic auth"
       expect(page).to have_selector(".blacklight-language_ssim"), "a language facet is present"
-      expect(page).to have_selector(".branch-name", text: /v\d+\.\d+\.\d+/)
+      expect(page).to have_selector(".branch-name", text: /Branch:\w+/)
       click_on 'search'
       expect(page).to have_selector("[aria-label='Go to page 5']"), "an open search has at least 5 pages"
     end
@@ -144,7 +144,7 @@ RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
     end
     it "prompts the user to sign in" do
       visit management_url
-      expect(page).to have_content('Sign In')
+      expect(page).to have_button('You must sign in')
     end
   end
 end
