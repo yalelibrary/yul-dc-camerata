@@ -144,7 +144,7 @@ RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
     end
     it "prompts the user to sign in" do
       visit management_url
-      expect(page).to have_content('sign in')
+      expect(page).to have_button('You must sign in')
     end
   end
 end
