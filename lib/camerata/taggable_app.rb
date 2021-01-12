@@ -161,11 +161,6 @@ module Camerata
           github_user: 'yalelibrary',
           github_project: 'yul-dc-postgres'
         },
-        iiif_manifest:
-        {
-          github_user: 'yalelibrary',
-          github_project: 'yul-dc-iiif-manifest'
-        },
         iiif_imageserver:
         {
           github_user: 'yalelibrary',
