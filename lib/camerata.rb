@@ -242,12 +242,9 @@ module Camerata
       say "Camerata Version: #{Camerata::VERSION}"
     end
 
-    desc 'deploy_main CLUSTER_NAME', 'deploy all the things (except solr & postgres) to your cluster'
+    desc 'deploy_main CLUSTER_NAME', 'DEPRECATED'
     def deploy_main(*args)
-      deploy_mft(args)
-      deploy_mgmt(args)
-      deploy_images(args)
-      deploy_blacklight(args)
+      puts 'All services should be deployed separately'
     end
     map 'deploy-main' => :deploy_main
 
@@ -424,11 +421,6 @@ module Camerata
     def in_management?
       file = File.join('config', 'application.rb')
       File.exist?(file) && !File.open(file).grep(/YulDcManagement/).empty?
-    end
-
-    def in_manifest?
-      file = File.join('config', 'application.rb')
-      File.exist?(file) && !File.open(file).grep(/YulDcIiifManifest/).empty?
     end
 
     def without
