@@ -251,10 +251,9 @@ module Camerata
     end
     map 'deploy-main' => :deploy_main
 
-    desc 'deploy_mft CLUSTER_NAME', 'deploy manifest service to your specified cluster'
+    desc 'deploy_mft CLUSTER_NAME', 'DEPRECATED'
     def deploy_mft(args)
-      merge_compose(compose_path, 'iiif-manifest-compose.yml', 'iiif-manifest-compose.ecs.yml')
-      check_and_run_bin('deploy-mft', Array(args))
+      puts 'iiif_manifest container is no longer needed.  iiif manifest requests will be handled by the blacklight app'
     end
     map 'deploy-mft' => :deploy_mft
 
