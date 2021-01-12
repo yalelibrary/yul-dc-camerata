@@ -402,8 +402,6 @@ module Camerata
           "solr-compose.local.yml",
           "worker-compose.yml",
           "worker-compose.local.yml",
-          "iiif-manifest-compose.yml",
-          "iiif-manifest-compose.local.yml",
           "management-compose.yml",
           "management-compose.local.yml"
         ]
