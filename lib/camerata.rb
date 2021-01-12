@@ -243,13 +243,13 @@ module Camerata
     end
 
     desc 'deploy_main CLUSTER_NAME', 'DEPRECATED'
-    def deploy_main(*args)
+    def deploy_main(*_args)
       puts 'All services should be deployed separately'
     end
     map 'deploy-main' => :deploy_main
 
     desc 'deploy_mft CLUSTER_NAME', 'DEPRECATED'
-    def deploy_mft(args)
+    def deploy_mft(_args)
       puts 'iiif_manifest container is no longer needed.  iiif manifest requests will be handled by the blacklight app'
     end
     map 'deploy-mft' => :deploy_mft

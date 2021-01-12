@@ -71,7 +71,7 @@ RSpec.describe Camerata::CLI do
 
     it 'reports deprecation of deploy-mft' do
       output = capture(:stdout) { cli.send('deploy_mft', nil) }
-      expect(output).to match ('iiif_manifest container is no longer needed')
+      expect(output).to match 'iiif_manifest container is no longer needed'
     end
 
     it 'still shows method missing message for items not in shell scripts' do
