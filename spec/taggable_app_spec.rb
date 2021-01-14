@@ -9,7 +9,7 @@ RSpec.describe Camerata::TaggableApp, type: :github_api do
   end
   context "configuration" do
     it "has a list of apps it knows how to tag" do
-      expect(described_class.known_apps).to eq ["blacklight", "camerata", "management", "solr", "postgres", "iiif_manifest", "iiif_imageserver"]
+      expect(described_class.known_apps).to eq ["blacklight", "camerata", "management", "solr", "postgres", "iiif_imageserver"]
     end
 
     it "has an enhancement_prefix defined" do
@@ -65,28 +65,28 @@ RSpec.describe Camerata::TaggableApp, type: :github_api do
     let(:release_notes) { File.open("#{release_notes_dir}/#{release_notes_fixture}", &:read) }
     context "#release_needed?" do
       context "no release needed" do
-        let(:taggable_app) { described_class.new("iiif_manifest") }
+        let(:taggable_app) { described_class.new("iiif_imageserver") }
         let(:release_notes_fixture) { 'no_release_needed.txt' }
         it "#release_needed? == false" do
           expect(taggable_app.release_needed?).to eq false
         end
       end
       context "major release needed" do
-        let(:taggable_app) { described_class.new("iiif_manifest") }
+        let(:taggable_app) { described_class.new("iiif_imageserver") }
         let(:release_notes_fixture) { 'major_change.txt' }
         it "#release_needed? == true" do
           expect(taggable_app.release_needed?).to eq true
         end
       end
       context "feature release needed" do
-        let(:taggable_app) { described_class.new("iiif_manifest") }
+        let(:taggable_app) { described_class.new("iiif_imageserver") }
         let(:release_notes_fixture) { 'feature_change.txt' }
         it "#release_needed? == true" do
           expect(taggable_app.release_needed?).to eq true
         end
       end
       context "security release needed" do
-        let(:taggable_app) { described_class.new("iiif_manifest") }
+        let(:taggable_app) { described_class.new("iiif_imageserver") }
         let(:release_notes_fixture) { 'security_change.txt' }
         it "#release_needed? == true" do
           expect(taggable_app.release_needed?).to eq true

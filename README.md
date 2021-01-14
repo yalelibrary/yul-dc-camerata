@@ -68,8 +68,6 @@ To start the application stack, run `cam up` in the directory you are working in
 
 - Access the image instance at `http://localhost:8182`
 
-- Access the manifests instance at `http://localhost`
-
 - Access the management app at `http://localhost:3001/management`
 
 ## Troubleshooting
@@ -82,7 +80,7 @@ cp: cannot create directory '/var/solr/data/blacklight-core/conf': Permission de
 make sure that you have the correct version of ecs-cli, defined below.
 
 ## Base Docker Image
-The base docker image, used for our three Ruby on Rails applications (Management, Blacklight, and IIIF Manifest server), lives in this repository under [base/Dockerfile](base/Dockerfile). In order to rebuild this image, first edit the [base/docker-compose.yml](base/docker-compose.yml) to reflect the new version number (should use semantic versioning, just like other applications). Then
+The base docker image, used for our two Ruby on Rails applications (Management and Blacklight), lives in this repository under [base/Dockerfile](base/Dockerfile). In order to rebuild this image, first edit the [base/docker-compose.yml](base/docker-compose.yml) to reflect the new version number (should use semantic versioning, just like other applications). Then
 ```bash
 cd base
 docker-compose build
@@ -250,15 +248,19 @@ cam deploy-psql $CLUSTER_NAME
 cam deploy-solr $CLUSTER_NAME
 ```
 
-These servers have significant persistent state; an existing cluster will not usually need these re-deployed. More info about how to safely take down, restart, or update these servers to come.
+These servers have significant persistent state.  They need to be stopped before re-deploying.
 
 ### Deploy the Yale stack
 
 ```
-cam deploy-main $CLUSTER_NAME
+cam deploy-blacklight $CLUSTER_NAME
+cam deploy-images $CLUSTER_NAME
+cam deploy-intensive-worker $CLUSTER_NAME
+cam deploy-worker $CLUSTER_NAME
+cam deploy-mgmt $CLUSTER_NAME
 ```
 
-This command deploys the rest of the Yale stack to the named cluster. This includes the management and blacklight Rails apps and the IIIF image and manifest servers.
+These commands deploy the rest of the Yale stack to the named cluster. This includes the management and blacklight Rails apps, the delayed job workers, and the IIIF image servers.
 
 ### Configure a load balancer
 
@@ -266,7 +268,7 @@ This command deploys the rest of the Yale stack to the named cluster. This inclu
 cam add-alb $CLUSTER_NAME
 ```
 
-This command configures an application load balancer for the cluster and sets up rules to route requests to the blacklight, image, management, and manifest apps. This only needs to be run once for a given cluster
+This command configures an application load balancer for the cluster and sets up rules to route requests to the apps. This only needs to be run once for a given cluster
 
 ### Build a new cluster
 

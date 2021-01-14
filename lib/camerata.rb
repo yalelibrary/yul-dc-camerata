@@ -242,19 +242,15 @@ module Camerata
       say "Camerata Version: #{Camerata::VERSION}"
     end
 
-    desc 'deploy_main CLUSTER_NAME', 'deploy all the things (except solr & postgres) to your cluster'
-    def deploy_main(*args)
-      deploy_mft(args)
-      deploy_mgmt(args)
-      deploy_images(args)
-      deploy_blacklight(args)
+    desc 'deploy_main CLUSTER_NAME', 'DEPRECATED'
+    def deploy_main(*_args)
+      puts 'All services should be deployed separately'
     end
     map 'deploy-main' => :deploy_main
 
-    desc 'deploy_mft CLUSTER_NAME', 'deploy manifest service to your specified cluster'
-    def deploy_mft(args)
-      merge_compose(compose_path, 'iiif-manifest-compose.yml', 'iiif-manifest-compose.ecs.yml')
-      check_and_run_bin('deploy-mft', Array(args))
+    desc 'deploy_mft CLUSTER_NAME', 'DEPRECATED'
+    def deploy_mft(_args)
+      puts 'iiif_manifest container is no longer needed.  iiif manifest requests will be handled by the blacklight app'
     end
     map 'deploy-mft' => :deploy_mft
 
@@ -406,8 +402,6 @@ module Camerata
           "solr-compose.local.yml",
           "worker-compose.yml",
           "worker-compose.local.yml",
-          "iiif-manifest-compose.yml",
-          "iiif-manifest-compose.local.yml",
           "management-compose.yml",
           "management-compose.local.yml"
         ]
@@ -425,11 +419,6 @@ module Camerata
     def in_management?
       file = File.join('config', 'application.rb')
       File.exist?(file) && !File.open(file).grep(/YulDcManagement/).empty?
-    end
-
-    def in_manifest?
-      file = File.join('config', 'application.rb')
-      File.exist?(file) && !File.open(file).grep(/YulDcIiifManifest/).empty?
     end
 
     def without

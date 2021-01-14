@@ -5,7 +5,6 @@ module Camerata
       %w[
         BLACKLIGHT_VERSION
         IIIF_IMAGE_VERSION
-        IIIF_MANIFEST_VERSION
         MANAGEMENT_VERSION
         POSTGRES_VERSION
         SOLR_VERSION
