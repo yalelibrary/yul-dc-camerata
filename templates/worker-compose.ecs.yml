@@ -25,6 +25,7 @@ services:
       SOLR_BASE_URL: http://${CLUSTER_NAME}-solr.${CLUSTER_NAME}:8983/solr
       POSTGRES_HOST: ${CLUSTER_NAME}-psql.${CLUSTER_NAME}
     volumes:
+      - /brbl-dsu:/brbl-dsu
       - /data:/data
     logging:
       driver: awslogs
