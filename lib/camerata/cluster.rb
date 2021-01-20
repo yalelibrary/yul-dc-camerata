@@ -12,6 +12,7 @@ module Camerata
         IIIF_IMAGE_BASE_URL
         IIIF_MANIFESTS_BASE_URL
         PDF_BASE_URL
+        GOOBI_NFS_EXPORT
       ]
     end
   end

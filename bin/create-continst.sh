@@ -115,7 +115,7 @@ CLUSTER_NAME=$1
   done" | base64 -w0)
 
   mkdir -p /brbl-dsu
-  mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 wcsfs00.its.yale.internal:/NFS_SFS_std_sngl_003/Goobi_Deposits-CC1741-BRBLDSU /brbl-dsu
+  mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 ${GOOBI_NFS_EXPORT} /brbl-dsu
 
   ## Create one EC2 instance in the public subnet
   AWS_EC2_INSTANCE_ID=$(aws ec2 run-instances \
