@@ -366,13 +366,11 @@ module Camerata
       result = {}
       inputs.each do |input|
         file_path = File.join(self.class.source_root, input)
-        puts "FILE PATH: #{file_path}"
         content = ERB.new(::File.binread(file_path), nil, "-", "@output_buffer").result(binding)
         input_yaml = YAML.safe_load(content)
         result.deep_merge!(input_yaml)
       end
       File.open(out, 'w') do |file|
-        puts "Writing #{out}"
         file.write(YAML.dump(result))
       end
     end
