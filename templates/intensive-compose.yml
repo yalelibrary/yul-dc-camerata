@@ -1,0 +1,37 @@
+version: '3'
+services:
+  management:
+    image: yalelibraryit/dc-management:${MANAGEMENT_VERSION}
+    environment:
+      <%= app_urls %>
+      ACCESS_MASTER_MOUNT: "s3" # The path to the mounted drive, or "s3"
+      AWS_ACCESS_KEY_ID:
+      AWS_DEFAULT_REGION: us-east-1
+      AWS_SECRET_ACCESS_KEY:
+      GOOBI_MOUNT:
+      MC_USER:
+      MC_PW:
+      METADATA_CLOUD_HOST:
+      PASSENGER_APP_ENV: development # development
+      POSTGRES_DB: management_yul_development
+      POSTGRES_HOST: db
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: postgres
+      RAILS_LOG_TO_STDOUT: 'true'
+      RAILS_RELATIVE_URL_ROOT: /management
+      S3_SOURCE_BUCKET_NAME:
+      SAMPLE_BUCKET: yul-development-samples
+      SOLR_CORE: blacklight-core
+      VPN:
+      MC_USER:
+      MC_PW:
+      # The management app needs the versions for all the applications for the dashboard
+      IIIF_MANIFEST_VERSION:
+      SOLR_VERSION:
+      IIIF_IMAGE_VERSION:
+      POSTGRES_VERSION:
+      BLACKLIGHT_VERSION:
+      MANAGEMENT_VERSION:
+      CAMERATA_VERSION:
+    ports:
+      - "3001:3001"

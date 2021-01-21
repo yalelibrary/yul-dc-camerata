@@ -309,9 +309,10 @@ module Camerata
     end
     map 'deploy-worker' => :deploy_worker
 
-    desc 'deploy_intensive_worker CLUSTER_NAME', 'deploy the management worker to your specified cluster'
+    desc 'deploy_intensive_worker CLUSTER_NAME', 'deploy the intensive worker to your specified cluster'
     def deploy_intensive_worker(*args)
-      merge_compose(compose_path, 'worker-compose.yml', 'worker-compose.ecs.yml')
+      puts "DEPLOYING INTENSIVE WORKER"
+      merge_compose(compose_path, 'intensive-compose.yml', 'intensive-compose.ecs.yml')
       check_and_run_bin('deploy-intensive-worker', args) or exit(1)
     end
     map 'deploy-intensive-worker' => :deploy_intensive_worker
@@ -365,11 +366,13 @@ module Camerata
       result = {}
       inputs.each do |input|
         file_path = File.join(self.class.source_root, input)
+        puts "FILE PATH: #{file_path}"
         content = ERB.new(::File.binread(file_path), nil, "-", "@output_buffer").result(binding)
         input_yaml = YAML.safe_load(content)
         result.deep_merge!(input_yaml)
       end
       File.open(out, 'w') do |file|
+        puts "Writing #{out}"
         file.write(YAML.dump(result))
       end
     end
