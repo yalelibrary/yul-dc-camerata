@@ -1,6 +1,6 @@
 version: '3'
 services:
-  management:
+  management_intensive_worker:
     image: yalelibraryit/dc-management:${MANAGEMENT_VERSION}
     command: /sbin/setuser app bash -l -c "bundle exec delayed_job_worker_pool config/delayed_job_pool.rb"
     environment:
@@ -34,5 +34,5 @@ services:
       BLACKLIGHT_VERSION:
       MANAGEMENT_VERSION:
       CAMERATA_VERSION:
-    ports:
-      - "3001:3001"
+      WORKER_COUNT:
+      WORKER_QUEUES:
