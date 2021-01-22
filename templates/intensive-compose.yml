@@ -1,6 +1,6 @@
 version: '3'
 services:
-  management_intensive_worker:
+  management:
     image: yalelibraryit/dc-management:${MANAGEMENT_VERSION}
     command: /sbin/setuser app bash -l -c "bundle exec delayed_job_worker_pool config/delayed_job_pool.rb"
     environment:

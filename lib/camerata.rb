@@ -311,7 +311,6 @@ module Camerata
 
     desc 'deploy_intensive_worker CLUSTER_NAME', 'deploy the intensive worker to your specified cluster'
     def deploy_intensive_worker(*args)
-      puts "DEPLOYING INTENSIVE WORKER"
       merge_compose(compose_path, 'intensive-compose.yml', 'intensive-compose.ecs.yml')
       check_and_run_bin('deploy-intensive-worker', args) or exit(1)
     end
