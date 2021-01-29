@@ -309,9 +309,9 @@ module Camerata
     end
     map 'deploy-worker' => :deploy_worker
 
-    desc 'deploy_intensive_worker CLUSTER_NAME', 'deploy the management worker to your specified cluster'
+    desc 'deploy_intensive_worker CLUSTER_NAME', 'deploy the intensive worker to your specified cluster'
     def deploy_intensive_worker(*args)
-      merge_compose(compose_path, 'worker-compose.yml', 'worker-compose.ecs.yml')
+      merge_compose(compose_path, 'intensive-compose.yml', 'intensive-compose.ecs.yml')
       check_and_run_bin('deploy-intensive-worker', args) or exit(1)
     end
     map 'deploy-intensive-worker' => :deploy_intensive_worker

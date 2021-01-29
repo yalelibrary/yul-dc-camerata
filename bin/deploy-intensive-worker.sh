@@ -10,7 +10,7 @@ then
   echo "Using AWS_PROFILE=${AWS_PROFILE}";
   echo "      AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}";
 
-  if [[ ! -f ${1}-worker-params.yml ]]
+  if [[ ! -f ${1}-intensive-params.yml ]]
   then
     export PUBLIC_IP
     $(dirname "$0")/get-params.sh ${1}
@@ -27,7 +27,7 @@ then
 
   if [ -z ${COMPOSE_FILE} ]
   then
-    export COMPOSE_FILE=worker-compose.yml
+    export COMPOSE_FILE=intensive-compose.yml
   fi
 
   # Define which queues the worker will pull jobs from
@@ -37,10 +37,10 @@ then
   ecs-cli compose  \
     --region $AWS_DEFAULT_REGION \
     --project-name ${CLUSTER_NAME}-intensive-worker \
-    --ecs-params ${CLUSTER_NAME}-worker-params.yml \
+    --ecs-params ${CLUSTER_NAME}-intensive-params.yml \
     service up \
     --deployment-min-healthy-percent 50 \
-    --launch-type EC2 \
+    --launch-type FARGATE \
     $2 \
     $discovery $log \
     --force-deployment \
