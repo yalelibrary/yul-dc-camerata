@@ -18,6 +18,7 @@ services:
       SAMPLE_BUCKET: yul-dc-development-samples # manifests
       S3_SOURCE_BUCKET_NAME: yul-dc-dev-image-samples # image and ptiffs
       CLUSTER_NAME: ${CLUSTER_NAME}
+      NGINX_RESOLVER: 127.0.0.11
     <%- if in_blacklight? -%>
     volumes:
       - .:/home/app/webapp:cached
