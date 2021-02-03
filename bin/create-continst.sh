@@ -134,22 +134,23 @@ CLUSTER_NAME=$1
     mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 wcsfs00.its.yale.internal:/yul_dc_nfs_store_\$i /data/\$t
   done" | base64 -w0)
 
-  ## Create one EC2 instance in the public subnet
-  AWS_EC2_INSTANCE_ID=$(aws ec2 run-instances \
-  --image-id $AWS_AMI_ID \
-  --instance-type ${INSTANCE_TYPE:-t2.large} \
-  --tag-specifications "ResourceType=instance,Tags=[{Key=Name, Value=$CLUSTER_NAME-container-instance}]" \
-  --key-name $CLUSTER_NAME-keypair \
-  --monitoring "Enabled=false" \
-  --security-group-ids $AWS_CUSTOM_SECURITY_GROUP_ID \
-  --subnet-id $AWS_SUBNET_PUBLIC_ID \
-  --iam-instance-profile Arn=$AWS_IAM_INSTANCE_PROFILE_ARN \
-  --user-data $USERDATA \
-  --query 'Instances[0].InstanceId' \
-  --output text)
+  ## create autoscaling group for container instances
+ aws autoscaling create-launch-configuration \
+    --launch-configuration-name $CLUSTER_NAME-lc \
+    --image-id $AWS_AMI_ID \
+    --key-name $CLUSTER_NAME-keypair \
+    --instance-type ${INSTANCE_TYPE:-t2.large} \
+    --instance-monitoring "Enabled=true" \
+    --security-groups $AWS_CUSTOM_SECURITY_GROUP_ID \
+    --iam-instance-profile $AWS_IAM_INSTANCE_PROFILE_ARN \
+    --user-data $USERDATA
 
-  ## Check if the instance one is running
-  ## It will take some time for the instance to get ready
-  aws ec2 describe-instances \
-  --instance-ids $AWS_EC2_INSTANCE_ID --output text | grep INSTANCES | awk -v derp="$CLUSTER_NAME" '{print $9 " ssh -i " derp "-keypair.pem ec2-user@" $14}'
+  aws autoscaling create-auto-scaling-group \
+    --auto-scaling-group-name $CLUSTER_NAME-asg \
+    --launch-configuration-name $CLUSTER_NAME-lc \
+    --vpc-zone-identifier $AWS_PRIVATE_SUBNETS \
+    --min-size 1 \
+    --max-size 1 \
+    --new-instances-protected-from-scale-in \
+    --tags "Key=Name,Value=$CLUSTER_NAME-worker-instance,PropagrateAtLaunch=true"
 fi
