@@ -80,8 +80,8 @@ CLUSTER_NAME=$1
 
   #gaffle the  subnet & sg from the existing ecs-params file. change the index here if you want to use some other one
   #or rearrange/update the params file (probably easier)
-  AWS_SUBNET_PUBLIC_ID=$(yq r $CLUSTER_NAME-ecs-params.yml 'run_params.network_configuration.awsvpc_configuration.subnets[0]')
-  AWS_CUSTOM_SECURITY_GROUP_ID=$(yq r $CLUSTER_NAME-ecs-params.yml 'run_params.network_configuration.awsvpc_configuration.security_groups[0]')
+  AWS_SUBNET_PUBLIC_ID=$(yq r $CLUSTER_NAME-worker-params.yml 'run_params.network_configuration.awsvpc_configuration.subnets[0]')
+  AWS_CUSTOM_SECURITY_GROUP_ID=$(yq r $CLUSTER_NAME-worker-params.yml 'run_params.network_configuration.awsvpc_configuration.security_groups[0]')
 
 
   #the instance boot script. runs as root. /etc/ecs/ecs.config registers
@@ -106,6 +106,26 @@ CLUSTER_NAME=$1
     \"https://nhd42358.live.dynatrace.com/api/v1/deployment/installer/agent/unix/default/latest?arch=x86&flavor=default\" \
     --header=\"Authorization: Api-Token ${DYNATRACE_TOKEN}\"
   /bin/sh Dynatrace-OneAgent-Linux-1.201.129.sh --set-app-log-content-access=true --set-infra-only=true --set-host-group=DC --set-host-name=${CLUSTER_NAME}-worker
+
+  # NFS mount Goobi Hot Folders
+  mkdir -p /brbl-dsu/jss_export
+  mkdir -p /brbl-dsu/dcs
+  if [ $CLUSTER_NAME="yul-dc-test" ] || [ $CLUSTER_NAME="yul-dc-infra" ]
+  then
+    GOOBI_HOT="wcsfs00.its.yale.internal:/NFS_SFS_std_sngl_003/Goobi_Deposits-CC1741-BRBLDSU"
+    mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 \$GOOBI_HOT/jss_export /brbl-dsu/jss_export
+    mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 \$GOOBI_HOT/dcs /brbl-dsu/dcs
+  elif [ $CLUSTER_NAME="yul-dc-uat" ] || [ $CLUSTER_NAME="yul-dc-demo" ]
+  then
+    GOOBI_HOT="wcsfs00.its.yale.internal:/NFS_SFS_std_mult_000/Goobi_Deposits_UAT-CC1741-BRBLDSU"
+    mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 \$GOOBI_HOT/jss_export /brbl-dsu/jss_export
+    mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 \$GOOBI_HOT/dcs /brbl-dsu/dcs
+  elif [ $CLUSTER_NAME="yul-dc-prod" ] || [ $CLUSTER_NAME="yul-dc-staging" ]
+  then
+    GOOBI_HOT="wcsfs00.its.yale.internal:/NFS_SFS_std_sngl_004/Goobi_Deposits_PROD-CC1741-BRBLDSU"
+    mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 \$GOOBI_HOT/jss_export /brbl-dsu/jss_export
+    mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 \$GOOBI_HOT/dcs /brbl-dsu/dcs
+  fi
 
   for i in {0..10}
   do
