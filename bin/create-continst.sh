@@ -68,6 +68,7 @@ CLUSTER_NAME=$1
   AWS_AMI_ID=$(aws ssm get-parameters --names '/aws/service/ecs/optimized-ami/amazon-linux-2/recommended/image_id' \
     --query 'Parameters[0].Value' --output text)
 
+  # echo $AWS_AMI_ID
   #bail if we can't find the latest AMI
   if [ -z "${AWS_AMI_ID}" ] ; then
     echo "Could not retrieve latest AMI"
@@ -134,23 +135,42 @@ CLUSTER_NAME=$1
     mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 wcsfs00.its.yale.internal:/yul_dc_nfs_store_\$i /data/\$t
   done" | base64 -w0)
 
-  ## create autoscaling group for container instances
- aws autoscaling create-launch-configuration \
-    --launch-configuration-name $CLUSTER_NAME-lc \
-    --image-id $AWS_AMI_ID \
-    --key-name $CLUSTER_NAME-keypair \
-    --instance-type ${INSTANCE_TYPE:-t2.large} \
-    --instance-monitoring "Enabled=true" \
-    --security-groups $AWS_CUSTOM_SECURITY_GROUP_ID \
-    --iam-instance-profile $AWS_IAM_INSTANCE_PROFILE_ARN \
-    --user-data $USERDATA
+  # create launch json template
+  TEMPLATE_JSON=$(jq -n \
+  --arg AWS_IAM_INSTANCE_PROFILE_ARN $AWS_IAM_INSTANCE_PROFILE_ARN \
+  --arg AWS_AMI_ID $AWS_AMI_ID \
+  --arg INSTANCE_TYPE ${INSTANCE_TYPE:-t2.large} \
+  --arg KEY_NAME ${CLUSTER_NAME}-keypair \
+  --arg CLUSTER_NAME $CLUSTER_NAME \
+  --arg USERDATA $USERDATA \
+  --arg AWS_CUSTOM_SECURITY_GROUP_ID $AWS_CUSTOM_SECURITY_GROUP_ID \
+  '{"IamInstanceProfile":{"Arn":$AWS_IAM_INSTANCE_PROFILE_ARN},
+    "ImageId":$AWS_AMI_ID,
+    "InstanceType":$INSTANCE_TYPE,
+    "KeyName":$KEY_NAME,
+    "Monitoring":{
+      "Enabled":true
+    },
+    "UserData":$USERDATA,
+    "SecurityGroupIds":[$AWS_CUSTOM_SECURITY_GROUP_ID]}' | tr -d [:space:])
+
+  # create aws launch template
+  LT=$(aws ec2 create-launch-template \
+    --launch-template-name $CLUSTER_NAME-lt \
+    --client-token $CLUSTER_NAME \
+    --launch-template-data $TEMPLATE_JSON \
+    --query "LaunchTemplate.LaunchTemplateName" \
+    --output text)
+
+  echo "LT: $LT"
+  echo "AWS_PRIVATE_SUBNETS: $AWS_PRIVATE_SUBNETS"
 
   aws autoscaling create-auto-scaling-group \
     --auto-scaling-group-name $CLUSTER_NAME-asg \
-    --launch-configuration-name $CLUSTER_NAME-lc \
+    --launch-template "LaunchTemplateName=$LT" \
     --vpc-zone-identifier $AWS_PRIVATE_SUBNETS \
     --min-size 1 \
     --max-size 1 \
     --new-instances-protected-from-scale-in \
-    --tags "Key=Name,Value=$CLUSTER_NAME-worker-instance,PropagrateAtLaunch=true"
+    --tags "Key=Name,Value=$CLUSTER_NAME-worker-instance,PropagateAtLaunch=true"
 fi
