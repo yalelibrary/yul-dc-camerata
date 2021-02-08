@@ -81,7 +81,7 @@ CLUSTER_NAME=$1
 
   #gaffle the  subnet & sg from the existing ecs-params file. change the index here if you want to use some other one
   #or rearrange/update the params file (probably easier)
-  AWS_SUBNET_PUBLIC_ID=$(yq r $CLUSTER_NAME-worker-params.yml 'run_params.network_configuration.awsvpc_configuration.subnets[0]')
+  AWS_SUBNET_PRIVATE_IDS=$(yq r $CLUSTER_NAME-worker-params.yml 'run_params.network_configuration.awsvpc_configuration.subnets' | awk 'BEGIN {RS=","}{print $2,$4}'| sed 's/\s/,/g')
   AWS_CUSTOM_SECURITY_GROUP_ID=$(yq r $CLUSTER_NAME-worker-params.yml 'run_params.network_configuration.awsvpc_configuration.security_groups[0]')
 
 
@@ -162,13 +162,10 @@ CLUSTER_NAME=$1
     --query "LaunchTemplate.LaunchTemplateName" \
     --output text)
 
-  echo "LT: $LT"
-  echo "AWS_PRIVATE_SUBNETS: $AWS_PRIVATE_SUBNETS"
-
   aws autoscaling create-auto-scaling-group \
     --auto-scaling-group-name $CLUSTER_NAME-asg \
     --launch-template "LaunchTemplateName=$LT" \
-    --vpc-zone-identifier $AWS_PRIVATE_SUBNETS \
+    --vpc-zone-identifier $AWS_SUBNET_PRIVATE_IDS \
     --min-size 1 \
     --max-size 1 \
     --new-instances-protected-from-scale-in \
