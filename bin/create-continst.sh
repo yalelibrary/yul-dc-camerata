@@ -68,7 +68,6 @@ CLUSTER_NAME=$1
   AWS_AMI_ID=$(aws ssm get-parameters --names '/aws/service/ecs/optimized-ami/amazon-linux-2/recommended/image_id' \
     --query 'Parameters[0].Value' --output text)
 
-  # echo $AWS_AMI_ID
   #bail if we can't find the latest AMI
   if [ -z "${AWS_AMI_ID}" ] ; then
     echo "Could not retrieve latest AMI"
@@ -81,7 +80,7 @@ CLUSTER_NAME=$1
 
   #gaffle the  subnet & sg from the existing ecs-params file. change the index here if you want to use some other one
   #or rearrange/update the params file (probably easier)
-  AWS_SUBNET_PRIVATE_IDS=$(yq r $CLUSTER_NAME-worker-params.yml 'run_params.network_configuration.awsvpc_configuration.subnets' | awk 'BEGIN {RS=","}{print $2,$4}'| sed 's/\s/,/g')
+  AWS_SUBNET_PUBLIC_ID=$(yq r $CLUSTER_NAME-worker-params.yml 'run_params.network_configuration.awsvpc_configuration.subnets[0]')
   AWS_CUSTOM_SECURITY_GROUP_ID=$(yq r $CLUSTER_NAME-worker-params.yml 'run_params.network_configuration.awsvpc_configuration.security_groups[0]')
 
 
@@ -111,63 +110,70 @@ CLUSTER_NAME=$1
   # NFS mount Goobi Hot Folders
   mkdir -p /brbl-dsu/jss_export
   mkdir -p /brbl-dsu/dcs
-  if [ $CLUSTER_NAME="yul-dc-test" ] || [ $CLUSTER_NAME="yul-dc-infra" ]
+  if [[ $CLUSTER_NAME==\"yul-dc-test\" ]] || [[ $CLUSTER_NAME==\"yul-dc-infra\" ]]
   then
-    GOOBI_HOT="wcsfs00.its.yale.internal:/NFS_SFS_std_sngl_003/Goobi_Deposits-CC1741-BRBLDSU"
-    mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 \$GOOBI_HOT/jss_export /brbl-dsu/jss_export
-    mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 \$GOOBI_HOT/dcs /brbl-dsu/dcs
-  elif [ $CLUSTER_NAME="yul-dc-uat" ] || [ $CLUSTER_NAME="yul-dc-demo" ]
+    GOOBI_HOT=\"wcsfs00.its.yale.internal:/NFS_SFS_std_sngl_003/Goobi_Deposits-CC1741-BRBLDSU\"
+    mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 \${GOOBI_HOT}/jss_export /brbl-dsu/jss_export
+    mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 \${GOOBI_HOT}/dcs /brbl-dsu/dcs
+  elif [[ $CLUSTER_NAME==\"yul-dc-uat\" ]] || [[ $CLUSTER_NAME==\"yul-dc-demo\" ]]
   then
-    GOOBI_HOT="wcsfs00.its.yale.internal:/NFS_SFS_std_mult_000/Goobi_Deposits_UAT-CC1741-BRBLDSU"
-    mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 \$GOOBI_HOT/jss_export /brbl-dsu/jss_export
-    mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 \$GOOBI_HOT/dcs /brbl-dsu/dcs
-  elif [ $CLUSTER_NAME="yul-dc-prod" ] || [ $CLUSTER_NAME="yul-dc-staging" ]
+    GOOBI_HOT=\"wcsfs00.its.yale.internal:/NFS_SFS_std_mult_000/Goobi_Deposits_UAT-CC1741-BRBLDSU\"
+    mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 \${GOOBI_HOT}/jss_export /brbl-dsu/jss_export
+    mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 \${GOOBI_HOT}/dcs /brbl-dsu/dcs
+  elif [[ $CLUSTER_NAME==\"yul-dc-prod\" ]] || [ $CLUSTER_NAME==\"yul-dc-staging\" ]]
   then
-    GOOBI_HOT="wcsfs00.its.yale.internal:/NFS_SFS_std_sngl_004/Goobi_Deposits_PROD-CC1741-BRBLDSU"
-    mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 \$GOOBI_HOT/jss_export /brbl-dsu/jss_export
-    mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 \$GOOBI_HOT/dcs /brbl-dsu/dcs
+    GOOBI_HOT=\"wcsfs00.its.yale.internal:/NFS_SFS_std_sngl_004/Goobi_Deposits_PROD-CC1741-BRBLDSU\"
+    mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 \${GOOBI_HOT}/jss_export /brbl-dsu/jss_export
+    mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 \${GOOBI_HOT}/dcs /brbl-dsu/dcs
   fi
 
-  for i in {0..10}
-  do
-    t=\`printf '%02d' \$i\`
-    mkdir -p /data/\$t
-    mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 wcsfs00.its.yale.internal:/yul_dc_nfs_store_\$i /data/\$t
-  done" | base64 -w0)
+  # NFS mounts for Access Master pair trees
+  #   For staging/prod:
+  #     wcsfs00.its.yale.internal:/yul_dc_nfs_store_0 mounted to /data/00
+  #     wcsfs00.its.yale.internal:/yul_dc_nfs_store_1 mounted to /data/01
+  #     ..
+  #     wcsfs00.its.yale.internal:/yul_dc_nfs_store_10 mounted to /data/10
+  #   
+  #   For test/infra:
+  #     wcsfs00.its.yale.internal:/NFS_SFS_std_sngl_006/yul_dc_tst1-CC1702-LIBITS to /data
+  #
+  #   For uat/demo:
+  #     wcsfs00.its.yale.internal:/NFS_SFS_std_sngl_005/yul_dc_uat1-CC1702-LIBITS to /data
 
-  # create launch json template
-  TEMPLATE_JSON=$(jq -n \
-  --arg AWS_IAM_INSTANCE_PROFILE_ARN $AWS_IAM_INSTANCE_PROFILE_ARN \
-  --arg AWS_AMI_ID $AWS_AMI_ID \
-  --arg INSTANCE_TYPE ${INSTANCE_TYPE:-t2.large} \
-  --arg KEY_NAME ${CLUSTER_NAME}-keypair \
-  --arg CLUSTER_NAME $CLUSTER_NAME \
-  --arg USERDATA $USERDATA \
-  --arg AWS_CUSTOM_SECURITY_GROUP_ID $AWS_CUSTOM_SECURITY_GROUP_ID \
-  '{"IamInstanceProfile":{"Arn":$AWS_IAM_INSTANCE_PROFILE_ARN},
-    "ImageId":$AWS_AMI_ID,
-    "InstanceType":$INSTANCE_TYPE,
-    "KeyName":$KEY_NAME,
-    "Monitoring":{
-      "Enabled":true
-    },
-    "UserData":$USERDATA,
-    "SecurityGroupIds":[$AWS_CUSTOM_SECURITY_GROUP_ID]}' | tr -d [:space:])
+  if [[ \"$CLUSTER_NAME\" == \"yul-dc-prod\" ]] || [[ \"$CLUSTER_NAME\" == \"yul-dc-staging\" ]]
+  then
+    for i in {0..10}
+    do
+      t=\`printf '%02d' \$i\`
+      mkdir -p /data/\$t
+      mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 wcsfs00.its.yale.internal:/yul_dc_nfs_store_\$i /data/\$t
+    done
+  elif [[ \"$CLUSTER_NAME\" == \"yul-dc-test\" ]] || [[ \"$CLUSTER_NAME\" == \"yul-dc-infra\" ]]
+  then
+      mkdir -p /data
+      mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 wcsfs00.its.yale.internal:/NFS_SFS_std_sngl_006/yul_dc_tst1-CC1702-LIBITS /data
+  elif [[ \"$CLUSTER_NAME\" == \"yul-dc-uat\" ]] || [[ \"$CLUSTER_NAME\" == \"yul-dc-demo\" ]]
+  then
+      mkdir -p /data
+      mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 wcsfs00.its.yale.internal:/NFS_SFS_std_sngl_005/yul_dc_uat1-CC1702-LIBITS /data
+  fi" | base64 -w0)
 
-  # create aws launch template
-  LT=$(aws ec2 create-launch-template \
-    --launch-template-name $CLUSTER_NAME-lt \
-    --client-token $CLUSTER_NAME \
-    --launch-template-data $TEMPLATE_JSON \
-    --query "LaunchTemplate.LaunchTemplateName" \
-    --output text)
+  ## Create one EC2 instance in the public subnet
+  AWS_EC2_INSTANCE_ID=$(aws ec2 run-instances \
+  --image-id $AWS_AMI_ID \
+  --instance-type ${INSTANCE_TYPE:-t2.large} \
+  --tag-specifications "ResourceType=instance,Tags=[{Key=Name, Value=$CLUSTER_NAME-container-instance}]" \
+  --key-name $CLUSTER_NAME-keypair \
+  --monitoring "Enabled=false" \
+  --security-group-ids $AWS_CUSTOM_SECURITY_GROUP_ID \
+  --subnet-id $AWS_SUBNET_PUBLIC_ID \
+  --iam-instance-profile Arn=$AWS_IAM_INSTANCE_PROFILE_ARN \
+  --user-data $USERDATA \
+  --query 'Instances[0].InstanceId' \
+  --output text)
 
-  aws autoscaling create-auto-scaling-group \
-    --auto-scaling-group-name $CLUSTER_NAME-asg \
-    --launch-template "LaunchTemplateName=$LT" \
-    --vpc-zone-identifier $AWS_SUBNET_PRIVATE_IDS \
-    --min-size 1 \
-    --max-size 1 \
-    --new-instances-protected-from-scale-in \
-    --tags "Key=Name,Value=$CLUSTER_NAME-worker-instance,PropagateAtLaunch=true"
+  ## Check if the instance one is running
+  ## It will take some time for the instance to get ready
+  aws ec2 describe-instances \
+  --instance-ids $AWS_EC2_INSTANCE_ID --output text | grep INSTANCES | awk -v derp="$CLUSTER_NAME" '{print $9 " ssh -i " derp "-keypair.pem ec2-user@" $14}'
 fi
