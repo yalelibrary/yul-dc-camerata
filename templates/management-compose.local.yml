@@ -3,7 +3,7 @@ services:
   management:
     <%- if in_management? -%>
     build: .
-    image: yalelibraryit/dc-management:master
+    image: yalelibraryit/dc-management:main
     <%- end -%>
     environment:
       ACCESS_MASTER_MOUNT: "s3" # The path to the mounted drive, or "S3"

@@ -1,4 +1,4 @@
-[![CircleCI](https://circleci.com/gh/yalelibrary/yul-dc-camerata/tree/master.svg?style=svg)](https://circleci.com/gh/yalelibrary/yul-dc-camerata/tree/master)
+[![CircleCI](https://circleci.com/gh/yalelibrary/yul-dc-camerata/tree/main.svg?style=svg)](https://circleci.com/gh/yalelibrary/yul-dc-camerata/tree/main)
 
 # yul-dc-camerata
 
@@ -28,7 +28,7 @@ You can get the latest version at any point by updating the code and reinstallin
 
 ```bash
 cd yul-dc-camerata
-git pull origin master
+git pull origin main
 bundle install
 rake install
 ```
@@ -52,7 +52,7 @@ ENV['CLUSTER_NAME'] = 'yul-test'
 ## Dynatrace
 
 We've integrated Dynatrace OneAgent for monitoring our Docker container environments.
-  - Instructions on configuring OneAgent can be found [here](https://github.com/yalelibrary/yul-dc-camerata/tree/master/base)
+  - Instructions on configuring OneAgent can be found [here](https://github.com/yalelibrary/yul-dc-camerata/tree/main/base)
 
 ## General Use
 
@@ -351,7 +351,7 @@ To run it against a deployed cluster:
 NOTE: ENV = test, uat, demo, staging, infra or prod
 NOTE: APP = blacklight, camerata or management
 
-1. Checkout to the `master` branch and run `git pull`
+1. Checkout to the `main` branch and run `git pull`
 
 2. Ensure you have a github personal access token.
     Instructions here: <https://github.com/github-changelog-generator/github-changelog-generator#github-token> You will need to make your token available via an environment variable called `CHANGELOG_GITHUB_TOKEN`, e.g.:
@@ -376,7 +376,7 @@ NOTE: If you are deploying a feature branch, it should only be deployed to the t
   - Click "YUL-DC-[ENV]-Deploy" on the dashboard
   - Click "Build with Parameters" in the left side navigation panel
   - In the "[APP]_VERSION" input box:
-    - If you are deploying the master branch, type in the version from step 3 of "Releasing a new app version". e.g.: `v1.2.3`
+    - If you are deploying the main branch, type in the version from step 3 of "Releasing a new app version". e.g.: `v1.2.3`
     - If you are deploying a feature branch, type in the branch you want to release. e.g.: `i123-readme-updates`
   - Next to the "DEPLOY" dropdown click deploy-[APP]
   - Check the UPDATE_SSM box
