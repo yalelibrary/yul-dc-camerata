@@ -202,7 +202,7 @@ module Camerata
       # pr_message = "Increment camerata version to #{new_version_number}"
       # `git commit #{version_file} -m "#{pr_message}"`
       # `git push --set-upstream origin #{temporary_branch}`
-      # @client.create_pull_request("#{@github_user}/#{@github_project}", "master", temporary_branch, pr_message, "")
+      # @client.create_pull_request("#{@github_user}/#{@github_project}", "main", temporary_branch, pr_message, "")
       # `git checkout #{starting_branch}`
       # `git branch -D #{temporary_branch}`
     end

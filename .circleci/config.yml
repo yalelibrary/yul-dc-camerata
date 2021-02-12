@@ -7,7 +7,7 @@ commands:
         default: $CIRCLE_SHA1
       to_tag:
         type: string
-        default: "master"
+        default: "main"
       image:
         type: string
     steps:

@@ -3,7 +3,7 @@ services:
   blacklight:
     <%- if in_blacklight? -%>
     build: .
-    image: yalelibraryit/dc-blacklight:master
+    image: yalelibraryit/dc-blacklight:main
     <%- end -%>
     environment:
       BLACKLIGHT_BASE_URL: "http://localhost:3000"
