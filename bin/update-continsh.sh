@@ -175,4 +175,9 @@ CLUSTER_NAME=$1
     --min-size 1 \
     --max-size 1 \
     --no-new-instances-protected-from-scale-in
+
+
+  aws autoscaling start-instance-refresh \
+    --auto-scaling-group-name $CLUSTER_NAME-asg \
+    --preferences "MinHealthyPercentage=50"
 fi
