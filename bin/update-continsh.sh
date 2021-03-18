@@ -174,5 +174,5 @@ CLUSTER_NAME=$1
     --vpc-zone-identifier $AWS_SUBNET_PRIVATE_IDS \
     --min-size 1 \
     --max-size 1 \
-    --new-instances-protected-from-scale-in
+    --no-new-instances-protected-from-scale-in
 fi
