@@ -154,20 +154,30 @@ CLUSTER_NAME=$1
     "UserData":$USERDATA,
     "SecurityGroupIds":[$AWS_CUSTOM_SECURITY_GROUP_ID]}' | tr -d [:space:])
 
+  # Get launch template version
+  version=$(aws ec2 describe-launch-template-versions \
+          --launch-template-name $CLUSTER_NAME-lt \
+          --query "LaunchTemplateVersions[0].VersionNumber" \
+          --output text)
+
   # create aws launch template
-  LT=$(aws ec2 create-launch-template \
+  LT=$(aws ec2 create-launch-template-version \
     --launch-template-name $CLUSTER_NAME-lt \
-    --client-token $CLUSTER_NAME \
+    --client-token $CLUSTER_NAME-$(expr $version + 1) \
     --launch-template-data $TEMPLATE_JSON \
-    --query "LaunchTemplate.LaunchTemplateName" \
+    --query "LaunchTemplateVersion.LaunchTemplateName" \
     --output text)
 
-  aws autoscaling create-auto-scaling-group \
+  aws autoscaling update-auto-scaling-group \
     --auto-scaling-group-name $CLUSTER_NAME-asg \
-    --launch-template "LaunchTemplateName=$LT" \
+    --launch-template "LaunchTemplateName=$LT,Version=\$Latest" \
     --vpc-zone-identifier $AWS_SUBNET_PRIVATE_IDS \
-    --min-size 1 \
-    --max-size 1 \
-    --no-new-instances-protected-from-scale-in \
-    --tags "Key=Name,Value=$CLUSTER_NAME-worker-instance,PropagateAtLaunch=true"
+    --min-size 2 \
+    --desired-capacity 3 \
+    --max-size 4 \
+    --no-new-instances-protected-from-scale-in
+
+  aws autoscaling start-instance-refresh \
+    --auto-scaling-group-name $CLUSTER_NAME-asg \
+    --preferences "MinHealthyPercentage=50"
 fi
