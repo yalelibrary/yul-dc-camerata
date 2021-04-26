@@ -5,6 +5,8 @@ module Camerata
       %w[
         VPN
         SAMPLE_BUCKET
+        OCR_DOWNLOAD_BUCKET
+        ACCESS_DOWNLOAD_BUCKET
         S3_SOURCE_BUCKET_NAME
         METADATA_CLOUD_HOST
         BLACKLIGHT_PASSWORD_PROTECT

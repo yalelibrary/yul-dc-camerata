@@ -12,6 +12,8 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_USER: postgres
       S3_SOURCE_BUCKET_NAME:
+      ACCESS_DOWNLOAD_BUCKET:
+      OCR_DOWNLOAD_BUCKET:
       SAMPLE_BUCKET:
       SOLR_CORE: blacklight-core
       SOLR_URL: http://solr:8983/solr/blacklight-core
