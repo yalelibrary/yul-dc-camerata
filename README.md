@@ -2,7 +2,7 @@
 
 # yul-dc-camerata
 
-Coordinate services for YUL-DC project
+Coordinate services for the YUL-DC project
 
 ## Prerequisites
 
