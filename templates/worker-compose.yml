@@ -21,6 +21,9 @@ services:
       RAILS_LOG_TO_STDOUT: 'true'
       RAILS_RELATIVE_URL_ROOT: /management
       S3_SOURCE_BUCKET_NAME:
+      OCR_DOWNLOAD_BUCKET:
+      ACCESS_DOWNLOAD_BUCKET:
+      OCR_DOWNLOAD_BUCKET:
       SAMPLE_BUCKET: yul-development-samples
       SOLR_CORE: blacklight-core
       VPN:
