@@ -7,6 +7,6 @@ services:
       S3CACHE_BUCKET_NAME: yul-dc-dev-image-samples/cantaloupe/cache #NO TRAILING SLASH!
       SAMPLE_BUCKET: yul-dc-development-samples # manifests
       S3_SOURCE_BUCKET_NAME: yul-dc-dev-image-samples # image and ptiffs
-      ACCESS_DOWNLOAD_BUCKET:
-      OCR_DOWNLOAD_BUCKET:
+      ACCESS_DOWNLOAD_BUCKET: yul-dc-development-samples
+      OCR_DOWNLOAD_BUCKET: yul-dc-development-samples
       IIIF_IMAGE_VERSION:
