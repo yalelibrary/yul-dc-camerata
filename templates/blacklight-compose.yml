@@ -4,9 +4,7 @@ services:
     image: yalelibraryit/dc-blacklight:${BLACKLIGHT_VERSION}
     environment:
       <%= app_urls %>
-      AWS_ACCESS_KEY_ID:
       AWS_DEFAULT_REGION: us-east-1
-      AWS_SECRET_ACCESS_KEY:
       BLACKLIGHT_VERSION:
       POSTGRES_HOST: db
       POSTGRES_PASSWORD: password

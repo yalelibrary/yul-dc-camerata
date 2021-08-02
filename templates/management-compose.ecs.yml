@@ -2,19 +2,17 @@ version: '3'
 services:
   management:
     environment:
-      AWS_ACCESS_KEY_ID: ${DEPLOY_KEY_ID}
       TYPE: "management"
       CLUSTER_NAME: ${CLUSTER_NAME}
       DYNATRACE_TOKEN: ${DYNATRACE_TOKEN}
       AWS_DEFAULT_REGION: us-east-1
-      AWS_SECRET_ACCESS_KEY: ${DEPLOY_ACCESS_KEY}
       ACCESS_MASTER_MOUNT: "/data" # The path to the mounted drive, or "s3"
       GOOBI_MOUNT:
       HTTP_USERNAME: ${HTTP_USERNAME}
       HTTP_PASSWORD: ${HTTP_PASSWORD}
       IIIF_IMAGE_BASE_URL:
       IIIF_MANIFESTS_BASE_URL:
-      PDF_BASE_URL: 
+      PDF_BASE_URL:
       MC_USER: ${MC_USER}
       MC_PW: ${MC_PW}
       METADATA_CLOUD_HOST:

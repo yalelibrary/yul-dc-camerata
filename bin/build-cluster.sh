@@ -150,6 +150,7 @@ cat <<ECS_PARAMS > ${CLUSTER_NAME}-ecs-params.yml
 version: 1
 task_definition:
   task_execution_role: ecsTaskExecutionRole
+  task_role_arn: DigitalCollectionsRole
   ecs_network_mode: awsvpc
   task_size:
     mem_limit: 4096
@@ -171,6 +172,7 @@ cat <<WORKER_PARAMS > ${CLUSTER_NAME}-worker-params.yml
 version: 1
 task_definition:
   task_execution_role: ecsTaskExecutionRole
+  task_role_arn: DigitalCollectionsRole
   ecs_network_mode: awsvpc
   task_size:
     mem_limit: 3072

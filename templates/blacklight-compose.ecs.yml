@@ -2,9 +2,7 @@ version: '3'
 services:
   blacklight:
     environment:
-      AWS_ACCESS_KEY_ID: ${DEPLOY_KEY_ID}
       AWS_DEFAULT_REGION: us-east-1
-      AWS_SECRET_ACCESS_KEY: ${DEPLOY_ACCESS_KEY}
       CLUSTER_NAME: ${CLUSTER_NAME}
       DYNATRACE_TOKEN: ${DYNATRACE_TOKEN}
       TYPE: "blacklight"
