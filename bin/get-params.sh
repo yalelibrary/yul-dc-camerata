@@ -6,14 +6,14 @@ echo "Using cluster name=${CLUSTER_NAME}"
 
 if [[ -z $2 ]]
 then
-  memory='4096'
+  memory='16384'
 else
   memory=$2
 fi
 
 if [[ -z $3 ]]
 then
-  cpu='1024'
+  cpu='2048'
 else
   cpu=$3
 fi
