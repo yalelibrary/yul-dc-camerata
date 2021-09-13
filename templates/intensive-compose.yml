@@ -10,8 +10,7 @@ services:
       AWS_DEFAULT_REGION: us-east-1
       AWS_SECRET_ACCESS_KEY:
       GOOBI_MOUNT:
-      MC_USER:
-      MC_PW:
+      GOOBI_SCAN_DIRECTORIES:
       METADATA_CLOUD_HOST:
       PASSENGER_APP_ENV: development # development
       POSTGRES_DB: management_yul_development
