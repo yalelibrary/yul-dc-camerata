@@ -10,11 +10,12 @@ services:
       AWS_SECRET_ACCESS_KEY: ${DEPLOY_ACCESS_KEY}
       ACCESS_MASTER_MOUNT: "/data" # The path to the mounted drive, or "s3"
       GOOBI_MOUNT:
+      GOOBI_SCAN_DIRECTORIES:
       HTTP_USERNAME: ${HTTP_USERNAME}
       HTTP_PASSWORD: ${HTTP_PASSWORD}
       IIIF_IMAGE_BASE_URL:
       IIIF_MANIFESTS_BASE_URL:
-      PDF_BASE_URL: 
+      PDF_BASE_URL:
       MC_USER: ${MC_USER}
       MC_PW: ${MC_PW}
       METADATA_CLOUD_HOST:
