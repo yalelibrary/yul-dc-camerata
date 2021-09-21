@@ -111,14 +111,14 @@ CLUSTER_NAME=$1
   # NFS mount Goobi Hot Folders
   mkdir -p /brbl-dsu/jss_export
   mkdir -p /brbl-dsu/dcs
-  mkdir -p /yul/dcs
+  mkdir -p /yul
 
   if [ $CLUSTER_NAME == "yul-dc-test" ] || [ $CLUSTER_NAME == "yul-dc-infra" ]
   then
     GOOBI_HOT="wcsfs00.its.yale.internal:/NFS_SFS_std_sngl_003/Goobi_Deposits-CC1741-BRBLDSU"
     GOOBI_NON_BRBL="wcsfs00.its.yale.internal:/NFS_SFS_std_sngl_007/yul_goobi_non_BRBL_tst-CC1702-LIBITS"
 
-    mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 \$GOOBI_NON_BRBL /yul/dcs
+    mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 \$GOOBI_NON_BRBL /yul
     mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 \$GOOBI_HOT/jss_export /brbl-dsu/jss_export
     mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 \$GOOBI_HOT/dcs /brbl-dsu/dcs
   elif [ $CLUSTER_NAME == "yul-dc-uat" ] || [ $CLUSTER_NAME == "yul-dc-demo" ]
@@ -126,7 +126,7 @@ CLUSTER_NAME=$1
     GOOBI_HOT="wcsfs00.its.yale.internal:/NFS_SFS_std_mult_000/Goobi_Deposits_UAT-CC1741-BRBLDSU"
     GOOBI_NON_BRBL="wcsfs00.its.yale.internal:/NFS_SFS_std_sngl_007/yul_goobi_non_BRBL_uat-CC1702-LIBITS"
 
-    mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 \$GOOBI_NON_BRBL /yul/dcs
+    mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 \$GOOBI_NON_BRBL /yul
     mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 \$GOOBI_HOT/jss_export /brbl-dsu/jss_export
     mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 \$GOOBI_HOT/dcs /brbl-dsu/dcs
   elif [ $CLUSTER_NAME == "yul-dc-prod" ] || [ $CLUSTER_NAME == "yul-dc-staging" ]
@@ -134,7 +134,7 @@ CLUSTER_NAME=$1
     GOOBI_HOT="wcsfs00.its.yale.internal:/NFS_SFS_std_sngl_004/Goobi_Deposits_PROD-CC1741-BRBLDSU"
     GOOBI_NON_BRBL="wcsfs00.its.yale.internal:/NFS_SFS_std_sngl_007/yul_goobi_non_BRBL_prd-CC1702-LIBITS"
 
-    mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 \$GOOBI_NON_BRBL /yul/dcs
+    mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 \$GOOBI_NON_BRBL /yul
     mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 \$GOOBI_HOT/jss_export /brbl-dsu/jss_export
     mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 \$GOOBI_HOT/dcs /brbl-dsu/dcs
   fi
