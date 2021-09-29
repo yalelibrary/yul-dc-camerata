@@ -13,6 +13,7 @@ services:
     environment:
       SOLR_CORE: blacklight-core
       DYNATRACE_TOKEN: ${DYNATRACE_TOKEN}
+      SOLR_HEAP: ${SOLR_HEAP}
       CLUSTER_NAME: ${CLUSTER_NAME}
 volumes:
   solr_efs:
