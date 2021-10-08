@@ -111,6 +111,7 @@ CLUSTER_NAME=$1
   # NFS mount Goobi Hot Folders
   mkdir -p /brbl-dsu/jss_export
   mkdir -p /brbl-dsu/dcs
+  mkdir -p /brbl-dsu/reshoots_additions
   mkdir -p /yul
 
   if [ $CLUSTER_NAME == "yul-dc-test" ] || [ $CLUSTER_NAME == "yul-dc-infra" ]
@@ -121,6 +122,7 @@ CLUSTER_NAME=$1
     mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 \$GOOBI_NON_BRBL /yul
     mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 \$GOOBI_HOT/jss_export /brbl-dsu/jss_export
     mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 \$GOOBI_HOT/dcs /brbl-dsu/dcs
+    mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 \$GOOBI_HOT/reshoots_additions /brbl-dsu/reshoots_additions
   elif [ $CLUSTER_NAME == "yul-dc-uat" ] || [ $CLUSTER_NAME == "yul-dc-demo" ]
   then
     GOOBI_HOT="wcsfs00.its.yale.internal:/NFS_SFS_std_mult_000/Goobi_Deposits_UAT-CC1741-BRBLDSU"
@@ -129,6 +131,7 @@ CLUSTER_NAME=$1
     mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 \$GOOBI_NON_BRBL /yul
     mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 \$GOOBI_HOT/jss_export /brbl-dsu/jss_export
     mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 \$GOOBI_HOT/dcs /brbl-dsu/dcs
+    mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 \$GOOBI_HOT/reshoots_additions /brbl-dsu/reshoots_additions
   elif [ $CLUSTER_NAME == "yul-dc-prod" ] || [ $CLUSTER_NAME == "yul-dc-staging" ]
   then
     GOOBI_HOT="wcsfs00.its.yale.internal:/NFS_SFS_std_sngl_004/Goobi_Deposits_PROD-CC1741-BRBLDSU"
@@ -137,6 +140,7 @@ CLUSTER_NAME=$1
     mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 \$GOOBI_NON_BRBL /yul
     mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 \$GOOBI_HOT/jss_export /brbl-dsu/jss_export
     mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 \$GOOBI_HOT/dcs /brbl-dsu/dcs
+    mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 \$GOOBI_HOT/reshoots_additions /brbl-dsu/reshoots_additions
   fi
 
   for i in {0..10}
