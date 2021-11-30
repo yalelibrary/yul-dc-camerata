@@ -30,7 +30,7 @@ services:
       SAMPLE_BUCKET:
       SOLR_BASE_URL: http://${CLUSTER_NAME}-solr.${CLUSTER_NAME}:8983/solr
       POSTGRES_HOST: ${CLUSTER_NAME}-psql.${CLUSTER_NAME}
-    command: bash -c "echo $$(date -u +%FT%TZ) > DEPLOYED_AT && bundle exec rails activejob:schedule && /sbin/my_init" # server
+    command: bash -c "echo $$(date -u +%FT%TZ) > DEPLOYED_AT && sleep 30 && /sbin/my_init" # server
     logging:
       driver: awslogs
       options:

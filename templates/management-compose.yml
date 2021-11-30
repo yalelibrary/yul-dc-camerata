@@ -34,5 +34,6 @@ services:
       BLACKLIGHT_VERSION:
       MANAGEMENT_VERSION:
       CAMERATA_VERSION:
+    command: bash -c 'bundle exec rails activejob:schedule'
     ports:
       - "3001:3001"
