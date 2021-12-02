@@ -98,18 +98,18 @@ RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
                                    pass: password)
                        .get(find_link("manifestLink")[:href],
                        ssl_context: ssl_context)
-        expect(JSON.parse(response.body)['sequences'][0]['canvases'].length).to eq(2),
+        expect(JSON.parse(response.body)['items'].length).to eq(2),
           "sequence contains two canvases"
       end
     end
     describe 'provides a manifest for item 16371253: ', deployed: true do
       let(:oid) { '16371253' }
-      it 'has a sequence with nine canvases that links an image to a live URI' do
+      it 'has a sequence with six canvases that links an image to a live URI' do
         response = HTTP.basic_auth(user: username,
                                    pass: password).get(uri, ssl_context: ssl_context)
         parsed_manifest = JSON.parse(response.body)
-        expect(parsed_manifest['sequences'][0]['canvases'].length).to eq(6)
-        image_uri = parsed_manifest['sequences'][0]['canvases'][0]['images'][0]['resource']['@id']
+        expect(parsed_manifest['items'].length).to eq(6)
+        image_uri = parsed_manifest['items'][0]['items'][0]['items'][0]['body']['id']
         response = HTTP.basic_auth(user: username,
                                    pass: password)
                        .get(image_uri, ssl_context: ssl_context)
