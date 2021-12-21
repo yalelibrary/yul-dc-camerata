@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 services:
   management_worker:
     environment:
@@ -6,6 +6,7 @@ services:
       AWS_DEFAULT_REGION: us-east-1
       AWS_SECRET_ACCESS_KEY: ${DEPLOY_ACCESS_KEY}
       GOOBI_MOUNT:
+      GOOBI_SCAN_DIRECTORIES:
       HTTP_USERNAME: ${HTTP_USERNAME}
       HTTP_PASSWORD: ${HTTP_PASSWORD}
       IIIF_IMAGE_BASE_URL:
@@ -29,6 +30,7 @@ services:
     volumes:
       - /brbl-dsu:/brbl-dsu
       - /data:/data
+      - /yul:/yul
     logging:
       driver: awslogs
       options:

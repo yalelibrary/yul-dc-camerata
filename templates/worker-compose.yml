@@ -11,6 +11,9 @@ services:
       AWS_SECRET_ACCESS_KEY:
       FEATURE_FLAGS:
       GOOBI_MOUNT:
+      GOOBI_SCAN_DIRECTORIES:
+      MC_USER:
+      MC_PW:
       METADATA_CLOUD_HOST:
       PASSENGER_APP_ENV: development # development
       POSTGRES_DB: management_yul_development
@@ -22,12 +25,9 @@ services:
       S3_SOURCE_BUCKET_NAME:
       OCR_DOWNLOAD_BUCKET:
       ACCESS_DOWNLOAD_BUCKET:
-      OCR_DOWNLOAD_BUCKET:
       SAMPLE_BUCKET: yul-development-samples
       SOLR_CORE: blacklight-core
       VPN:
-      MC_USER:
-      MC_PW:
       # The management app needs the versions for all the applications for the dashboard
       IIIF_MANIFEST_VERSION:
       SOLR_VERSION:

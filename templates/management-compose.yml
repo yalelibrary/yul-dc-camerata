@@ -10,6 +10,7 @@ services:
       AWS_SECRET_ACCESS_KEY:
       FEATURE_FLAGS:
       GOOBI_MOUNT:
+      GOOBI_SCAN_DIRECTORIES:
       METADATA_CLOUD_HOST:
       PASSENGER_APP_ENV: development # development
       POSTGRES_DB: management_yul_development
