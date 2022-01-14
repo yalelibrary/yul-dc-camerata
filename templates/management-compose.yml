@@ -17,6 +17,7 @@ services:
       POSTGRES_HOST: db
       POSTGRES_PASSWORD: password
       POSTGRES_USER: postgres
+      PRESERVICA_HOST:
       RAILS_LOG_TO_STDOUT: 'true'
       RAILS_RELATIVE_URL_ROOT: /management
       S3_SOURCE_BUCKET_NAME:

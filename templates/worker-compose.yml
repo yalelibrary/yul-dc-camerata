@@ -15,6 +15,7 @@ services:
       MC_USER:
       MC_PW:
       METADATA_CLOUD_HOST:
+      PRESERVICA_HOST:
       PASSENGER_APP_ENV: development # development
       POSTGRES_DB: management_yul_development
       POSTGRES_HOST: db
