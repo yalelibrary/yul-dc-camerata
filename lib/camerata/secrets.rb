@@ -10,6 +10,7 @@ module Camerata
         HTTP_USERNAME
         MC_USER
         MC_PW
+        PRESERVICA_CREDENTIALS
         RAILS_MASTER_KEY
         DYNATRACE_TOKEN
         DEPLOY_KEY_ID
