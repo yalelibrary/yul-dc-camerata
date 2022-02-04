@@ -10,6 +10,6 @@ services:
       ACCESS_DOWNLOAD_BUCKET:
       OCR_DOWNLOAD_BUCKET:
       IIIF_IMAGE_VERSION:
-      JAVA_OPTS:
+      IIIF_JAVA_OPTS:
     ports:
       - '8182:8182'
