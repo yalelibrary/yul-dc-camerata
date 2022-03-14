@@ -40,3 +40,4 @@ services:
       CAMERATA_VERSION:
       WORKER_COUNT:
       WORKER_QUEUES:
+      WORKER_SLEEP_DELAY:
