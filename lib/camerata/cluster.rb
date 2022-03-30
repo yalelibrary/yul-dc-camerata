@@ -18,6 +18,7 @@ module Camerata
         IIIF_IMAGE_BASE_URL
         IIIF_MANIFESTS_BASE_URL
         PDF_BASE_URL
+        ARCHIVES_SPACE_BASE_URL
       ]
     end
   end
