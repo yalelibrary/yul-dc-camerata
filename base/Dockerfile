@@ -1,4 +1,4 @@
-FROM phusion/passenger-ruby27:2.1.0
+FROM phusion/passenger-ruby27:2.3.0
 
 RUN curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
   curl -sL https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - && \
