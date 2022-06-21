@@ -21,3 +21,4 @@ docker-compose-merged.yml
 .rspec_status
 vendor
 tags
+*~undo-tree~
