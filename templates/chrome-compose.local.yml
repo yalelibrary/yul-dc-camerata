@@ -7,8 +7,6 @@ services:
     volumes:
       - /dev/shm:/dev/shm
     shm_size: 3G
-    networks:
-      internal:
     environment:
       JAVA_OPTS: -Dwebdriver.chrome.whitelistedIps=
     ports:
