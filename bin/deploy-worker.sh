@@ -32,7 +32,7 @@ then
 
   # Define which queues the worker will pull jobs from
   # comman seperate like so pdf,ptiff,otherjob
-  export WORKER_QUEUES=default,manifest,ptiff,zeros,metadata,solr_index
+  export WORKER_QUEUES=default,manifest,ptiff,large_ptiff,zeros,metadata,solr_index
 
   ecs-cli compose  \
     --region $AWS_DEFAULT_REGION \
