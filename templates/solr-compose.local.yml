@@ -4,5 +4,7 @@ services:
     volumes:
       # think this may need to be changed to /var/solr/data
       - solr:/opt/solr/server/solr/mycores
+    environment:
+      SOLR_HEAP: ${SOLR_HEAP}
 volumes:
   solr:
