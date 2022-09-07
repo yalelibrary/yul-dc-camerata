@@ -2,8 +2,6 @@ services:
   chrome:
     # password is 'secret'
     image: seleniarm/standalone-chromium:latest
-    logging:
-      driver: none
     volumes:
       - /dev/shm:/dev/shm
     shm_size: 3G
