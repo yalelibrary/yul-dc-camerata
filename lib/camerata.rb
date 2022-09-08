@@ -396,6 +396,7 @@ module Camerata
           "blacklight-compose.local.yml",
           "iiif-images-compose.yml",
           "iiif-images-compose.local.yml",
+          "chrome-compose.local.yml",
           "db-compose.yml",
           "db-compose.local.yml",
           "solr-compose.yml",

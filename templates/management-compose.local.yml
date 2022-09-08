@@ -36,4 +36,7 @@ services:
       <%- unless without.match(/solr/) -%>
       - solr
       <%- end -%>
+      <%- unless without.match(/chrome/) -%>
+      - chrome
+      <%- end -%>
       - management_worker
