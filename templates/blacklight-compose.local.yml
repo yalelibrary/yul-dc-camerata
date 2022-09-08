@@ -36,6 +36,9 @@ services:
       <%- unless without.match(/solr/) -%>
       - solr
       <%- end -%>
+      <%- unless without.match(/chrome/) -%>
+      - chrome
+      <%- end -%>
       <%- unless without.match(/iiif_image/) -%>
       - iiif_image
       <%- end -%>
