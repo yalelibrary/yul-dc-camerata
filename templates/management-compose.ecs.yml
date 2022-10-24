@@ -11,6 +11,7 @@ services:
       ACCESS_MASTER_MOUNT: "/data" # The path to the mounted drive, or "s3"
       GOOBI_MOUNT:
       GOOBI_SCAN_DIRECTORIES:
+      INGEST_ERROR_EMAIL:
       HTTP_USERNAME: ${HTTP_USERNAME}
       HTTP_PASSWORD: ${HTTP_PASSWORD}
       IIIF_IMAGE_BASE_URL:

@@ -19,6 +19,7 @@ module Camerata
         IIIF_MANIFESTS_BASE_URL
         PDF_BASE_URL
         ARCHIVES_SPACE_BASE_URL
+        INGEST_ERROR_EMAIL
       ]
     end
   end
