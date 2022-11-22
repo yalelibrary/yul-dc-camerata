@@ -1,4 +1,4 @@
-FROM phusion/passenger-ruby27:2.3.0
+FROM phusion/passenger-ruby27:2.3.1
 
 RUN curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
   curl -sL   https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - && \
