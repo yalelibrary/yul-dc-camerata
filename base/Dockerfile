@@ -1,6 +1,7 @@
 FROM phusion/passenger-ruby27:2.3.1
 
-RUN curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
+RUN apt-get update && \
+  curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
   curl -sL   https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - && \
   echo "deb https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list && \
   sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list' && \
