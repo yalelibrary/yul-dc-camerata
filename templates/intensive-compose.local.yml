@@ -18,6 +18,7 @@ services:
       RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
       SAMPLE_BUCKET: yul-dc-development-samples # manifests
       S3_SOURCE_BUCKET_NAME: yul-dc-dev-image-samples # image and ptiffs
+      S3_DOWNLOAD_BUCKET_NAME: yul-dc-download-test # downloadable originals
       ACCESS_DOWNLOAD_BUCKET: yul-dc-development-samples
       OCR_DOWNLOAD_BUCKET: yul-dc-development-samples
       SOLR_TEST_CORE: blacklight-test
