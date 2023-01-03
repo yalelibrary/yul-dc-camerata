@@ -1,0 +1,12 @@
+FROM ruby:2.6.0
+
+ENV INSTALL_PATH /opt/app
+RUN mkdir -p $INSTALL_PATH
+
+RUN gem update --system
+
+COPY . $INSTALL_PATH
+WORKDIR /opt/app
+RUN bundle install && \
+    bundle exec rake install
+
