@@ -11,5 +11,10 @@ pipeline {
                 sh 'bundle exec cam version'
             }
         }
+        stage('Cam deployment') {
+            steps {
+                sh 'bundle exec cam help'
+            }
+        }
     }
 }
