@@ -9,6 +9,7 @@ pipeline {
     environment {
         AWS = credentials('aws-kb849_api-access')
         AWS_PROFILE = 'default'
+        AWS_DEFAULT_REGION = 'us-east-1'
     }
     stages {
         stage('Set AWS configuration') {
