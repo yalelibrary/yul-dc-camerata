@@ -7,12 +7,15 @@ pipeline {
     }
     environment {
         AWS = credentials('aws-kb849_api-access')
-        AWS_DEFAULT_REGION = 'us-east-1'
     }
     stages {
-        stage('Check Cam version') {
+        stage('Set AWS configuration') {
             steps {
-                sh 'bundle exec cam version'
+                sh '''
+                    aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+                    aws configure set aws_secret_access_key $AWS_ACCESS_KEY_ID
+                    aws configure set default.region us-east-1
+                '''
             }
         }
         stage('Cam deployment') {
