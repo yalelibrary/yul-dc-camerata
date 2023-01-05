@@ -1,5 +1,10 @@
 FROM ruby:2.6.0
 
+RUN apt-get update -qq && apt-get upgrade -yqq \
+    && apt-get install -y --no-install-recommands \
+       jq \
+    && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /tmp
 RUN curl https://amazon-ecs-cli.s3.amazonaws.com/ecs-cli-linux-amd64-latest -o /usr/local/bin/ecs-cli && \
     chmod +x /usr/local/bin/ecs-cli && \
@@ -17,4 +22,3 @@ COPY . $INSTALL_PATH
 WORKDIR /opt/app
 RUN bundle install && \
     bundle exec rake install
-
