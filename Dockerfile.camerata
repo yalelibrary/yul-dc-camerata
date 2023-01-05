@@ -1,7 +1,7 @@
 FROM ruby:2.6.0
 
 RUN apt-get update -qq && apt-get upgrade -yqq \
-    && apt-get install -y --no-install-recommands \
+    && apt-get install -y --no-install-recommends \
        jq \
     && rm -rf /var/lib/apt/lists/*
 
