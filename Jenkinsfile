@@ -18,6 +18,7 @@ pipeline {
         stage('Cam deployment') {
             steps {
                 sh 'aws s3 ls'
+                sh 'which ecs-cli'
             }
         }
     }
