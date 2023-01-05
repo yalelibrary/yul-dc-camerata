@@ -6,6 +6,9 @@ pipeline {
             args '--user root'
         }
     }
+    parameters {
+        string(name: 'CLUSTER_NAME', defaultValue: 'yul-dc-test', description: 'ECS Cluster Name' )
+    }
     environment {
         AWS = credentials('aws-kb849_api-access')
         AWS_PROFILE = 'default'
@@ -21,9 +24,30 @@ pipeline {
                 '''
             }
         }
-        stage('Cam deployment') {
+        stage('Cam Get Parameters') {
             steps {
-                sh 'bundle exec cam ps yul-dc-test'
+                script {
+                    vpcid = sh(
+                        script: 'aws ec2 describe-vpcs \
+                                --filter Name=tag:Name,Values='Library VPC' \
+                                --query Vpcs[].VpcId --output text',
+                        returnStdout: true
+                    ).trim()
+                    privateSubnet1 = sh(
+                        script: 'aws ec2 describe-subnets \
+                                --filter "Name=vpc-id,Values=${vpcid}" \
+                                --filter "Name=tag:SubnetType,Values=Public" \
+                                --query "Subnets[0].SubnetId" --output text'
+                    ).trim()
+                    privateSubnet2 = sh(
+                        script: 'aws ec2 describe-subnets \
+                                --filter "Name=vpc-id,Values=${vpcid}" \
+                                --filter "Name=tag:SubnetType,Values=Public" \
+                                --query "Subnets[1].SubnetId" --output text'
+                    ).trim()
+
+                    sh 'VPC_ID=${vpcid} SUBNET0=${privateSubnet1} SUBNET1=${privateSubnet2} cam get-params $CLUSTER_NAME
+                }
             }
         }
     }
