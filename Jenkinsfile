@@ -5,6 +5,10 @@ pipeline {
             filename 'Dockerfile.camerata'
         }
     }
+    environment {
+        AWS = credentials('aws-kb849_api-access')
+        AWS_DEFAULT_REGION = 'us-east-1'
+    }
     stages {
         stage('Check Cam version') {
             steps {
@@ -13,7 +17,7 @@ pipeline {
         }
         stage('Cam deployment') {
             steps {
-                sh 'bundle exec cam help'
+                sh 'bundle exec cam ps yul-dc-test'
             }
         }
     }
