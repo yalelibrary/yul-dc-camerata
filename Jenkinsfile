@@ -29,7 +29,7 @@ pipeline {
                 script {
                     vpcid = sh(
                         script: 'aws ec2 describe-vpcs \
-                                --filter Name=tag:Name,Values='Library VPC' \
+                                --filter Name=tag:Name,Values="Library VPC" \
                                 --query Vpcs[].VpcId --output text',
                         returnStdout: true
                     ).trim()
@@ -37,13 +37,15 @@ pipeline {
                         script: 'aws ec2 describe-subnets \
                                 --filter "Name=vpc-id,Values=${vpcid}" \
                                 --filter "Name=tag:SubnetType,Values=Public" \
-                                --query "Subnets[0].SubnetId" --output text'
+                                --query "Subnets[0].SubnetId" --output text',
+                        returnStdout: true
                     ).trim()
                     privateSubnet2 = sh(
                         script: 'aws ec2 describe-subnets \
                                 --filter "Name=vpc-id,Values=${vpcid}" \
                                 --filter "Name=tag:SubnetType,Values=Public" \
-                                --query "Subnets[1].SubnetId" --output text'
+                                --query "Subnets[1].SubnetId" --output text',
+                        returnStdout: true
                     ).trim()
 
                     sh 'VPC_ID=${vpcid} SUBNET0=${privateSubnet1} SUBNET1=${privateSubnet2} cam get-params $CLUSTER_NAME
