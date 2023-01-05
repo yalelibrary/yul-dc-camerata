@@ -17,8 +17,7 @@ pipeline {
         }
         stage('Cam deployment') {
             steps {
-                sh 'aws s3 ls'
-                sh 'which ecs-cli'
+                sh 'bundle exec cam ps yul-dc-test'
             }
         }
     }
