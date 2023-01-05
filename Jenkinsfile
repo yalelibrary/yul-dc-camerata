@@ -3,6 +3,7 @@ pipeline {
         dockerfile {
             label 'docker'
             filename 'Dockerfile.camerata'
+            args '--user root'
         }
     }
     environment {
