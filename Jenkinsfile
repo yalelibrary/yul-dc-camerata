@@ -37,7 +37,7 @@ pipeline {
                         script: "aws ec2 describe-subnets \
                                 --filter Name=vpc-id,Values=${vpcid} \
                                 --filter Name=tag:SubnetType,Values=Public \
-                                --query Subnets[0].SubnetId" --output text",
+                                --query Subnets[0].SubnetId --output text",
                         returnStdout: true
                     ).trim()
                     privateSubnet2 = sh(
@@ -53,7 +53,7 @@ pipeline {
         stage('Get cluster params') {
             steps {
                 sh """
-                    VPC_ID=${vpcid} SUBNET0=${privateSubnet1} SUBNET1=${privateSubnet2} bundle exec cam get-params $CLUSTER_NAME
+                    VPC_ID=${vpcid} SUBNET0=${privateSubnet1} SUBNET1=${privateSubnet2} cam get-params $CLUSTER_NAME
                 """
             }
         }
