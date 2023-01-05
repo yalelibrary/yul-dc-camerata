@@ -34,17 +34,17 @@ pipeline {
                         returnStdout: true
                     ).trim()
                     privateSubnet1 = sh(
-                        script: 'aws ec2 describe-subnets \
-                                --filter "Name=vpc-id,Values=\${vpcid}" \
-                                --filter "Name=tag:SubnetType,Values=Public" \
-                                --query "Subnets[0].SubnetId" --output text',
+                        script: "aws ec2 describe-subnets \
+                                --filter Name=vpc-id,Values=${vpcid} \
+                                --filter Name=tag:SubnetType,Values=Public \
+                                --query Subnets[0].SubnetId" --output text,
                         returnStdout: true
                     ).trim()
                     privateSubnet2 = sh(
-                        script: 'aws ec2 describe-subnets \
-                                --filter "Name=vpc-id,Values=\${vpcid}" \
-                                --filter "Name=tag:SubnetType,Values=Public" \
-                                --query "Subnets[1].SubnetId" --output text',
+                        script: "aws ec2 describe-subnets \
+                                --filter Name=vpc-id,Values=${vpcid} \
+                                --filter Name=tag:SubnetType,Values=Public \
+                                --query Subnets[1].SubnetId --output text",
                         returnStdout: true
                     ).trim()
                 }
