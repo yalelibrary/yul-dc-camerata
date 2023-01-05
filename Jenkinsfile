@@ -24,7 +24,7 @@ pipeline {
                 '''
             }
         }
-        stage('Cam Get Parameters') {
+        stage('Get AWS Configs') {
             steps {
                 script {
                     vpcid = sh(
@@ -47,9 +47,14 @@ pipeline {
                                 --query "Subnets[1].SubnetId" --output text',
                         returnStdout: true
                     ).trim()
-
-                    sh 'VPC_ID=\${vpcid} SUBNET0=\${privateSubnet1} SUBNET1=\${privateSubnet2} cam get-params $CLUSTER_NAME'
                 }
+            }
+        }
+        stage('Get cluster params') {
+            steps {
+                sh """
+                    VPC_ID=${vpcid} SUBNET0=${privateSubnet1} SUBNET1=${privateSubnet2} cam get-params $CLUSTER_NAME
+                """
             }
         }
     }
