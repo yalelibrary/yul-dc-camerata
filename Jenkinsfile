@@ -37,7 +37,7 @@ pipeline {
                         script: "aws ec2 describe-subnets \
                                 --filter Name=vpc-id,Values=${vpcid} \
                                 --filter Name=tag:SubnetType,Values=Public \
-                                --query Subnets[0].SubnetId" --output text,
+                                --query Subnets[0].SubnetId" --output text",
                         returnStdout: true
                     ).trim()
                     privateSubnet2 = sh(
