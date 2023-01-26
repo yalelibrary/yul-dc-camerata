@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# rubocop:disable Metrics/MethodLength
 module Camerata
   class Cluster < Camerata::Parameters
     def self.parameters
@@ -26,3 +27,4 @@ module Camerata
     end
   end
 end
+# rubocop:enable Metrics/MethodLength
