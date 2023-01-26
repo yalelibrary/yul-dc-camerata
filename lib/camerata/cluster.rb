@@ -21,6 +21,7 @@ module Camerata
         PDF_BASE_URL
         ARCHIVES_SPACE_BASE_URL
         INGEST_ERROR_EMAIL
+        IIIF_JAVA_OPTS
       ]
     end
   end

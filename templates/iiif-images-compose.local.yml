@@ -12,4 +12,4 @@ services:
       ACCESS_DOWNLOAD_BUCKET: yul-dc-development-samples
       OCR_DOWNLOAD_BUCKET: yul-dc-development-samples
       IIIF_IMAGE_VERSION:
-      IIIF_JAVA_OPTS: -Xmx2g
+      IIIF_JAVA_OPTS: ${IIIF_JAVA_OPTS:--Xmx2g}
