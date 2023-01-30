@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# rubocop:disable Metrics/MethodLength
 module Camerata
   class Cluster < Camerata::Parameters
     def self.parameters
@@ -21,7 +22,9 @@ module Camerata
         PDF_BASE_URL
         ARCHIVES_SPACE_BASE_URL
         INGEST_ERROR_EMAIL
+        IIIF_JAVA_OPTS
       ]
     end
   end
 end
+# rubocop:enable Metrics/MethodLength
