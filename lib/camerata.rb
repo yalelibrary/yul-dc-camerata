@@ -365,7 +365,7 @@ module Camerata
       result = {}
       inputs.each do |input|
         file_path = File.join(self.class.source_root, input)
-        content = ERB.new(::File.binread(file_path), nil, "-", "@output_buffer").result(binding)
+        content = ERB.new(::File.binread(file_path), trim_mode: "-", eoutvar: "@output_buffer").result(binding)
         input_yaml = YAML.safe_load(content)
         result.deep_merge!(input_yaml)
       end
