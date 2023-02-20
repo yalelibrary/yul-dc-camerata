@@ -50,7 +50,7 @@ RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
       expect(page).to have_selector(".blacklight-format"), "a format facet is present"
       expect(page).to have_selector(".branch-name", text: /Branch:\w+/)
       click_on 'search'
-      expect(page).to have_selector(".document-position-0"), "an open search has at least 1 item"
+      expect(page).to have_selector(".document-position-1"), "an open search has at least 1 item"
     end
     it 'loads the home page for deployed environments', deployed: true do
       visit uri
