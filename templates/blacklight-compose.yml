@@ -5,7 +5,7 @@ services:
     environment:
       <%= app_urls %>
       ARCHIVES_SPACE_BASE_URL: ${ARCHIVES_SPACE_BASE_URL}
-      MANAGEMENT_HOST: management
+      MANAGEMENT_HOST:
       AWS_ACCESS_KEY_ID:
       AWS_DEFAULT_REGION: us-east-1
       AWS_SECRET_ACCESS_KEY:
