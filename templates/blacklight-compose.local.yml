@@ -7,6 +7,7 @@ services:
     <%- end -%>
     environment:
       BLACKLIGHT_BASE_URL: "http://localhost:3000"
+      CLUSTER_NAME: "local"
       IIIF_IMAGE_BASE_URL: "http://localhost:8182/iiif"
       IIIF_IMAGE_INTERNAL_URL: "http://iiif_image:8182"
       IIIF_MANIFESTS_BASE_URL: "http://localhost/manifests/"
@@ -21,7 +22,6 @@ services:
       S3_DOWNLOAD_BUCKET_NAME: yul-dc-download-test # downloadable originals
       ACCESS_DOWNLOAD_BUCKET: yul-dc-development-samples
       OCR_DOWNLOAD_BUCKET: yul-dc-development-samples
-      CLUSTER_NAME: ${CLUSTER_NAME}
       NGINX_RESOLVER: 127.0.0.11
     <%- if in_blacklight? -%>
     volumes:
