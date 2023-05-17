@@ -52,7 +52,7 @@ jobs:
             bundle exec rspec smoke_spec --tag ~deployed:true
   run-tests:
     docker:
-      - image: circleci/ruby:2.6-stretch-node-browsers-legacy
+      - image: cimg/ruby:2.6-stretch-node-browsers-legacy
     steps:
       - checkout
       - run:
@@ -82,7 +82,7 @@ jobs:
             bundle exec rspec
   deploy-smoke:
     docker:
-      - image: circleci/ruby:2.6-stretch-node-browsers-legacy
+      - image: cimg/ruby:2.6-stretch-node-browsers-legacy
     steps:
       - checkout
       - run:
