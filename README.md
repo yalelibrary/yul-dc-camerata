@@ -84,6 +84,10 @@ The base docker image, used for our two Ruby on Rails applications (Management a
 ```bash
 cd base
 docker-compose build
+```
+Go to the base/docker-compose.yml file and update the image version and then
+
+```
 docker-compose push
 ```
 
