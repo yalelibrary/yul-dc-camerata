@@ -13,15 +13,6 @@ pipeline {
       AWS_DEFAULT_REGION = 'us-east-1'
     }
     stages {
-        stage('Build and Install camerata') {
-            steps {
-                sh """
-                    gem install bundler
-                    bundle install
-                    rake install
-                """
-            }
-        }
         stage('Get Params'){
           steps {
             sh """

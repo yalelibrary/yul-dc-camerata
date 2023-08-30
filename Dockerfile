@@ -9,3 +9,8 @@ RUN apt-get update && apt upgrade -y && \
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "/tmp/awscli2.zip" && \
     unzip -d /tmp /tmp/awscli2.zip && /tmp/aws/install && rm -rf /tmp/aws*
 
+RUN gem update --system
+
+COPY . ./
+
+RUN gem install bundler && bundle install && rake install
