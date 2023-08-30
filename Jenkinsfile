@@ -11,6 +11,7 @@ pipeline {
     environment {
       AWS = credentials('aws-ci-keys')
       AWS_DEFAULT_REGION = 'us-east-1'
+      AWS_PROFILE = 'default'
     }
     stages {
         stage('Get Params'){
