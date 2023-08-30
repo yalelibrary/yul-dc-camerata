@@ -10,7 +10,7 @@ pipeline {
     }
     environment {
       AWS = credentials('aws-ci-keys')
-      AWS_REGION = 'us-east-1'
+      AWS_DEFAULT_REGION = 'us-east-1'
     }
     stages {
         stage('Build and Install camerata') {
