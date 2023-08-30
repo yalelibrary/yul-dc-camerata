@@ -2,6 +2,7 @@ FROM ruby:2.6.6
 
 RUN apt-get update && apt upgrade -y && \
     apt-get install -y --no-install-recommends \
+      jq \
       sqlite3 \
     && rm -rf /var/lib/apt/lists/*
 

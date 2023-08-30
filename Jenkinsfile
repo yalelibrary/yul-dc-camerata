@@ -16,7 +16,9 @@ pipeline {
           steps {
             sh """
                 export HOME=${WORKSPACE}
+                export AWS_PROFILE=default
                 export AWS_DEFAULT_REGION=us-east-1
+
                 export VPC_ID=vpc-57bee630
                 export SUBNET0=subnet-2dc03400 
                 export SUBNET1=subnet-71b55b4d
