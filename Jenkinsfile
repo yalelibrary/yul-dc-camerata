@@ -8,6 +8,14 @@ pipeline {
     options {
       buildDiscarder(logRotator(numToKeepStr: '10'))
     }
+    parameters {
+      choice choices: ['choice1'], name: 'DEPLOY'
+      string 'BLACKLIGHT_VERSION'
+      string 'MANAGEMENT_VERSION'
+      string 'IIIF_MANIFEST_VERSION'
+      string 'IIIF_IMAGE_VERSION'
+      booleanParam defaultValue: true, name: 'UPDATE_SSM'
+    }
     environment {
       AWS = credentials('aws-ci-keys')
     }
