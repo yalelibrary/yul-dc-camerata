@@ -9,11 +9,18 @@ pipeline {
       buildDiscarder(logRotator(numToKeepStr: '10'))
     }
     parameters {
-      choice choices: ['choice1'], name: 'DEPLOY'
+      choice choices: ['yul-dc-test'], name: 'CLUSTER'
       string 'BLACKLIGHT_VERSION'
       string 'MANAGEMENT_VERSION'
       string 'IIIF_MANIFEST_VERSION'
       string 'IIIF_IMAGE_VERSION'
+      choice choices: ['deploy-blacklight',
+                      'deploy-mgmt',
+                      'deploy-mft',
+                      'deploy-images',
+                      'deploy-worker',
+                      'deploy-intensive-worker'], 
+             name: 'DEPLOY'
       booleanParam defaultValue: true, name: 'UPDATE_SSM'
     }
     environment {
@@ -35,7 +42,7 @@ pipeline {
                 aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
                 aws configure set default.region us-east-1
 
-                cam get-params yul-dc-test
+                cam get-params ${CLUSTER}
               """
           }
         }
