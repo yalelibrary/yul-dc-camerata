@@ -46,5 +46,18 @@ pipeline {
               """
           }
         }
+        stage('Update Cluster'){
+          steps {
+            sh """
+              if [ $DEPLOY = 'deploy-intensive-worker' ]; then
+                export WORKER_COUNT=1
+              else
+                export WORKER_COUNT=12
+              fi
+
+              echo $WORKER_COUNT
+            """
+          }
+        }
     }
 }
