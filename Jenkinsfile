@@ -55,7 +55,39 @@ pipeline {
                 export WORKER_COUNT=12
               fi
 
-              echo \$WORKER_COUNT
+              if [ "$UPDATE_SSM" = "true" ]
+              then
+
+                echo "UPDATING AWS SSM"
+                if [ ! -z "$BLACKLIGHT_VERSION" ]
+                then
+                  cam push_version blacklight $BLACKLIGHT_VERSION
+                fi
+                
+                if [ ! -z "$MANAGEMENT_VERSION" ]
+                then
+                cam push_version management $MANAGEMENT_VERSION
+                fi
+                
+                if [ ! -z "$IIIF_MANIFEST_VERSION" ]
+                then
+                  cam push_version iiif_manifest $IIIF_MANIFEST_VERSION
+                fi
+                
+                if [ ! -z "$IIIF_IMAGE_VERSION" ]
+                then
+                  cam push_version iiif_image $IIIF_IMAGE_VERSION
+                fi
+                  
+                  cam push_version camerata $CAMERATA_VERSION    
+              fi
+
+              cam $DEPLOY $CLUSTER
+
+              if [ $DEPLOY = "deploy-mgmt" ]; then
+                cam deploy-worker $CLUSTER
+                WORKER_COUNT=1 cam deploy-intensive-worker $CLUSTER
+              fi
             """
           }
         }
