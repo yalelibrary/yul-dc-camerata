@@ -55,7 +55,7 @@ pipeline {
                 export WORKER_COUNT=12
               fi
 
-              echo $WORKER_COUNT
+              echo \$WORKER_COUNT
             """
           }
         }
