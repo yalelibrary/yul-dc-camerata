@@ -16,6 +16,11 @@ module Camerata
         DEPLOY_KEY_ID
         DEPLOY_ACCESS_KEY
         YALE_NETWORK_IPS
+        SSO_ID
+        SSO_HOST
+        SSO_SECRET
+        SSO_JWKS
+        SSO_ISS
       ]
     end
 
