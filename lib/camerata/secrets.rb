@@ -16,6 +16,7 @@ module Camerata
         DEPLOY_KEY_ID
         DEPLOY_ACCESS_KEY
         YALE_NETWORK_IPS
+        SOLR_HEAP
         SSO_ID
         SSO_HOST
         SSO_SECRET
