@@ -23,6 +23,7 @@ module Camerata
         ARCHIVES_SPACE_BASE_URL
         INGEST_ERROR_EMAIL
         IIIF_JAVA_OPTS
+        SOLR_HEAP
       ]
     end
   end
