@@ -21,6 +21,11 @@ services:
       SAMPLE_BUCKET:
       SOLR_CORE: blacklight-core
       SOLR_URL: http://solr:8983/solr/blacklight-core
+      SSO_HOST: ${SSO_HOST}
+      SSO_ID: ${SSO_ID}
+      SSO_ISS: ${SSO_ISS}
+      SSO_JWKS: ${SSO_JWKS}
+      SSO_SECRET: ${SSO_SECRET}
       YALE_NETWORK_IPS: ${YALE_NETWORK_IPS:-10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,127.0.0.1}
     ports:
       - '3000:3000'
