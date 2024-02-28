@@ -41,6 +41,7 @@ module Camerata
   end
 
   class Error < StandardError; end
+
   class CLI < Thor
     include Thor::Actions
 
@@ -426,7 +427,7 @@ module Camerata
       options[:without] || ''
     end
 
-    # Note: First app purposefully outdented to keep yml happy.
+    # NOTE: First app purposefully outdented to keep yml happy.
     def app_urls
       @app_urls ||= <<-END
 IIIF_IMAGE_BASE_URL: ${IIIF_IMAGE_BASE_URL:-http://localhost:8182/iiif}

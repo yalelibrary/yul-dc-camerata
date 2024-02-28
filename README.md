@@ -80,11 +80,20 @@ cp: cannot create directory '/var/solr/data/blacklight-core/conf': Permission de
 make sure that you have the correct version of ecs-cli, defined below.
 
 ## Base Docker Image
-The base docker image, used for our two Ruby on Rails applications (Management and Blacklight), lives in this repository under [base/Dockerfile](base/Dockerfile). In order to rebuild this image, first edit the [base/docker-compose.yml](base/docker-compose.yml) to reflect the new version number (should use semantic versioning, just like other applications). Then
+The base docker image, used for our two Ruby on Rails applications (Management and Blacklight), lives in this repository under [base/Dockerfile](base/Dockerfile). In order to rebuild this image, first edit the [base/docker-compose.yml](base/docker-compose.yml) to reflect the new version number (should use semantic versioning, just like other applications). 
+
 ```bash
 cd base
 docker-compose build
 docker-compose push
+```
+
+Then you'll need to prep cam for use locally.
+
+```
+cd .. \\ get back to main directory
+bundle install
+rake install
 ```
 
 
