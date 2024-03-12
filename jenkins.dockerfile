@@ -10,6 +10,6 @@ RUN python3 -m pip install awscli
 
 RUN gem update --system && gem install bundler
 
-COPY . ./
+RUN groupadd -g 12001 jenkins && useradd jenkins -u 12001 -g 12001
 
-RUN bundle install && rake install
+USER jenkins
