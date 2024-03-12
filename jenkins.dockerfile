@@ -3,6 +3,7 @@ FROM ruby:3.2.0
 RUN apt update && apt upgrade -y && \
     apt install -y --no-install-recommends \
         jq \
+        libxml2 \
         python3-pip \
     && rm -rf /var/lib/apt/lists/*
 
