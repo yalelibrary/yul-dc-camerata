@@ -8,8 +8,9 @@ RUN apt update && apt upgrade -y && \
 
 RUN python3 -m pip install awscli
 
-RUN gem update --system && gem install bundler
+# RUN gem update --system && gem install bundler
+RUN gem install bundler
 
-COPY . ./
+# COPY . ./
 
-RUN bundle install && rake install
+# RUN bundle install && rake install
