@@ -1,4 +1,4 @@
-FROM ruby:2.6.0
+FROM ruby:2.6.6
 
 RUN apt update && apt upgrade -y && \
     apt install -y --no-install-recommends \
