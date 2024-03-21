@@ -9,7 +9,7 @@ RUN apt update && apt upgrade -y && \
 RUN python3 -m pip install awscli
 
 # RUN gem update --system && gem install bundler
-RUN gem install bundler
+RUN gem install bundler -v '2.4.22'
 
 # COPY . ./
 
