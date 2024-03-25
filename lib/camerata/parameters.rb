@@ -37,6 +37,7 @@ module Camerata
     end
 
     def self.pull_parameter_hash(parameter_list, namespace = "")
+      puts("Namespace: #{namespace}")
       json_list = get_list(parameter_list)
       hash = {}
       json_list.each do |json|
@@ -49,6 +50,7 @@ module Camerata
                 end
           value = p['Value']
           hash[key] = value
+          puts("Key: #{key}")
         end
       end
       hash
