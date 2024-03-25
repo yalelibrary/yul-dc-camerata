@@ -61,11 +61,11 @@ pipeline {
                                 APP=params.DEPLOY
                             }
                             
-                            sh "cam deploy-${APP} ${CLUSTER}"
+                            sh "CLUSTER_NAME=${CLUSTER} cam deploy-${APP} ${CLUSTER}"
                             
                             if ( APP == 'mgmt' ) {
-                                sh "cam deploy-worker ${CLUSTER}"
-                                sh "WORKER_COUNT=1 cam deploy-intensive-worker ${CLUSTER}"
+                                sh "CLUSTER_NAME=${CLUSTER} cam deploy-worker ${CLUSTER}"
+                                sh "WORKER_COUNT=1 CLUSTER_NAME=${CLUSTER} cam deploy-intensive-worker ${CLUSTER}"
                             }
                         }
                         
