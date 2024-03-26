@@ -50,11 +50,22 @@ pipeline {
                         script {
                             if ( params.DEPLOY == 'management' ) {
                                 APP='mgmt'
+                                DEPLOY_VERSION="${MANAGEMENT_VERSION}"
                             }
                             else if ( params.DEPLOY == 'manifest' ) {
                                 APP='mft'
+                                DEPLOY_VERSION="${IIIF_MANIFEST_VERSION}"
                             } else {
                                 APP=params.DEPLOY
+                                if ( params.DEPLOY == 'blacklight' ) {
+                                    DEPLOY_VERSION="${BLACKLIGHT_VERSION}"
+                                }
+                                else if ( params.DEPLOY == 'images' ) {
+                                    DEPLOY_VERSION="${IIIF_IMAGE_VERSION}"
+                                }
+                                else if ( params.DEPLOY == 'intensive-workers' )
+                                    DEPLOY_VERSION="${MANAGEMENT_VERSION}"
+                                }
                             }
 
                             sh "cam deploy-${APP} ${CLUSTER}"
@@ -95,7 +106,7 @@ pipeline {
     post {
       always {
         script {
-          currentBuild.description = "${CLUSTER}:${APP}"
+          currentBuild.description = "${CLUSTER}:${APP}:${DEPLOY_VERSION}"
         }
       }
     }
