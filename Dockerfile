@@ -17,4 +17,4 @@ RUN gem update --system
 
 COPY . ./
 
-RUN gem install bundler && bundle install && rake install
+RUN gem install bundler && bundle install && rake install && chown -R 12001:12001 /usr/local/bundle/gems
