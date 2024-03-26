@@ -39,17 +39,13 @@ pipeline {
                         """
                     }
                 }
-                stage('Get Params') {
+                stage('Deployment') {
                     environment {
                         VPC_ID="vpc-57bee630"
                         SUBNET0="subnet-2dc03400"
                         SUBNET1="subnet-71b55b4d"
+                        CLUSTER_NAME="${CLUSTER}"
                     }
-                    steps {
-                        sh "cam get-params ${CLUSTER}"
-                    }
-                }
-                stage('Deployment') {
                     steps {
                         script {
                             if ( params.DEPLOY == 'management' ) {
@@ -60,15 +56,15 @@ pipeline {
                             } else {
                                 APP=params.DEPLOY
                             }
-                            
-                            sh "CLUSTER_NAME=${CLUSTER} cam deploy-${APP} ${CLUSTER}"
-                            
+
+                            sh "cam deploy-${APP} ${CLUSTER}"
+
                             if ( APP == 'mgmt' ) {
-                                sh "CLUSTER_NAME=${CLUSTER} cam deploy-worker ${CLUSTER}"
-                                sh "WORKER_COUNT=1 CLUSTER_NAME=${CLUSTER} cam deploy-intensive-worker ${CLUSTER}"
+                                sh "cam deploy-worker ${CLUSTER}"
+                                sh "WORKER_COUNT=1 cam deploy-intensive-worker ${CLUSTER}"
                             }
                         }
-                        
+
                     }
                 }
                 stage('Update SSM') {

@@ -1,4 +1,5 @@
-#!/bin/bash -e
+#!/bin/bash
+set -e
 . $(dirname "$0")/shared-checks.sh
 . $(dirname "$0")/efs-fun.sh
 
@@ -114,7 +115,7 @@ CLUSTER_NAME=$1
   mkdir -p /brbl-dsu/reshoots_additions
   mkdir -p /yul
 
-  if [ $CLUSTER_NAME == "yul-dc-test" ] 
+  if [ $CLUSTER_NAME == "yul-dc-test" ]
   then
     FLEXCLONE_SUFFIX="_test_11212022"
     GOOBI_HOT="wcsfs00.its.yale.internal:/NFS_SFS_std_sngl_003/Goobi_Deposits-CC1741-BRBLDSU"
@@ -123,7 +124,7 @@ CLUSTER_NAME=$1
     mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 \$GOOBI_NON_BRBL /yul
     mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 \$GOOBI_HOT/jss_export /brbl-dsu/jss_export
     mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 \$GOOBI_HOT/dcs /brbl-dsu/dcs
-   elif [ $CLUSTER_NAME == "yul-dc-demo" ] 
+   elif [ $CLUSTER_NAME == "yul-dc-demo" ]
    then
     FLEXCLONE_SUFFIX="_test_11212022"
     GOOBI_HOT="wcsfs00.its.yale.internal:/NFS_SFS_std_mult_000/Goobi_Deposits_UAT-CC1741-BRBLDSU"
@@ -133,7 +134,7 @@ CLUSTER_NAME=$1
     mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 \$GOOBI_HOT/jss_export /brbl-dsu/jss_export
     mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 \$GOOBI_HOT/dcs /brbl-dsu/dcs
     mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 \$GOOBI_HOT/reshoots_additions /brbl-dsu/reshoots_additions
-  elif [ $CLUSTER_NAME == "yul-dc-uat" ] 
+  elif [ $CLUSTER_NAME == "yul-dc-uat" ]
   then
     GOOBI_HOT="wcsfs00.its.yale.internal:/NFS_SFS_std_mult_000/Goobi_Deposits_UAT-CC1741-BRBLDSU"
     GOOBI_NON_BRBL="wcsfs00.its.yale.internal:/NFS_SFS_std_sngl_007/yul_goobi_non_BRBL_uat-CC1702-LIBITS"

@@ -1,4 +1,5 @@
-#!/bin/bash -e
+#!/bin/bash
+set -e
 
 . $(dirname "$0")/shared-checks.sh
 
