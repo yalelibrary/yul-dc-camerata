@@ -18,7 +18,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: '2764_DeployWithNewJenkins', url: 'https://github.com/yalelibrary/yul-dc-camerata'
+                git branch: 'main', url: 'https://github.com/yalelibrary/yul-dc-camerata'
             }
         }
         stage('Deployment') {
