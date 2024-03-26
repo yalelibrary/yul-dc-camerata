@@ -1,4 +1,5 @@
-#!/bin/bash -e
+#!/bin/bash
+set -e
 #This script is run by /sbin/my_init at boot time
 if [ ! -z "$DYNATRACE_TOKEN" ];then
 
