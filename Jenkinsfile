@@ -63,7 +63,7 @@ pipeline {
                                 else if ( params.DEPLOY == 'images' ) {
                                     DEPLOY_VERSION="${IIIF_IMAGE_VERSION}"
                                 }
-                                else if ( params.DEPLOY == 'intensive-workers' )
+                                else if ( params.DEPLOY == 'intensive-workers' ) {
                                     DEPLOY_VERSION="${MANAGEMENT_VERSION}"
                                 }
                             }
