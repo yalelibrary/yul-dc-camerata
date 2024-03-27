@@ -1,14 +1,5 @@
 pipeline {
     agent { label 'docker' }
-    parameters {
-        string name: 'BLACKLIGHT_VERSION', description: 'Add Blacklight Version, default value will be pulled from AWS SSM'
-        string name: 'IIIF_IMAGE_VERSION', description: 'Add IIIF Image Version, default value will be pulled from AWS SSM'
-        string name: 'IIIF_MANIFEST_VERSION', description: 'Add IIIF Manifest Version, default value will be pulled from AWS SSM'
-        string name: 'MANAGEMENT_VERSION', description: 'Add Management Version, default value will be pulled from AWS SSM'
-        choice name: 'DEPLOY', choices: ['blacklight','images','intensive-workers','management','manifest']
-        choice name: 'CLUSTER', choices: ['yul-dc-test','yul-dc-uat','yul-dc-demo','yul-dc-staging','yul-dc-prod']
-        booleanParam name: 'UPDATE_SSM', defaultValue: true
-    }
     environment {
         AWS = credentials('aws-ci-keys')
         AWS_PROFILE = "default"
@@ -16,6 +7,38 @@ pipeline {
         HOME = "${WORKSPACE}"
     }
     stages {
+        stage('Setup parameters') {
+            steps {
+                script {
+                    END_OF_JOB_NAME="${JOB_NAME.substring(JOB_NAME.lastIndexOf('/') + 1, JOB_NAME.length())}"
+                    if (END_OF_JOB_NAME == 'Prod-Deploy') {
+                        properties([
+                            parameters([
+                                string( name: 'BLACKLIGHT_VERSION', description: 'Add Blacklight Version, default value will be pulled from AWS SSM'),
+                                string( name: 'IIIF_IMAGE_VERSION', description: 'Add IIIF Image Version, default value will be pulled from AWS SSM'),
+                                string( name: 'IIIF_MANIFEST_VERSION', description: 'Add IIIF Manifest Version, default value will be pulled from AWS SSM'),
+                                string( name: 'MANAGEMENT_VERSION', description: 'Add Management Version, default value will be pulled from AWS SSM'),
+                                choice( name: 'DEPLOY', choices: ['blacklight','images','intensive-workers','management','manifest']),
+                                choice( name: 'CLUSTER', choices: ['yul-dc-prod']),
+                                booleanParam( name: 'UPDATE_SSM', defaultValue: true)
+                            ])
+                        ])
+                    } else {
+                        properties([
+                            parameters([
+                                string( name: 'BLACKLIGHT_VERSION', description: 'Add Blacklight Version, default value will be pulled from AWS SSM'),
+                                string( name: 'IIIF_IMAGE_VERSION', description: 'Add IIIF Image Version, default value will be pulled from AWS SSM'),
+                                string( name: 'IIIF_MANIFEST_VERSION', description: 'Add IIIF Manifest Version, default value will be pulled from AWS SSM'),
+                                string( name: 'MANAGEMENT_VERSION', description: 'Add Management Version, default value will be pulled from AWS SSM'),
+                                choice( name: 'DEPLOY', choices: ['blacklight','images','intensive-workers','management','manifest']),
+                                choice( name: 'CLUSTER', choices: ['yul-dc-test','yul-dc-uat','yul-dc-demo']),
+                                booleanParam( name: 'UPDATE_SSM', defaultValue: true)
+                            ])
+                        ])
+                    }
+                }
+            }
+        }
         stage('Checkout') {
             steps {
                 git branch: 'main', url: 'https://github.com/yalelibrary/yul-dc-camerata'
@@ -67,15 +90,22 @@ pipeline {
                                     DEPLOY_VERSION="${MANAGEMENT_VERSION}"
                                 }
                             }
-
-                            sh "cam deploy-${APP} ${CLUSTER}"
-
-                            if ( APP == 'mgmt' ) {
-                                sh "cam deploy-worker ${CLUSTER}"
-                                sh "WORKER_COUNT=1 cam deploy-intensive-worker ${CLUSTER}"
+                            if ("${DEPLOY_VERSION}" == null || "${DEPLOY_VERSION}" == '') {
+                                currentBuild.result = 'ABORTED'
+                                DEPLOY_VERSION="NOT DEPLOYED!! No version"
+                                error("Please enter a value for the version you want to deploy")
+                            } else if ( "${DEPLOY_VERSION}".indexOf(" ") > -1 ) {
+                                currentBuild.result = 'ABORTED'
+                                DEPLOY_VERSION="INVALAD VERSION [${DEPLOY_VERSION}]"
+                                error("The version includes a space")
+                            } else {
+                                sh "cam deploy-${APP} ${CLUSTER}"
+                                if ( APP == 'mgmt' ) {
+                                    sh "cam deploy-worker ${CLUSTER}"
+                                    sh "WORKER_COUNT=1 cam deploy-intensive-worker ${CLUSTER}"
+                                }
                             }
                         }
-
                     }
                 }
                 stage('Update SSM') {
