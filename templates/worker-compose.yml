@@ -2,7 +2,7 @@ version: '3'
 services:
   management_worker:
     image: yalelibraryit/dc-management:${MANAGEMENT_VERSION}
-    command: /sbin/setuser app bash -l -c "bundle exec good_job start || bundle exec delayed_job_worker_pool config/delayed_job_pool.rb"
+    command: /sbin/setuser app bash -l -c "bundle exec good_job start"
     environment:
       <%= app_urls %>
       ACCESS_MASTER_MOUNT: "s3" # The path to the mounted drive, or "s3"
