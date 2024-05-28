@@ -18,7 +18,7 @@ pipeline {
                                 string( name: 'IIIF_IMAGE_VERSION', description: 'Add IIIF Image Version, default value will be pulled from AWS SSM'),
                                 string( name: 'IIIF_MANIFEST_VERSION', description: 'Add IIIF Manifest Version, default value will be pulled from AWS SSM'),
                                 string( name: 'MANAGEMENT_VERSION', description: 'Add Management Version, default value will be pulled from AWS SSM'),
-                                choice( name: 'DEPLOY', choices: ['blacklight','images','intensive-workers','management','manifest']),
+                                choice( name: 'DEPLOY', choices: ['blacklight','images','intensive-worker','management','manifest']),
                                 choice( name: 'CLUSTER', choices: ['yul-dc-prod']),
                                 booleanParam( name: 'UPDATE_SSM', defaultValue: true)
                             ])
@@ -30,7 +30,7 @@ pipeline {
                                 string( name: 'IIIF_IMAGE_VERSION', description: 'Add IIIF Image Version, default value will be pulled from AWS SSM'),
                                 string( name: 'IIIF_MANIFEST_VERSION', description: 'Add IIIF Manifest Version, default value will be pulled from AWS SSM'),
                                 string( name: 'MANAGEMENT_VERSION', description: 'Add Management Version, default value will be pulled from AWS SSM'),
-                                choice( name: 'DEPLOY', choices: ['blacklight','images','intensive-workers','management','manifest']),
+                                choice( name: 'DEPLOY', choices: ['blacklight','images','intensive-worker','management','manifest']),
                                 choice( name: 'CLUSTER', choices: ['yul-dc-test','yul-dc-uat','yul-dc-demo']),
                                 booleanParam( name: 'UPDATE_SSM', defaultValue: true)
                             ])
