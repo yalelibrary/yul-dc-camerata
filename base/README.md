@@ -27,7 +27,7 @@ In the Camerata repo:
 - Run `docker-compose build` to build the image
 - Confirm that the image builds
 - Run `docker-compose up` to start up the service
-- Run `docker exec base sh` to connect to the running container and examine its contents
+- In another window run `docker-compose exec base bash` to connect to the running container and examine its contents
 
 **Push Image**
 
