@@ -52,7 +52,7 @@ jobs:
             bundle exec rspec smoke_spec --tag ~deployed:true
   run-tests:
     docker:
-      - image: cimg/ruby:2.6
+      - image: cimg/ruby:3.2
     steps:
       - checkout
       - run:
@@ -82,7 +82,7 @@ jobs:
             bundle exec rspec
   deploy-smoke:
     docker:
-      - image: cimg/ruby:2.6
+      - image: cimg/ruby:3.2
     steps:
       - checkout
       - run:

@@ -4,14 +4,14 @@ require_relative 'lib/camerata/version'
 Gem::Specification.new do |spec|
   spec.name          = "camerata"
   spec.version       = Camerata::VERSION
-  spec.authors       = ["Rob Kaufman"]
-  spec.email         = ["rob@notch8.com"]
+  spec.authors       = ["Yale Library IT"]
+  spec.email         = ["martin.lovell@yale.edu"]
 
   spec.summary       = 'Coordinate services for YUL-DC project'
   spec.description   = 'Command line tools and other combined services for the YUL-DC project. Shared Docker and deployment configuration, CI tools, etc live here.'
   spec.homepage      = "https://github.com/yalelibrary/yul-dc-camerata"
   spec.license       = "MIT"
-  spec.required_ruby_version = Gem::Requirement.new(">= 2.3.0")
+  spec.required_ruby_version = Gem::Requirement.new(">= 3.2.0")
 
   spec.metadata["allowed_push_host"] = "TODO: Set to 'http://mygemserver.com'"
 
@@ -33,5 +33,5 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "rspec", "~> 3.0"
   spec.add_runtime_dependency "selenium-webdriver", "~> 3.142"
   spec.add_runtime_dependency "thor", "~> 1.0.1"
-  spec.add_runtime_dependency "activesupport", "~> 6.0.0"
+  spec.add_runtime_dependency "activesupport", "~> 6.1.7.5"
 end
