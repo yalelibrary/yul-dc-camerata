@@ -22,6 +22,7 @@ services:
       S3_DOWNLOAD_BUCKET_NAME: yul-dc-download-test # downloadable originals
       ACCESS_DOWNLOAD_BUCKET: yul-dc-development-samples
       OCR_DOWNLOAD_BUCKET: yul-dc-development-samples
+      OWP_AUTH_TOKEN: ${OWP_AUTH_TOKEN}
       SOLR_TEST_CORE: blacklight-test
     <%- if in_management? -%>
     volumes:
