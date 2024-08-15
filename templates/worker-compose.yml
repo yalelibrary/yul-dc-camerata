@@ -27,6 +27,7 @@ services:
       S3_SOURCE_BUCKET_NAME:
       S3_DOWNLOAD_BUCKET_NAME:
       OCR_DOWNLOAD_BUCKET:
+      OWP_AUTH_TOKEN: ${OWP_AUTH_TOKEN}
       ACCESS_DOWNLOAD_BUCKET:
       SAMPLE_BUCKET: yul-development-samples
       SOLR_CORE: blacklight-core
