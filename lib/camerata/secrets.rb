@@ -15,6 +15,7 @@ module Camerata
         DYNATRACE_TOKEN
         DEPLOY_KEY_ID
         DEPLOY_ACCESS_KEY
+        OWP_AUTH_TOKEN
         YALE_NETWORK_IPS
         SSO_ID
         SSO_HOST
