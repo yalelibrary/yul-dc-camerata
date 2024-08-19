@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 module Camerata
   class Secrets < Camerata::Parameters
+    # rubocop:disable Metrics/MethodLength
     def self.parameters
       %w[
         HONEYBADGER_API_KEY_BLACKLIGHT
@@ -24,6 +25,7 @@ module Camerata
         SSO_ISS
       ]
     end
+    # rubocop:enable Metrics/MethodLength
 
     # rubocop:disable Naming/AccessorMethodName
     def self.get_all(namespace = "")
