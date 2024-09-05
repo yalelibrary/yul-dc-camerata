@@ -19,4 +19,7 @@ RSpec.configure do |config|
   end
   config.shared_context_metadata_behavior = :apply_to_host_groups
   config.filter_run_excluding deployed: true unless ENV['YUL_DC_SERVER']
+  # config.before(:each) do |example|
+  #   server_host = '1.2.3.4' if example.metadata[:off_campus]
+  # end
 end

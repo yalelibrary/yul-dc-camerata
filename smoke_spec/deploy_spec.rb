@@ -44,43 +44,52 @@ ssl_context.verify_mode = OpenSSL::SSL::VERIFY_NONE
 RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
   describe "The blacklight site at #{blacklight_url}" do
     let(:uri) { "#{blacklight_url}/catalog/" }
-    it 'loads the home page for local environments', deployed: false do
-      visit uri
-      expect(page).to have_selector(".blacklight-catalog"), "not blocked by basic auth"
-      expect(page).to have_selector(".blacklight-format"), "a format facet is present"
-      expect(page).to have_selector(".branch-name", text: /Branch:\w+/)
-      click_on 'search'
-      expect(page).to have_selector(".document-position-1"), "an open search has at least 1 item"
-    end
-    it 'loads the home page for deployed environments', deployed: true do
-      visit uri
-      expect(page).to have_selector(".blacklight-catalog"), "not blocked by basic auth"
-      expect(page).to have_selector(".blacklight-language_ssim"), "a language facet is present"
-      expect(page).to have_selector(".branch-name", text: /Branch:\w+/)
-      click_on 'search'
-      expect(page).to have_selector("[aria-label='Go to page 5']"), "an open search has at least 5 pages"
-    end
-    it 'has a valid SSL certificate', deployed: true do
-      # this method is using the HTTP gem instead of capybara because
-      # capybara.rb is configured to accept insecure certs to allow testing
-      # deploys to ephemeral clusters
-      response = HTTP.basic_auth(user: username,
-                                 pass: password).get(uri)
-      expect(response.code).to eq(200)
-    end
-    describe 'has a public item' do
-      let(:uri) { "#{blacklight_url}/catalog/2005512" }
-      it 'that shows Universal Viewer' do
+    # context 'when off campus', off_campus: true do
+    context 'when off campus' do
+      # before do
+      #   Capybara.configure do |config|
+      #     config.server_host = '1.2.3.4'
+      #   end
+        # allow_any_instance_of(ActionDispatch::Request).to receive(:remote_ip) { '1.2.3.4' }
+        # Capybara.server_host = '1.2.3.4'
+      # end
+      it 'loads the home page for local environments', deployed: false do
         visit uri
-        expect(page).to have_selector(".universal-viewer-iframe")
+        expect(page).to have_selector(".blacklight-catalog"), "not blocked by basic auth"
+        expect(page).to have_selector(".blacklight-format"), "a format facet is present"
+        expect(page).to have_selector(".branch-name", text: /Branch:\w+/)
+        click_on 'search'
+        expect(page).to have_selector(".document-position-1"), "an open search has at least 1 item"
       end
-    end
-    describe 'has a yale-only item' do
-      let(:uri) { "#{blacklight_url}/catalog/2000002107188" }
-      xit 'that does not show Universal Viewer' do
-        # test needs updating once we have real yale-only items
+      it 'loads the home page for deployed environments', deployed: true do
         visit uri
-        expect(page).not_to have_selector(".universal-viewer-iframe")
+        expect(page).to have_selector(".blacklight-catalog"), "not blocked by basic auth"
+        expect(page).to have_selector(".blacklight-language_ssim"), "a language facet is present"
+        expect(page).to have_selector(".branch-name", text: /Branch:\w+/)
+        click_on 'search'
+        expect(page).to have_selector("[aria-label='Go to page 5']"), "an open search has at least 5 pages"
+      end
+      it 'has a valid SSL certificate', deployed: true do
+        # this method is using the HTTP gem instead of capybara because
+        # capybara.rb is configured to accept insecure certs to allow testing
+        # deploys to ephemeral clusters
+        response = HTTP.basic_auth(user: username,
+                                  pass: password).get(uri)
+        expect(response.code).to eq(200)
+      end
+      describe 'has a public item' do
+        let(:uri) { "#{blacklight_url}/catalog/2005512" }
+        it 'that shows Universal Viewer' do
+          visit uri
+          expect(page).to have_selector(".universal-viewer-iframe")
+        end
+      end
+      describe 'has a yale-only item' do
+        let(:uri) { "#{blacklight_url}/catalog/2043304" }
+        it 'that does not show Universal Viewer' do
+          visit uri
+          expect(page).not_to have_selector(".universal-viewer-iframe")
+        end
       end
     end
   end
