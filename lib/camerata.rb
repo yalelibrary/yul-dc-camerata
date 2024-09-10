@@ -452,7 +452,7 @@ IIIF_IMAGE_BASE_URL: ${IIIF_IMAGE_BASE_URL:-http://localhost:8182/iiif}
     end
 
     def docker_compose
-      "docker-compose -p yul-dc --project-directory . -f #{compose_path}"
+      "docker compose -p yul-dc --project-directory . -f #{compose_path}"
     end
 
     def prep_answer(answer)
