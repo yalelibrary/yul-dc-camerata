@@ -66,7 +66,7 @@ RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
         # capybara.rb is configured to accept insecure certs to allow testing
         # deploys to ephemeral clusters
         response = HTTP.basic_auth(user: username,
-                                  pass: password).get(uri)
+                                   pass: password).get(uri)
         expect(response.code).to eq(200)
       end
       describe 'has a public item' do
@@ -95,8 +95,8 @@ RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
             expect(page).to have_selector("#manifestLink")
             # Use HTTP rather than visit to avoid getting HTML on our json
             response = HTTP.basic_auth(user: username,
-                                      pass: password)
-                          .get(find_link("manifestLink")[:href],
+                                       pass: password)
+                           .get(find_link("manifestLink")[:href],
                           ssl_context: ssl_context)
             expect(JSON.parse(response.body)['items'].length).to eq(2),
               "sequence contains two canvases"
@@ -106,13 +106,13 @@ RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
           let(:oid) { '16371253' }
           it 'has a sequence with six canvases that links an image to a live URI' do
             response = HTTP.basic_auth(user: username,
-                                      pass: password).get(uri, ssl_context: ssl_context)
+                                       pass: password).get(uri, ssl_context: ssl_context)
             parsed_manifest = JSON.parse(response.body)
             expect(parsed_manifest['items'].length).to eq(6)
             image_uri = parsed_manifest['items'][0]['items'][0]['items'][0]['body']['id']
             response = HTTP.basic_auth(user: username,
-                                      pass: password)
-                          .get(image_uri, ssl_context: ssl_context)
+                                       pass: password)
+                           .get(image_uri, ssl_context: ssl_context)
             expect(response.code).to eq 200
           end
         end
@@ -122,7 +122,7 @@ RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
         let(:oid) { '1030368' } # child oid of parent oid 2005512
         it 'serves an info.json for image 1030368 that has a width/height ratio between 1.5 and 1.7' do
           response = HTTP.basic_auth(user: username,
-                                    pass: password).get(uri, ssl_context: ssl_context)
+                                     pass: password).get(uri, ssl_context: ssl_context)
           expect(response.code).to eq(200)
           parsed = JSON.parse(response.body)
           expect(parsed['width'].to_f / parsed['height'].to_f).to be_between(1.5, 1.7).inclusive
