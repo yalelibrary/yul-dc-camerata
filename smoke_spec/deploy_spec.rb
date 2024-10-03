@@ -44,15 +44,7 @@ ssl_context.verify_mode = OpenSSL::SSL::VERIFY_NONE
 RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
   describe "The blacklight site at #{blacklight_url}" do
     let(:uri) { "#{blacklight_url}/catalog/" }
-    # context 'when off campus', off_campus: true do
-    context 'when off campus' do
-      # before do
-      #   Capybara.configure do |config|
-      #     config.server_host = '1.2.3.4'
-      #   end
-        # allow_any_instance_of(ActionDispatch::Request).to receive(:remote_ip) { '1.2.3.4' }
-        # Capybara.server_host = '1.2.3.4'
-      # end
+    context 'when off campus', off_campus: true do
       it 'loads the home page for local environments', deployed: false do
         visit uri
         expect(page).to have_selector(".blacklight-catalog"), "not blocked by basic auth"
@@ -81,6 +73,7 @@ RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
         let(:uri) { "#{blacklight_url}/catalog/2005512" }
         it 'that shows Universal Viewer' do
           visit uri
+          expect(page).to have_selector(".show-header")
           expect(page).to have_selector(".universal-viewer-iframe")
         end
       end
@@ -88,57 +81,56 @@ RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
         let(:uri) { "#{blacklight_url}/catalog/2043304" }
         it 'that does not show Universal Viewer' do
           visit uri
+          expect(page).to have_selector(".show-header")
           expect(page).not_to have_selector(".universal-viewer-iframe")
+        end
+      end
+      describe "The manifest service at #{iiif_manifest_url}" do
+        let(:blacklight) { "#{blacklight_url}/catalog/#{oid}" }
+        let(:uri) { "#{iiif_manifest_url}/manifests/#{oid}\.json" }
+        describe 'provides a manifest for item 2005512' do
+          let(:oid) { '2005512' }
+          it 'links to the manifest from blacklight' do
+            visit blacklight
+            expect(page).to have_selector("#manifestLink")
+            # Use HTTP rather than visit to avoid getting HTML on our json
+            response = HTTP.basic_auth(user: username,
+                                      pass: password)
+                          .get(find_link("manifestLink")[:href],
+                          ssl_context: ssl_context)
+            expect(JSON.parse(response.body)['items'].length).to eq(2),
+              "sequence contains two canvases"
+          end
+        end
+        describe 'provides a manifest for item 16371253: ', deployed: true do
+          let(:oid) { '16371253' }
+          it 'has a sequence with six canvases that links an image to a live URI' do
+            response = HTTP.basic_auth(user: username,
+                                      pass: password).get(uri, ssl_context: ssl_context)
+            parsed_manifest = JSON.parse(response.body)
+            expect(parsed_manifest['items'].length).to eq(6)
+            image_uri = parsed_manifest['items'][0]['items'][0]['items'][0]['body']['id']
+            response = HTTP.basic_auth(user: username,
+                                      pass: password)
+                          .get(image_uri, ssl_context: ssl_context)
+            expect(response.code).to eq 200
+          end
+        end
+      end
+      describe "The iiif service at #{iiif_image_url}" do
+        let(:uri) { "#{iiif_image_url}/iiif/2/#{oid}/info.json" }
+        let(:oid) { '1030368' } # child oid of parent oid 2005512
+        it 'serves an info.json for image 1030368 that has a width/height ratio between 1.5 and 1.7' do
+          response = HTTP.basic_auth(user: username,
+                                    pass: password).get(uri, ssl_context: ssl_context)
+          expect(response.code).to eq(200)
+          parsed = JSON.parse(response.body)
+          expect(parsed['width'].to_f / parsed['height'].to_f).to be_between(1.5, 1.7).inclusive
         end
       end
     end
   end
-
-  describe "The manifest service at #{iiif_manifest_url}" do
-    let(:blacklight) { "#{blacklight_url}/catalog/#{oid}" }
-    let(:uri) { "#{iiif_manifest_url}/manifests/#{oid}\.json" }
-    describe 'provides a manifest for item 2005512' do
-      let(:oid) { '2005512' }
-      it 'links to the manifest from blacklight' do
-        visit blacklight
-        expect(page).to have_selector("#manifestLink")
-        # Use HTTP rather than visit to avoid getting HTML on our json
-        response = HTTP.basic_auth(user: username,
-                                   pass: password)
-                       .get(find_link("manifestLink")[:href],
-                       ssl_context: ssl_context)
-        expect(JSON.parse(response.body)['items'].length).to eq(2),
-          "sequence contains two canvases"
-      end
-    end
-    describe 'provides a manifest for item 16371253: ', deployed: true do
-      let(:oid) { '16371253' }
-      it 'has a sequence with six canvases that links an image to a live URI' do
-        response = HTTP.basic_auth(user: username,
-                                   pass: password).get(uri, ssl_context: ssl_context)
-        parsed_manifest = JSON.parse(response.body)
-        expect(parsed_manifest['items'].length).to eq(6)
-        image_uri = parsed_manifest['items'][0]['items'][0]['items'][0]['body']['id']
-        response = HTTP.basic_auth(user: username,
-                                   pass: password)
-                       .get(image_uri, ssl_context: ssl_context)
-        expect(response.code).to eq 200
-      end
-    end
-  end
-
-  describe "The iiif service at #{iiif_image_url}" do
-    let(:uri) { "#{iiif_image_url}/iiif/2/#{oid}/info.json" }
-    let(:oid) { '1030368' }
-    it 'serves an info.json for image 1030368 that has a width/height ratio between 1.5 and 1.7' do
-      response = HTTP.basic_auth(user: username,
-                                 pass: password).get(uri, ssl_context: ssl_context)
-      expect(response.code).to eq(200)
-      parsed = JSON.parse(response.body)
-      expect(parsed['width'].to_f / parsed['height'].to_f).to be_between(1.5, 1.7).inclusive
-    end
-  end
-  describe "The management index page at #{management_url}" do
+  describe "The management site at #{management_url}" do
     # This information is now protected behind CAS authentication.
     # Removing this test for now. We will restore it when we have a CAS account.
     xit "has version numbers in the table" do
