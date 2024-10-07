@@ -42,24 +42,31 @@ ssl_context = OpenSSL::SSL::SSLContext.new
 ssl_context.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
 RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
+  let(:public_parent_oid) { '2005512' }
+  let(:public_child_oid) { '1030368' }
+  let(:yco_parent_oid) { '2043304' }
+  let(:yco_child_oid) { '1191792' }
+  let(:deployed_public_parent_oid) { '16371253' }
+  let(:deployed_public_child_oid) { '16394803' }
+
   describe "The blacklight site at #{blacklight_url}" do
     let(:uri) { "#{blacklight_url}/catalog/" }
     context 'when off campus', off_campus: true do
       it 'loads the home page for local environments', deployed: false do
         visit uri
-        expect(page).to have_selector(".blacklight-catalog"), "not blocked by basic auth"
-        expect(page).to have_selector(".blacklight-format"), "a format facet is present"
-        expect(page).to have_selector(".branch-name", text: /Branch:\w+/)
+        expect(page).to have_selector('.blacklight-catalog'), 'not blocked by basic auth'
+        expect(page).to have_selector('.blacklight-format'), 'a format facet is present'
+        expect(page).to have_selector('.branch-name', text: /Branch:\w+/)
         click_on 'search'
-        expect(page).to have_selector(".document-position-1"), "an open search has at least 1 item"
+        expect(page).to have_selector('.document-position-1'), 'an open search has at least 1 item'
       end
       it 'loads the home page for deployed environments', deployed: true do
         visit uri
-        expect(page).to have_selector(".blacklight-catalog"), "not blocked by basic auth"
-        expect(page).to have_selector(".blacklight-language_ssim"), "a language facet is present"
-        expect(page).to have_selector(".branch-name", text: /Branch:\w+/)
+        expect(page).to have_selector('.blacklight-catalog'), 'not blocked by basic auth'
+        expect(page).to have_selector('.blacklight-language_ssim'), 'a language facet is present'
+        expect(page).to have_selector('.branch-name', text: /Branch:\w+/)
         click_on 'search'
-        expect(page).to have_selector("[aria-label='Go to page 5']"), "an open search has at least 5 pages"
+        expect(page).to have_selector("[aria-label='Go to page 5']"), 'an open search has at least 5 pages'
       end
       it 'has a valid SSL certificate', deployed: true do
         # this method is using the HTTP gem instead of capybara because
@@ -70,45 +77,48 @@ RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
         expect(response.code).to eq(200)
       end
       describe 'has a public item' do
-        let(:uri) { "#{blacklight_url}/catalog/2005512" }
+        let(:uri) { "#{blacklight_url}/catalog/#{public_parent_oid}" }
         it 'that shows Universal Viewer' do
           visit uri
-          expect(page).to have_selector(".show-header")
-          expect(page).to have_selector(".universal-viewer-iframe")
+          expect(page).to have_selector('.show-header')
+          expect(page).to have_selector('.universal-viewer-iframe')
         end
       end
       describe 'has a yale-only item' do
-        let(:uri) { "#{blacklight_url}/catalog/2043304" }
+        let(:uri) { "#{blacklight_url}/catalog/#{yco_parent_oid}" }
         it 'that does not show Universal Viewer' do
           visit uri
-          expect(page).to have_selector(".show-header")
-          expect(page).not_to have_selector(".universal-viewer-iframe")
+          expect(page).to have_selector('.show-header')
+          expect(page).not_to have_selector('.universal-viewer-iframe')
         end
       end
       describe "The manifest service at #{iiif_manifest_url}" do
         let(:blacklight) { "#{blacklight_url}/catalog/#{oid}" }
         let(:uri) { "#{iiif_manifest_url}/manifests/#{oid}\.json" }
-        describe 'provides a manifest for item 2005512' do
-          let(:oid) { '2005512' }
-          it 'links to the manifest from blacklight' do
+        # before do
+        #   visit blacklight
+        # end
+        describe 'provides a manifest in any environment' do
+          let(:oid) { public_parent_oid }
+          it "for Public item and links to the manifest" do
             visit blacklight
-            expect(page).to have_selector("#manifestLink")
+            expect(page).to have_selector('#manifestLink')
             # Use HTTP rather than visit to avoid getting HTML on our json
             response = HTTP.basic_auth(user: username,
                                        pass: password)
-                           .get(find_link("manifestLink")[:href],
+                           .get(find_link('manifestLink')[:href],
                           ssl_context: ssl_context)
             expect(JSON.parse(response.body)['items'].length).to eq(2),
-              "sequence contains two canvases"
+              'sequence contains two canvases'
           end
         end
-        describe 'provides a manifest for item 16371253: ', deployed: true do
-          let(:oid) { '16371253' }
-          it 'has a sequence with six canvases that links an image to a live URI' do
+        describe 'provides a manifest in deployed environment', deployed: true do
+          let(:oid) { deployed_public_parent_oid }
+          it "for Public item and links to the manifest" do
             response = HTTP.basic_auth(user: username,
                                        pass: password).get(uri, ssl_context: ssl_context)
             parsed_manifest = JSON.parse(response.body)
-            expect(parsed_manifest['items'].length).to eq(6)
+            expect(parsed_manifest['items'].length).to eq(6), 'sequence contains six canvases'
             image_uri = parsed_manifest['items'][0]['items'][0]['items'][0]['body']['id']
             response = HTTP.basic_auth(user: username,
                                        pass: password)
@@ -116,11 +126,26 @@ RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
             expect(response.code).to eq 200
           end
         end
+        describe 'does not provide a manifest in any environment' do
+          let(:oid) { yco_parent_oid }
+          it "for YCO item and does not link a manifest" do
+            response = HTTP.basic_auth(user: username,
+                                       pass: password).get(uri, ssl_context: ssl_context)
+            parsed_manifest = JSON.parse(response.body)
+            byebug
+            expect(parsed_manifest['items'].length).to eq(6), 'sequence contains six canvases'
+            image_uri = parsed_manifest['items'][0]['items'][0]['items'][0]['body']['id']
+            response = HTTP.basic_auth(user: username,
+                                       pass: password)
+                           .get(image_uri, ssl_context: ssl_context)
+            expect(response.code).to eq 200
+          end
+        end        
       end
       describe "The iiif service at #{iiif_image_url}" do
         let(:uri) { "#{iiif_image_url}/iiif/2/#{oid}/info.json" }
-        let(:oid) { '1030368' } # child oid of parent oid 2005512
-        it 'serves an info.json for image 1030368 that has a width/height ratio between 1.5 and 1.7' do
+        let(:oid) { public_child_oid } 
+        it "serves an info.json for Public image that has a width/height ratio between 1.5 and 1.7" do
           response = HTTP.basic_auth(user: username,
                                      pass: password).get(uri, ssl_context: ssl_context)
           expect(response.code).to eq(200)
@@ -133,19 +158,49 @@ RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
   describe "The management site at #{management_url}" do
     # This information is now protected behind CAS authentication.
     # Removing this test for now. We will restore it when we have a CAS account.
-    xit "has version numbers in the table" do
+    xit 'has version numbers in the table' do
       visit management_url
-      expect(page).to have_selector("#management_version", text: /v\d+.\d+.\d+/)
-      expect(page).to have_selector("#postgres_version", text: /v\d+.\d+.\d+/)
-      expect(page).to have_selector("#blacklight_version", text: /v\d+.\d+.\d+/)
-      expect(page).to have_selector("#solr_version", text: /v\d+.\d+.\d+/)
-      expect(page).to have_selector("#iiif_image_version", text: /v\d+.\d+.\d+/)
-      expect(page).to have_selector("#iiif_manifest_version", text: /v\d+.\d+.\d+/)
-      expect(page).to have_selector("#camerata_version", text: /v\d+.\d+.\d+/)
+      expect(page).to have_selector('#management_version', text: /v\d+.\d+.\d+/)
+      expect(page).to have_selector('#postgres_version', text: /v\d+.\d+.\d+/)
+      expect(page).to have_selector('#blacklight_version', text: /v\d+.\d+.\d+/)
+      expect(page).to have_selector('#solr_version', text: /v\d+.\d+.\d+/)
+      expect(page).to have_selector('#iiif_image_version', text: /v\d+.\d+.\d+/)
+      expect(page).to have_selector('#iiif_manifest_version', text: /v\d+.\d+.\d+/)
+      expect(page).to have_selector('#camerata_version', text: /v\d+.\d+.\d+/)
     end
-    it "prompts the user to sign in" do
+    it 'prompts the user to sign in' do
       visit management_url
       expect(page).to have_button('You must sign in')
+    end
+    describe '/api' do
+      context 'when off campus', off_campus: true do
+        it 'will not restrict access to Public' do
+          visit "#{management_url}/api/download/stage/child/#{public_child_oid}"
+          expect(page.body.include?('staged for download')).to eq(true), '/api/download/stage/child/:child_oid'
+        end
+        it 'will restrict access to YCO' do
+          visit "#{management_url}/api/download/stage/child/#{yco_child_oid}"
+          expect(page.body.include?('error')).to eq(true), '/api/download/stage/child/:child_oid'
+        end
+        xit 'will restrict access to OWP' do
+          visit "#{management_url}/api/download/stage/child/9999999"
+          expect(page.body.include?('error')).to eq(true), '/api/download/stage/child/:child_oid'
+          uri = "#{management_url}/api/permission_requests"
+          request = JSON.parse({})
+          response = HTTP.post(uri, ssl_context: ssl_context, params: JSON.pretty_generate(request))
+          expect(response.code).to eq(403), '/api/permission_requests'
+          visit "#{management_url}/api/permission_sets/444444-8888-2849239023"
+          expect(page.body.include?('error')).to eq(true), '/api/permission_sets/:sub'
+          uri = "#{management_url}/agreement_term"
+          request = JSON.parse({})
+          response = HTTP.post(uri, ssl_context: ssl_context, params: JSON.pretty_generate(request))
+          expect(response.code).to eq(403), '/api/permission_requests'
+        end
+        it 'will restrict access to' do
+          visit "#{management_url}/api/user/"
+          expect(page.body.include?('error')).to eq(true), '/api/user'
+        end
+      end
     end
   end
 end
