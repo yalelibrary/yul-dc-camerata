@@ -48,7 +48,7 @@ RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
   let(:yco_child_oid) { '1191792' }
   let(:owp_parent_oid) { '20433333304' }
   let(:owp_child_oid) { '1191333333792' }
-  # TODO - set up full text objects to be present in local, test, uat, and prod
+  # TODO: - set up full text objects to be present in local, test, uat, and prod
   let(:public_fulltext_parent_oid) { '2005512' }
   let(:public_fulltext_child_oid) { '1030368' }
   let(:yco_fulltext_parent_oid) { '2043304' }
@@ -119,7 +119,7 @@ RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
             # Use HTTP rather than visit to avoid getting HTML on our json
             response = HTTP.basic_auth(user: username, pass: password)
                            .get(uri, ssl_context: ssl_context)
-            expect(JSON.parse(response.body)).to eq({'error' => 'unauthorized'}),
+            expect(JSON.parse(response.body)).to eq({ 'error' => 'unauthorized' }),
               'no manifest or manifest link'
           end
           xit 'except for OWP items and will not have link' do
@@ -129,7 +129,7 @@ RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
             # Use HTTP rather than visit to avoid getting HTML on our json
             response = HTTP.basic_auth(user: username, pass: password)
                            .get(uri, ssl_context: ssl_context)
-            expect(JSON.parse(response.body)).to eq({'error' => 'unauthorized'}),
+            expect(JSON.parse(response.body)).to eq({ 'error' => 'unauthorized' }),
               'no manifest or manifest link'
           end
         end
@@ -154,7 +154,7 @@ RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
                                        pass: password)
                            .get(uri,
                           ssl_context: ssl_context)
-            expect(JSON.parse(response.body)).to eq({'error' => 'unauthorized'}),
+            expect(JSON.parse(response.body)).to eq({ 'error' => 'unauthorized' }),
               'no manifest'
           end
           xit 'except for OWP items and will not have link' do
@@ -165,7 +165,7 @@ RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
                                        pass: password)
                            .get(uri,
                           ssl_context: ssl_context)
-            expect(JSON.parse(response.body)).to eq({'error' => 'unauthorized'}),
+            expect(JSON.parse(response.body)).to eq({ 'error' => 'unauthorized' }),
               'no manifest'
           end
         end
@@ -175,7 +175,7 @@ RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
           it 'serves an info.json for Public image that has a width/height ratio between 1.5 and 1.7' do
             uri = "#{iiif_image_url}/iiif/2/#{public_child_oid}/info.json"
             response = HTTP.basic_auth(user: username,
-                                      pass: password).get(uri, ssl_context: ssl_context)
+                                       pass: password).get(uri, ssl_context: ssl_context)
             expect(response.code).to eq(200)
             parsed = JSON.parse(response.body)
             expect(parsed['width'].to_f / parsed['height'].to_f).to be_between(1.5, 1.7).inclusive
@@ -185,7 +185,7 @@ RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
           it 'serves a jpg for Public image' do
             uri = "#{iiif_image_url}/iiif/2/#{public_child_oid}/full/!200,200/0/default.jpg"
             response = HTTP.basic_auth(user: username,
-                                      pass: password).get(uri, ssl_context: ssl_context)
+                                       pass: password).get(uri, ssl_context: ssl_context)
             expect(response.code).to eq(200)
             expect(response.mime_type).to eq 'image/jpeg'
             expect(response['Content-Disposition']).to eq("inline; filename=\"1030368.jpg\"")
@@ -193,42 +193,42 @@ RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
           it 'does not serve a jpg for YCO image' do
             uri = "#{iiif_image_url}/iiif/2/#{yco_child_oid}/full/!200,200/0/default.jpg"
             response = HTTP.basic_auth(user: username,
-                                      pass: password).get(uri, ssl_context: ssl_context)
+                                       pass: password).get(uri, ssl_context: ssl_context)
             expect(response.code).to eq(404)
             expect(response.mime_type).to eq 'text/plain'
           end
           xit 'does not serve a jpg for OWP image' do
             uri = "#{iiif_image_url}/iiif/2/#{owp_child_oid}/full/!200,200/0/default.jpg"
             response = HTTP.basic_auth(user: username,
-                      pass: password).get(uri, ssl_context: ssl_context)
+                                       pass: password).get(uri, ssl_context: ssl_context)
             expect(response.code).to eq(404)
             expect(response.mime_type).to eq 'text/plain'
-          end          
+          end
         end
       end
       describe 'annotations' do
-        # TODO - mark back as functional when fulltext objects are set up
+        # TODO: - mark back as functional when fulltext objects are set up
         xit 'serves an annotation for Public image' do
           uri = "#{blacklight_url}/annotation/oid/#{public_fulltext_parent_oid}/canvas/#{public_fulltext_child_oid}/fulltext?oid=#{public_fulltext_parent_oid}&child_oid=#{public_fulltext_child_oid}"
           response = HTTP.basic_auth(user: username,
-                                    pass: password).get(uri, ssl_context: ssl_context)
+                                     pass: password).get(uri, ssl_context: ssl_context)
           expect(response.code).to eq(200)
           expect(response.body).to eq 'page'
         end
         xit 'does not serve an annotation for YCO image' do
           uri = "#{blacklight_url}/annotation/oid/#{yco_fulltext_parent_oid}/canvas/#{yco_fulltext_child_oid}/fulltext?oid=#{yco_fulltext_parent_oid}&child_oid=#{yco_fulltext_child_oid}"
           response = HTTP.basic_auth(user: username,
-                                    pass: password).get(uri, ssl_context: ssl_context)
+                                     pass: password).get(uri, ssl_context: ssl_context)
           expect(response.code).to eq(401), 'has unauthorized response'
-          expect(JSON.parse(response.body)).to eq({'error' => 'unauthorized'})
+          expect(JSON.parse(response.body)).to eq({ 'error' => 'unauthorized' })
         end
         xit 'does not serve an annotation for OWP image' do
           uri = "#{blacklight_url}/annotation/oid/#{owp_fulltext_parent_oid}/canvas/#{owp_fulltext_child_oid}/fulltext?oid=#{owp_fulltext_parent_oid}&child_oid=#{owp_fulltext_child_oid}"
           response = HTTP.basic_auth(user: username,
-                    pass: password).get(uri, ssl_context: ssl_context)
+                                     pass: password).get(uri, ssl_context: ssl_context)
           expect(response.code).to eq(401), 'has unauthorized response'
-          expect(JSON.parse(response.body)).to eq({'error' => 'unauthorized'})
-        end          
+          expect(JSON.parse(response.body)).to eq({ 'error' => 'unauthorized' })
+        end
       end
       # needs deployed because of connection to management
       describe 'tiff download', deployed: true do
@@ -236,10 +236,10 @@ RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
           action_uri = "#{blacklight_url}/download/tiff/#{public_child_oid}/staged"
           retrieval_uri = "#{blacklight_url}/download/tiff/#{public_child_oid}"
           response = HTTP.basic_auth(user: username,
-                    pass: password).get(action_uri, ssl_context: ssl_context)
+                                     pass: password).get(action_uri, ssl_context: ssl_context)
           expect(response.code).to eq(200), 'has success response'
           response = HTTP.basic_auth(user: username,
-                    pass: password).get(retrieval_uri, ssl_context: ssl_context)
+                                     pass: password).get(retrieval_uri, ssl_context: ssl_context)
           expect(response.mime_type).to eq 'image/jpeg'
           expect(response['Content-Disposition']).to eq("inline; filename=\"1030368.jpg\""), 'serves a tiff'
         end
@@ -247,39 +247,39 @@ RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
           action_uri = "#{blacklight_url}/download/tiff/#{yco_child_oid}/staged"
           retrieval_uri = "#{blacklight_url}/download/tiff/#{yco_child_oid}"
           response = HTTP.basic_auth(user: username,
-                    pass: password).get(action_uri, ssl_context: ssl_context)
+                                     pass: password).get(action_uri, ssl_context: ssl_context)
           expect(response.code).to eq(401), 'has unauthorized response'
           response = HTTP.basic_auth(user: username,
-                    pass: password).get(retrieval_uri, ssl_context: ssl_context)
+                                     pass: password).get(retrieval_uri, ssl_context: ssl_context)
           expect(response.mime_type).to eq 'text/plain', 'does not serve a tiff'
         end
         xit 'for OWP image' do
           action_uri = "#{blacklight_url}/download/tiff/#{owp_child_oid}/staged"
           retrieval_uri = "#{blacklight_url}/download/tiff/#{owp_child_oid}"
           response = HTTP.basic_auth(user: username,
-                    pass: password).get(action_uri, ssl_context: ssl_context)
+                                     pass: password).get(action_uri, ssl_context: ssl_context)
           expect(response.code).to eq(401), 'has unauthorized response'
           response = HTTP.basic_auth(user: username,
-                    pass: password).get(retrieval_uri, ssl_context: ssl_context)
+                                     pass: password).get(retrieval_uri, ssl_context: ssl_context)
           expect(response.mime_type).to eq 'text/plain', 'does not serve a tiff'
         end
       end
       describe 'pdfs' do
         it 'serves a pdf for Public image' do
           response = HTTP.basic_auth(user: username,
-                    pass: password).get("#{blacklight_url}/pdfs/#{public_parent_oid}.pdf", ssl_context: ssl_context)
+                                     pass: password).get("#{blacklight_url}/pdfs/#{public_parent_oid}.pdf", ssl_context: ssl_context)
           expect(response.code).to eq(200)
           expect(response.mime_type).to eq 'application/pdf'
         end
         it 'does not serve a pdf for YCO image' do
           response = HTTP.basic_auth(user: username,
-                    pass: password).get("#{blacklight_url}/pdfs/#{yco_parent_oid}.pdf", ssl_context: ssl_context)
+                                     pass: password).get("#{blacklight_url}/pdfs/#{yco_parent_oid}.pdf", ssl_context: ssl_context)
           expect(response.code).to eq(401), 'has unauthorized response'
           expect(response.mime_type).to eq 'application/json'
         end
         xit 'does not serve a pdf for OWP image' do
           response = HTTP.basic_auth(user: username,
-                    pass: password).get("#{blacklight_url}/pdfs/#{owp_parent_oid}.pdf", ssl_context: ssl_context)
+                                     pass: password).get("#{blacklight_url}/pdfs/#{owp_parent_oid}.pdf", ssl_context: ssl_context)
           expect(response.code).to eq(401), 'has unauthorized response'
           expect(response.mime_type).to eq 'application/json'
         end
@@ -290,17 +290,17 @@ RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
         let(:confirmation_uri) { "#{blacklight_url}/catalog/#{owp_parent_oid}/request_confirmation" }
         xit 'will not be accessible' do
           response = HTTP.basic_auth(user: username,
-                    pass: password).get(request_uri, ssl_context: ssl_context)
+                                     pass: password).get(request_uri, ssl_context: ssl_context)
           expect(response.code).to eq(401), 'has unauthorized response'
-          expect(JSON.parse(response.body)).to eq({'error' => 'unauthorized'}), 'request form'
+          expect(JSON.parse(response.body)).to eq({ 'error' => 'unauthorized' }), 'request form'
           response = HTTP.basic_auth(user: username,
-                    pass: password).get(terms_uri, ssl_context: ssl_context)
+                                     pass: password).get(terms_uri, ssl_context: ssl_context)
           expect(response.code).to eq(401), 'has unauthorized response'
-          expect(JSON.parse(response.body)).to eq({'error' => 'unauthorized'}), 'terms and conditions'
+          expect(JSON.parse(response.body)).to eq({ 'error' => 'unauthorized' }), 'terms and conditions'
           response = HTTP.basic_auth(user: username,
-                    pass: password).get(confirmation_uri, ssl_context: ssl_context)
+                                     pass: password).get(confirmation_uri, ssl_context: ssl_context)
           expect(response.code).to eq(401), 'has unauthorized response'
-          expect(JSON.parse(response.body)).to eq({'error' => 'unauthorized'}), 'request confirmation'
+          expect(JSON.parse(response.body)).to eq({ 'error' => 'unauthorized' }), 'request confirmation'
         end
       end
     end
