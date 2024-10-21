@@ -109,7 +109,7 @@ jobs:
       - run:
           name: smoke
           command: |
-            bundle exec cam smoke --tag ~deployed:true
+            YUL_DC_SERVER=collections-deploy.curationexperts.com bundle exec cam smoke --tag ~deployed:false
 orbs:
   docker: circleci/docker@1.0.1
 version: 2.1
