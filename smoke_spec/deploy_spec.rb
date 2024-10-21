@@ -46,17 +46,45 @@ RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
   let(:public_child_oid) { '1030368' }
   let(:yco_parent_oid) { '2043304' }
   let(:yco_child_oid) { '1191792' }
-  let(:owp_parent_oid) { '20433333304' }
-  let(:owp_child_oid) { '1191333333792' }
-  # TODO: - set up full text objects to be present in local, test, uat, and prod
-  let(:public_fulltext_parent_oid) { '2005512' }
-  let(:public_fulltext_child_oid) { '1030368' }
-  let(:yco_fulltext_parent_oid) { '2043304' }
-  let(:yco_fulltext_child_oid) { '1191792' }
   let(:deployed_public_parent_oid) { '16371253' }
   let(:deployed_public_child_oid) { '16394803' }
   let(:deployed_yco_parent_oid) { '2007967' }
   let(:deployed_yco_child_oid) { '1041543' }
+
+  case ENV['CLUSTER_NAME']
+  when 'yul-dc-prod'
+    public_fulltext_parent_oid = '12479735'
+    public_fulltext_child_oid = '14997136'
+    # yco_fulltext_parent_oid = '2043304'
+    # yco_fulltext_child_oid = '1191792'
+  when 'yul-dc-uat'
+    public_fulltext_parent_oid = '900000694'
+    public_fulltext_child_oid = '900000696'
+    yco_fulltext_parent_oid = '900048109'
+    yco_fulltext_child_oid = '900048120'
+  when 'yul-dc-test'
+    public_fulltext_parent_oid = '800047436'
+    public_fulltext_child_oid = '800047438'
+    yco_fulltext_parent_oid = '11492783'
+    yco_fulltext_child_oid = '11494521'
+  when 'yul-dc-demo'
+    public_fulltext_parent_oid = '2005512'
+    public_fulltext_child_oid = '1030368'
+    # yco_fulltext_parent_oid = '2043304'
+    # yco_fulltext_child_oid = '1191792'
+  else
+    public_fulltext_parent_oid = '800047436'
+    public_fulltext_child_oid = '800047438'
+    yco_fulltext_parent_oid = '11492783'
+    yco_fulltext_child_oid = '11494521'
+  end
+  # enable OWP tests and update ids when OWP objects are present in production
+  # let(:owp_parent_oid) { '20433333304' }
+  # let(:owp_child_oid) { '1191333333792' }
+  # let(:deployed_owp_parent_oid) { '200788888967' }
+  # let(:deployed_owp_child_oid) { '1041544533333' }
+  # let(:owp_fulltext_parent_oid) { '204366666304' }
+  # let(:owp_fulltext_child_oid) { '11917989889882' }
 
   describe "The blacklight site at #{blacklight_url}" do
     let(:uri) { "#{blacklight_url}/catalog/" }
@@ -206,21 +234,23 @@ RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
           end
         end
       end
-      describe 'annotations' do
-        # TODO: - mark back as functional when fulltext objects are set up
-        xit 'serves an annotation for Public image' do
+      describe 'annotations', deployed: true do
+        it 'serves an annotation for Public image' do
           uri = "#{blacklight_url}/annotation/oid/#{public_fulltext_parent_oid}/canvas/#{public_fulltext_child_oid}/fulltext?oid=#{public_fulltext_parent_oid}&child_oid=#{public_fulltext_child_oid}"
           response = HTTP.basic_auth(user: username,
                                      pass: password).get(uri, ssl_context: ssl_context)
           expect(response.code).to eq(200)
           expect(response.body).to eq 'page'
         end
-        xit 'does not serve an annotation for YCO image' do
-          uri = "#{blacklight_url}/annotation/oid/#{yco_fulltext_parent_oid}/canvas/#{yco_fulltext_child_oid}/fulltext?oid=#{yco_fulltext_parent_oid}&child_oid=#{yco_fulltext_child_oid}"
-          response = HTTP.basic_auth(user: username,
-                                     pass: password).get(uri, ssl_context: ssl_context)
-          expect(response.code).to eq(401), 'has unauthorized response'
-          expect(JSON.parse(response.body)).to eq({ 'error' => 'unauthorized' })
+        # no yco fulltext in prod or demo
+        if ENV['CLUSTER_NAME'] != 'yul-dc-prod' || ENV['CLUSTER_NAME'] != 'yul-dc-demo'
+          it 'does not serve an annotation for YCO image' do
+            uri = "#{blacklight_url}/annotation/oid/#{yco_fulltext_parent_oid}/canvas/#{yco_fulltext_child_oid}/fulltext?oid=#{yco_fulltext_parent_oid}&child_oid=#{yco_fulltext_child_oid}"
+            response = HTTP.basic_auth(user: username,
+                                       pass: password).get(uri, ssl_context: ssl_context)
+            expect(response.code).to eq(401), 'has unauthorized response'
+            expect(JSON.parse(response.body)).to eq({ 'error' => 'unauthorized' })
+          end
         end
         xit 'does not serve an annotation for OWP image' do
           uri = "#{blacklight_url}/annotation/oid/#{owp_fulltext_parent_oid}/canvas/#{owp_fulltext_child_oid}/fulltext?oid=#{owp_fulltext_parent_oid}&child_oid=#{owp_fulltext_child_oid}"
@@ -334,7 +364,6 @@ RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
           # currently no user permission checks on this action - this will need updated once the permission checks are updated
           # expect(page.body.include?('error')).to eq(true), '/api/download/stage/child/:child_oid'
         end
-        # enable test and update ids when OWP objects are present in production
         xit 'will restrict access to OWP' do
           visit "#{management_url}/api/download/stage/child/9999999"
           expect(page.body.include?('error')).to eq(true), '/api/download/stage/child/:child_oid'
