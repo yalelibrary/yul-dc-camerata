@@ -62,6 +62,13 @@ pipeline {
                         """
                     }
                 }
+                stage('Smoke Tests') {
+                    steps {
+                        sh """
+                            cam smoke --tag ~deployed:true
+                        """
+                    }
+                }
                 stage('Deployment') {
                     environment {
                         VPC_ID="vpc-57bee630"
