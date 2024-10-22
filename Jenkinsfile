@@ -142,24 +142,11 @@ pipeline {
         failure {
             script {
                 echo 'revert deployment...'
-                DEPLOY_VERSION = "${previousBuild.buildVariables["DEPLOY_VERSION"]}"        
+                DEPLOY_VERSION = "${currentBuild.previousBuild.buildVariables["DEPLOY_VERSION"]}"        
                 sh "cam deploy-${APP} ${CLUSTER}"
                 if ( APP == 'mgmt' ) {
                     sh "cam deploy-worker ${CLUSTER}"
                     sh "WORKER_COUNT=1 cam deploy-intensive-worker ${CLUSTER}"
-                }
-                echo 'revert ssm...'
-                if ( BLACKLIGHT_VERSION != '' ) {
-                    sh "cam push_version blacklight ${previousBuild.buildVariables["BLACKLIGHT_VERSION"]}"
-                }
-                if ( IIIF_IMAGE_VERSION != '' ) {
-                    sh "cam push_version iiif_image ${previousBuild.buildVariables["IIIF_IMAGE_VERSION"]}"
-                }
-                if ( IIIF_MANIFEST_VERSION != '' ) {
-                    sh "cam push_version iiif_manifest ${previousBuild.buildVariables["IIIF_MANIFEST_VERSION"]}"
-                }
-                if ( MANAGEMENT_VERSION != '' ) {
-                    sh "cam push_version management ${previousBuild.buildVariables["MANAGEMENT_VERSION"]}"
                 }
             }
         }
