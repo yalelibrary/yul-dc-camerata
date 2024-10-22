@@ -20,22 +20,11 @@ puts 'Current Blacklight basic auth settings: ' \
      "\n username: #{username}" \
      "\n password: #{password}"
 
-# Checked for a deployed cluster host in the environment
-if ENV['YUL_DC_SERVER']
-  blacklight_url = "https://#{username}:#{password}@#{ENV['YUL_DC_SERVER']}"
-  iiif_manifest_url = blacklight_url
-  _pdf_url = blacklight_url
-  iiif_image_url = blacklight_url
-  management_url = "https://#{ENV['YUL_DC_SERVER']}/management"
-else
-  # Checks for cluster urls in ENV
-  # Sets to local development defaults if none are found
-  blacklight_url = ENV['BLACKLIGHT_URL'] || "http://#{username}:#{password}@localhost:3000"
-  iiif_manifest_url = ENV['IIIF_MANIFEST_URL'] || 'http://localhost:80'
-  _pdf_url = ENV['PDF_URL'] || 'http://localhost:80'
-  iiif_image_url = ENV['IIIF_IMAGE_URL'] || 'http://localhost:8182'
-  management_url = ENV['MANAGEMENT_URL'] || 'http://localhost:3001/management'
-end
+blacklight_url = "https://#{username}:#{password}@#{ENV['BLACKLIGHT_BASE_URL']}"
+iiif_manifest_url = blacklight_url
+_pdf_url = blacklight_url
+iiif_image_url = blacklight_url
+management_url = "https://#{ENV['BLACKLIGHT_BASE_URL']}/management"
 
 # use this SSLContext to use https URLs without verifying certificates
 ssl_context = OpenSSL::SSL::SSLContext.new
