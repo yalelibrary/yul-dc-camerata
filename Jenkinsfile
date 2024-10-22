@@ -142,7 +142,7 @@ pipeline {
         failure {
             script {
                 echo 'revert deployment...'
-                DEPLOY_VERSION = "${currentBuild.previousBuild.buildVariables["DEPLOY_VERSION"]}"        
+                DEPLOY_VERSION = "${currentBuild.previousSuccessfulBuild.buildVariables["DEPLOY_VERSION"]}"        
                 sh "cam deploy-${APP} ${CLUSTER}"
                 if ( APP == 'mgmt' ) {
                     sh "cam deploy-worker ${CLUSTER}"
