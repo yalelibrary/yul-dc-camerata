@@ -110,7 +110,10 @@ pipeline {
                 }
                 stage('Smoke Tests') {
                     steps {
-                        sh "cam smoke --tag ~deployed:true"
+                        sh """
+                            export CLUSTER_NAME=${CLUSTER}
+                            cam smoke --tag ~deployed:true
+                        """
                     }
                 }
                 stage('Update SSM') {
