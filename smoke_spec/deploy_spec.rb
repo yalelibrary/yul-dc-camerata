@@ -38,7 +38,7 @@ _pdf_url = blacklight_url
 iiif_image_url = blacklight_url
 management_url = "https://#{blacklight_url}/management"
 
-if blacklight_url.includes?('3000')
+if blacklight_url.include?('3000')
   iiif_manifest_url = ENV['IIIF_MANIFEST_URL'] || 'http://localhost:80'
   _pdf_url = ENV['PDF_URL'] || 'http://localhost:80'
   iiif_image_url = ENV['IIIF_IMAGE_URL'] || 'http://localhost:8182'
