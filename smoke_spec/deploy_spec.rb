@@ -20,11 +20,30 @@ puts 'Current Blacklight basic auth settings: ' \
      "\n username: #{username}" \
      "\n password: #{password}"
 
-blacklight_url = "https://#{username}:#{password}@#{ENV['BLACKLIGHT_BASE_URL']}"
+blacklight_url = case ENV['CLUSTER_NAME']
+                 when 'yul-dc-prod'
+                   "https://#{username}:#{password}@collections.yale.library.edu"
+                 when 'yul-dc-uat'
+                   "https://#{username}:#{password}@collections-uat.yale.library.edu"
+                 when 'yul-dc-test'
+                   "https://#{username}:#{password}@collections-test.yale.library.edu"
+                 when 'yul-dc-demo'
+                   "https://#{username}:#{password}@collections-demo.yale.library.edu"
+                 else
+                   "https://#{username}:#{password}@localhost:3000"
+                 end
+
 iiif_manifest_url = blacklight_url
 _pdf_url = blacklight_url
 iiif_image_url = blacklight_url
-management_url = "https://#{ENV['BLACKLIGHT_BASE_URL']}/management"
+management_url = "https://#{blacklight_url}/management"
+
+if blacklight_url.includes?('3000')
+  iiif_manifest_url = ENV['IIIF_MANIFEST_URL'] || 'http://localhost:80'
+  _pdf_url = ENV['PDF_URL'] || 'http://localhost:80'
+  iiif_image_url = ENV['IIIF_IMAGE_URL'] || 'http://localhost:8182'
+  management_url = ENV['MANAGEMENT_HOST'] || 'http://localhost:3001/management'
+end
 
 # use this SSLContext to use https URLs without verifying certificates
 ssl_context = OpenSSL::SSL::SSLContext.new
