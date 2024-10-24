@@ -36,7 +36,7 @@ blacklight_url = case ENV['CLUSTER_NAME']
 iiif_manifest_url = blacklight_url
 _pdf_url = blacklight_url
 iiif_image_url = blacklight_url
-management_url = "https://#{blacklight_url}/management"
+management_url = "#{blacklight_url}/management"
 
 if blacklight_url.include?('3000')
   iiif_manifest_url = ENV['IIIF_MANIFEST_URL'] || 'http://localhost:80'
@@ -49,7 +49,7 @@ end
 ssl_context = OpenSSL::SSL::SSLContext.new
 ssl_context.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
-RSpec.describe "The cluster at #{blacklight_url}", type: :feature do
+RSpec.describe "The cluster at #{ENV['CLUSTER_NAME']}", type: :feature do
   let(:public_parent_oid) { '2005512' }
   let(:public_child_oid) { '1030368' }
   let(:yco_parent_oid) { '2043304' }
