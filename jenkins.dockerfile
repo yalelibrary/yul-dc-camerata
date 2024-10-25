@@ -43,6 +43,7 @@ RUN cd /usr/local/bin/ && \
     curl -L -O https://storage.googleapis.com/chrome-for-testing-public/130.0.6723.69/linux64/chromedriver-linux64.zip && \
     unzip chromedriver-linux64.zip && \
     chmod 755 /usr/local/bin/chromedriver-linux64 && \
+    export PATH="/usr/local/bin/chromedriver-linux64:${PATH}" && \
     cd ~
 
 RUN gem update --system
