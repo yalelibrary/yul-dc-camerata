@@ -150,6 +150,8 @@ pipeline {
                 }
             }
         }
+    }
+    post {
         always {
             script {
             currentBuild.description = "${CLUSTER}:${APP}:${DEPLOY_VERSION}"
