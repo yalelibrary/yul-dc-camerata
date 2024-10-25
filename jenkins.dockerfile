@@ -28,23 +28,28 @@ RUN curl -Lo /usr/local/bin/ecs-cli https://amazon-ecs-cli.s3.amazonaws.com/ecs-
 # RUN cd /opt && \
 RUN cd /opt && \
     curl -L -O https://storage.googleapis.com/chrome-for-testing-public/130.0.6723.69/linux64/chrome-linux64.zip && \
+    curl -L -O https://storage.googleapis.com/chrome-for-testing-public/130.0.6723.69/linux64/chromedriver-linux64.zip && \
     unzip chrome-linux64.zip && \
+    unzip chromedriver-linux64.zip && \
     apt update && \
     while read pkg ; do apt-get satisfy -y --no-install-recommends "${pkg}" ; done < chrome-linux64/deb.deps  && \
     chown root:root chrome-linux64/chrome_sandbox && \
     chmod 4755 chrome-linux64/chrome_sandbox && \
+    chmod 4755 chromedriver-linux64 && \
     export PATH="/opt/chrome-linux64:${PATH}" && \
+    export PATH="/opt/chromedriver-linux64:${PATH}" && \
     export CHROME_DEVEL_SANDBOX="/opt/chrome-linux64/chrome_sandbox" && \
     cd ..
 
 # install chromedriver
 # RUN wget -O /tmp/chromedriver.zip https://googlechromelabs.github.io`curl -sS googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_STABLE`/chromedriver_linux64.zip
-RUN cd /usr/local/bin/ && \
-    curl -L -O https://storage.googleapis.com/chrome-for-testing-public/130.0.6723.69/linux64/chromedriver-linux64.zip && \
-    unzip chromedriver-linux64.zip chromedriver && \
-    chmod 755 /usr/local/bin/chromedriver && \
-    export PATH="/usr/local/bin/chromedriver:${PATH}" && \
-    cd ~
+# RUN cd /usr/local/bin/ && \
+#     curl -L -O https://storage.googleapis.com/chrome-for-testing-public/130.0.6723.69/linux64/chromedriver-linux64.zip && \
+#     unzip chromedriver-linux64.zip && \
+#     mv chromedriver-linux64 chromedriver && \
+#     cd ~ && \
+#     chmod 755 /usr/local/bin/chromedriver && \
+#     export PATH="/usr/local/bin/chromedriver:${PATH}" && \
 
 # RUN wget -O /tmp/chromedriver.zip http://chromedriver.storage.googleapis.com/`curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE`/chromedriver_linux64.zip
 # RUN unzip /tmp/chromedriver.zip chromedriver -d /usr/local/bin/
