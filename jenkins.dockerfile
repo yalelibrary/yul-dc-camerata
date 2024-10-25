@@ -19,14 +19,22 @@ RUN curl -Lo /usr/local/bin/ecs-cli https://amazon-ecs-cli.s3.amazonaws.com/ecs-
 # RUN apt-get install -y google-chrome-stable
 
 
+RUN apt install -yqq unzip
 # RUN wget -q https://mirror.cs.uchicago.edu/google-chrome/pool/main/g/google-chrome-stable/google-chrome-stable_130.0.6723.69-1_amd64.deb
-# RUN wget -q https://storage.googleapis.com/chrome-for-testing-public/130.0.6723.69/linux64/chrome-linux64.zip
-RUN sh -c 'echo "deb [arch=amd64] https://mirror.cs.uchicago.edu/google-chrome/pool/main/g/google-chrome-stable/google-chrome-stable_130.0.6723.69-1_amd64.deb stable main" >> /etc/apt/sources.list.d/google-chrome.list'
-RUN apt-get -y update
-RUN apt-get install -y google-chrome-stable
+# RUN sh -c 'echo "zip [arch=linux64] https://storage.googleapis.com/chrome-for-testing-public/130.0.6723.69/linux64/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
+# RUN sh -c 'echo "deb [arch=amd64] https://mirror.cs.uchicago.edu/google-chrome/pool/main/g/google-chrome-stable/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
+# RUN apt-get install -y google-chrome-stable
+RUN cd /opt \
+    curl -Lo https://storage.googleapis.com/chrome-for-testing-public/130.0.6723.69/linux64/chrome-linux64.zip \
+    unzip chrome-linux64.zip \
+    apt update \
+    while read pkg ; do apt-get satisfy -y --no-install-recommends "${pkg}" ; done < chrome-linux64/deb.deps  \
+    chown root:root chrome-linux64/chrome_sandbox \
+    chmod 4755 chrome-linux64/chrome_sandbox \
+    export PATH="/opt/chrome-linux64:${PATH}" \
+    export CHROME_DEVEL_SANDBOX="/opt/chrome-linux64/chrome_sandbox"
 
 # install chromedriver
-RUN apt-get install -yqq unzip
 # RUN wget -O /tmp/chromedriver.zip https://googlechromelabs.github.io`curl -sS googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_STABLE`/chromedriver_linux64.zip
 RUN wget -O /tmp/chromedriver.zip https://storage.googleapis.com/chrome-for-testing-public/130.0.6723.69/linux64/chromedriver-linux64.zip
 RUN unzip /tmp/chromedriver.zip chromedriver -d /usr/local/bin/
