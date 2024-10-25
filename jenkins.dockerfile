@@ -26,14 +26,16 @@ RUN curl -Lo /usr/local/bin/ecs-cli https://amazon-ecs-cli.s3.amazonaws.com/ecs-
 # RUN sh -c 'echo "deb [arch=amd64] https://mirror.cs.uchicago.edu/google-chrome/pool/main/g/google-chrome-stable/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
 # RUN apt-get install -y google-chrome-stable
 # RUN cd /opt && \
-RUN curl -Lo /opt https://storage.googleapis.com/chrome-for-testing-public/130.0.6723.69/linux64/chrome-linux64.zip && \
+RUN cd /opt && \
+    curl -L -O https://storage.googleapis.com/chrome-for-testing-public/130.0.6723.69/linux64/chrome-linux64.zip && \
     unzip chrome-linux64.zip && \
     apt update && \
     while read pkg ; do apt-get satisfy -y --no-install-recommends "${pkg}" ; done < chrome-linux64/deb.deps  && \
     chown root:root chrome-linux64/chrome_sandbox && \
     chmod 4755 chrome-linux64/chrome_sandbox && \
     export PATH="/opt/chrome-linux64:${PATH}" && \
-    export CHROME_DEVEL_SANDBOX="/opt/chrome-linux64/chrome_sandbox"
+    export CHROME_DEVEL_SANDBOX="/opt/chrome-linux64/chrome_sandbox" && \
+    cd ..
 
 # install chromedriver
 # RUN wget -O /tmp/chromedriver.zip https://googlechromelabs.github.io`curl -sS googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_STABLE`/chromedriver_linux64.zip
