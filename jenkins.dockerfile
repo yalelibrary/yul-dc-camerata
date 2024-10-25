@@ -17,7 +17,7 @@ RUN curl -Lo /usr/local/bin/ecs-cli https://amazon-ecs-cli.s3.amazonaws.com/ecs-
 # RUN apt-get -y update
 # RUN apt-get install -y google-chrome-stable
 
-ENV CHROME_VERSION=114.0.5735.133
+ENV CHROME_VERSION=114.0.5735.198-1
 RUN wget -q https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_${CHROME_VERSION}_amd64.deb
 RUN apt-get -y update
 RUN apt-get install -y ./google-chrome-stable_${CHROME_VERSION}_amd64.deb
