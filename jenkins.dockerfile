@@ -40,7 +40,7 @@ RUN cd /opt && \
 # install chromedriver
 # RUN wget -O /tmp/chromedriver.zip https://googlechromelabs.github.io`curl -sS googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_STABLE`/chromedriver_linux64.zip
 RUN wget -O /tmp/chromedriver.zip https://storage.googleapis.com/chrome-for-testing-public/130.0.6723.69/linux64/chromedriver-linux64.zip
-RUN unzip /tmp/chromedriver.zip chromedriver -d /usr/local/bin/
+RUN unzip /tmp/chromedriver.zip chromedriver-linux64 -d /usr/local/bin/
 
 RUN gem update --system
 
