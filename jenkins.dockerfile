@@ -12,10 +12,15 @@ RUN curl -Lo /usr/local/bin/ecs-cli https://amazon-ecs-cli.s3.amazonaws.com/ecs-
     chmod 755 /usr/local/bin/ecs-cli
 
 # install google chrome
+# RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
+# RUN sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
+# RUN apt-get -y update
+# RUN apt-get install -y google-chrome-stable
+
 ENV CHROME_VERSION=114.0.5735.90
-RUN wget -q https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_${CHROME_VERSION}_linux64.deb
+RUN wget -q https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_${CHROME_VERSION}_amd64.deb
 RUN apt-get -y update
-RUN apt-get install -y ./google-chrome-stable_${CHROME_VERSION}_linux64.deb
+RUN apt-get install -y ./google-chrome-stable_${CHROME_VERSION}_amd64.deb
 
 # install chromedriver
 RUN apt-get install -yqq unzip
