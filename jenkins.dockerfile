@@ -32,19 +32,20 @@ RUN cd /opt && \
     unzip chrome-linux64.zip && unzip chromedriver-linux64.zip && \
     apt update && \
     while read pkg ; do apt-get satisfy -y --no-install-recommends "${pkg}" ; done < chrome-linux64/deb.deps  && \
-    while read pkg ; do apt-get satisfy -y --no-install-recommends "${pkg}" ; done < chromedriver-linux64/deb.deps && \
-    chown root:root chrome-linux64/chrome_sandbox && chown root:root chrome-linux64/chromedriver_sandbox && \
-    chmod 4755 chrome-linux64/chrome_sandbox && chromedriver-linux64/chromedriver_sandbox && \
-    export PATH="/opt/chrome-linux64:${PATH}" && export PATH="/opt/chromedriver-linux64:${PATH}" && \
-    export CHROME_DEVEL_SANDBOX="/opt/chrome-linux64/chrome_sandbox" && export CHROMEDRIVER_DEVEL_SANDBOX="/opt/chromedriver-linux64/chromedriver_sandbox" && \
+    chown root:root chrome-linux64/chrome_sandbox && chown root:root chromedriver-linux64 && \
+    chmod 4755 chrome-linux64/chrome_sandbox && chromedriver-linux64 && \
+    export PATH="/opt/chrome-linux64:${PATH}" && \
+    export CHROME_DEVEL_SANDBOX="/opt/chrome-linux64/chrome_sandbox" && export CHROMEDRIVER_DEVEL_SANDBOX="/opt/chromedriver-linux64" && \
     cd ..
 
+COPY /opt/chromedriver-linux64/chromedriver /usr/local/bin
 
 
 # # install google chrome & chromedriver - C
 # RUN apt-get install -yqq unzip
 # RUN wget -O /tmp/chrome.zip https://storage.googleapis.com/`curl -sS chrome-for-testing-public/130.0.6723.69/linux64`/chrome-linux64.zip
 # RUN wget -O /tmp/chromedriver.zip https://storage.googleapis.com/`curl -sS chrome-for-testing-public/130.0.6723.69/linux64`/chromedriver-linux64.zip
+# RUN unzip /tmp/chrome.zip chrome -d /usr/local/bin/
 # RUN unzip /tmp/chromedriver.zip chromedriver -d /usr/local/bin/
     
 
