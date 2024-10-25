@@ -4,6 +4,7 @@ RUN apt-get update && apt upgrade -y && \
     apt-get install -y --no-install-recommends \
         jq \
         python3-pip \
+        wget && \
     && rm -rf /var/lib/apt/lists/*
 
 RUN python3 -m pip install awscli selenium
@@ -12,15 +13,7 @@ RUN curl -Lo /usr/local/bin/ecs-cli https://amazon-ecs-cli.s3.amazonaws.com/ecs-
     chmod 755 /usr/local/bin/ecs-cli
 
 # install google chrome and chromedriver
-RUN apt-get update -qq -y && \
-    apt-get install -y \
-        libasound2 \
-        libatk-bridge2.0-0 \
-        libgtk-4-1 \
-        libnss3 \
-        xdg-utils \
-        wget && \
-    wget -q -O chrome-linux64.zip https://bit.ly/chrome-linux64-130-0-6723-69 && \
+RUN wget -q -O chrome-linux64.zip https://bit.ly/chrome-linux64-130-0-6723-69 && \
     unzip chrome-linux64.zip && \
     rm chrome-linux64.zip && \
     mv chrome-linux64 /opt/chrome/ && \
