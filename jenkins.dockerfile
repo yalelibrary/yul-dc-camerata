@@ -4,7 +4,6 @@ RUN apt-get update && apt upgrade -y && \
     apt-get install -y --no-install-recommends \
         jq \
         python3-pip \
-        wget \
     && rm -rf /var/lib/apt/lists/*
 
 RUN python3 -m pip install awscli selenium
@@ -12,16 +11,16 @@ RUN python3 -m pip install awscli selenium
 RUN curl -Lo /usr/local/bin/ecs-cli https://amazon-ecs-cli.s3.amazonaws.com/ecs-cli-linux-amd64-latest && \
     chmod 755 /usr/local/bin/ecs-cli
 
-# install google chrome and chromedriver
-RUN wget -q -O chrome-linux64.zip https://bit.ly/chrome-linux64-130-0-6723-69 && \
-    unzip chrome-linux64.zip && \
-    rm chrome-linux64.zip && \
-    mv chrome-linux64 /opt/chrome/ && \
-    ln -s /opt/chrome/chrome /usr/local/bin/ && \
-    wget -q -O chromedriver-linux64.zip https://bit.ly/chromedriver-linux64-130-0-6723-69 && \
-    unzip -j chromedriver-linux64.zip chromedriver-linux64/chromedriver && \
-    rm chromedriver-linux64.zip && \
-    mv chromedriver /usr/local/bin/
+# install google chrome
+RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
+RUN sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
+RUN apt-get -y update
+RUN apt-get install -y google-chrome-stable
+
+# install chromedriver
+RUN apt-get install -yqq unzip
+RUN wget -O /tmp/chromedriver.zip http://chromedriver.storage.googleapis.com/`curl -sS chromedriver.storage.googleapis.com/STABLE`/chromedriver_linux64.zip
+RUN unzip /tmp/chromedriver.zip chromedriver -d /usr/local/bin/
 
 RUN gem update --system
 
