@@ -139,6 +139,11 @@ pipeline {
         }
     }
     post {
+        always {
+            script {
+            currentBuild.description = "${CLUSTER}:${APP}:${DEPLOY_VERSION}"
+            }
+        }
         failure {
             script {
                 echo 'revert deployment...'
@@ -148,13 +153,6 @@ pipeline {
                     sh "cam deploy-worker ${CLUSTER}"
                     sh "WORKER_COUNT=1 cam deploy-intensive-worker ${CLUSTER}"
                 }
-            }
-        }
-    }
-    post {
-        always {
-            script {
-            currentBuild.description = "${CLUSTER}:${APP}:${DEPLOY_VERSION}"
             }
         }
     }
