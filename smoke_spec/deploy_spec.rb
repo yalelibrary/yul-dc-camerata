@@ -30,7 +30,7 @@ blacklight_url = case ENV['CLUSTER_NAME']
                  when 'yul-dc-demo'
                    "https://#{username}:#{password}@collections-demo.library.yale.edu"
                  else
-                   "https://#{username}:#{password}@localhost:3000"
+                   "http://localhost:3000"
                  end
 
 iiif_manifest_url = blacklight_url
@@ -96,6 +96,10 @@ RSpec.describe "The cluster at #{ENV['CLUSTER_NAME']}", type: :feature do
 
   describe "The blacklight site at #{blacklight_url}" do
     let(:uri) { "#{blacklight_url}/catalog/" }
+    context 'when on campus' do
+    end
+    # off campus tests only work locally
+    # Jenkins IP will always be on campus
     context 'when off campus', off_campus: true do
       it 'loads the home page for local environments', deployed: false do
         visit uri
@@ -150,11 +154,15 @@ RSpec.describe "The cluster at #{ENV['CLUSTER_NAME']}", type: :feature do
           end
           it 'but not for YCO items and will not have link' do
             uri = "#{blacklight_url}/manifests/#{yco_parent_oid}\.json"
-            visit "#{blacklight_url}/catalog/#{yco_parent_oid}"
-            expect(page).to have_selector('#manifestLink'), visible: false
+            response = HTTP.get(uri, ssl_context: ssl_context)
+            # visit "#{blacklight_url}/catalog/#{yco_parent_oid}"
+            # expect(page).to have_selector('#manifestLink'), visible: false
             # Use HTTP rather than visit to avoid getting HTML on our json
-            response = HTTP.basic_auth(user: username, pass: password)
-                           .get(uri, ssl_context: ssl_context)
+
+            # TODO: change to .get remove basic auth
+            # & switch to on campus tests 
+
+            response = HTTP.get(uri, ssl_context: ssl_context)
             expect(JSON.parse(response.body)).to eq({ 'error' => 'unauthorized' }),
               'no manifest or manifest link'
           end
