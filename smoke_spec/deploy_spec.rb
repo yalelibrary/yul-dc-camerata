@@ -22,13 +22,13 @@ puts 'Current Blacklight basic auth settings: ' \
 
 blacklight_url = case ENV['CLUSTER_NAME']
                  when 'yul-dc-prod'
-                   "https://#{username}:#{password}@collections.yale.library.edu"
+                   "https://#{username}:#{password}@collections.library.yale.edu"
                  when 'yul-dc-uat'
-                   "https://#{username}:#{password}@collections-uat.yale.library.edu"
+                   "https://#{username}:#{password}@collections-uat.library.yale.edu"
                  when 'yul-dc-test'
-                   "https://#{username}:#{password}@collections-test.yale.library.edu"
+                   "https://#{username}:#{password}@collections-test.library.yale.edu"
                  when 'yul-dc-demo'
-                   "https://#{username}:#{password}@collections-demo.yale.library.edu"
+                   "https://#{username}:#{password}@collections-demo.library.yale.edu"
                  else
                    "https://#{username}:#{password}@localhost:3000"
                  end

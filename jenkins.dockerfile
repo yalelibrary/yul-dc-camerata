@@ -7,7 +7,7 @@ RUN apt-get update && apt upgrade -y && \
     # apt install -yqq unzip && \
     rm -rf /var/lib/apt/lists/*
 
-RUN python3 -m pip install awscli selenium
+RUN python3 -m pip install awscli
 
 RUN curl -Lo /usr/local/bin/ecs-cli https://amazon-ecs-cli.s3.amazonaws.com/ecs-cli-linux-amd64-latest && \
     chmod 755 /usr/local/bin/ecs-cli
@@ -26,19 +26,19 @@ RUN curl -Lo /usr/local/bin/ecs-cli https://amazon-ecs-cli.s3.amazonaws.com/ecs-
 
 
 # install google chrome & chromedriver - B
-RUN cd /opt && \
-    curl -L -O https://storage.googleapis.com/chrome-for-testing-public/130.0.6723.69/linux64/chrome-linux64.zip && \
-    curl -L -O https://storage.googleapis.com/chrome-for-testing-public/130.0.6723.69/linux64/chromedriver-linux64.zip && \
-    unzip chrome-linux64.zip && unzip chromedriver-linux64.zip && \
-    apt update && \
-    while read pkg ; do apt-get satisfy -y --no-install-recommends "${pkg}" ; done < chrome-linux64/deb.deps  && \
-    chown root:root chrome-linux64/chrome_sandbox && chown root:root chromedriver-linux64 && \
-    chmod 4755 chrome-linux64/chrome_sandbox && chromedriver-linux64 && \
-    export PATH="/opt/chrome-linux64:${PATH}" && \
-    export CHROME_DEVEL_SANDBOX="/opt/chrome-linux64/chrome_sandbox" && export CHROMEDRIVER_DEVEL_SANDBOX="/opt/chromedriver-linux64" && \
-    cd ..
+# RUN cd /opt && \
+#     curl -L -O https://storage.googleapis.com/chrome-for-testing-public/130.0.6723.69/linux64/chrome-linux64.zip && \
+#     curl -L -O https://storage.googleapis.com/chrome-for-testing-public/130.0.6723.69/linux64/chromedriver-linux64.zip && \
+#     unzip chrome-linux64.zip && unzip chromedriver-linux64.zip && \
+#     apt update && \
+#     while read pkg ; do apt-get satisfy -y --no-install-recommends "${pkg}" ; done < chrome-linux64/deb.deps  && \
+#     chown root:root chrome-linux64/chrome_sandbox && chown root:root chromedriver-linux64 && \
+#     chmod 4755 chrome-linux64/chrome_sandbox && chromedriver-linux64 && \
+#     export PATH="/opt/chrome-linux64:${PATH}" && \
+#     export CHROME_DEVEL_SANDBOX="/opt/chrome-linux64/chrome_sandbox" && export CHROMEDRIVER_DEVEL_SANDBOX="/opt/chromedriver-linux64" && \
+#     cd ..
 
-COPY /opt/chromedriver-linux64/chromedriver /usr/local/bin
+# COPY /opt/chromedriver-linux64/chromedriver /usr/local/bin
 
 
 # # install google chrome & chromedriver - C
