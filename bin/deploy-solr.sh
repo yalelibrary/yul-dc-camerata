@@ -56,4 +56,5 @@ then
     $discovery $log\
     --force-deployment \
     --cluster ${CLUSTER_NAME}
+    --tags Application=DigitalCollection
 fi
