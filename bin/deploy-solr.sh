@@ -55,5 +55,6 @@ then
     --launch-type FARGATE \
     $discovery $log\
     --force-deployment \
-    --cluster ${CLUSTER_NAME}
+    --cluster ${CLUSTER_NAME} \
+    --tags Application=DigitalCollection
 fi
