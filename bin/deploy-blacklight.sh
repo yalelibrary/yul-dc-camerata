@@ -48,6 +48,6 @@ then
     --create-log-groups \
     --target-groups targetGroupArn=$BL_TG_ARN,containerName=blacklight,containerPort=3000 \
     --timeout 10 \
-    --cluster ${CLUSTER_NAME}
+    --cluster ${CLUSTER_NAME} \
     --tags Application=DigitalCollection
 fi
