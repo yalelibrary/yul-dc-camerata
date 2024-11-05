@@ -48,5 +48,6 @@ then
     --target-groups targetGroupArn=$IMG_TG_ARN,containerName=iiif_image,containerPort=8182 \
     --create-log-groups \
     --timeout 10 \
-    --cluster ${CLUSTER_NAME}
+    --cluster ${CLUSTER_NAME} \
+    --tags Application=DigitalCollection
 fi
