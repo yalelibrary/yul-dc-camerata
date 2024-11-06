@@ -4,7 +4,6 @@ RUN apt-get update && apt upgrade -y && \
     apt-get install -y --no-install-recommends \
         jq \
         python3-pip && \
-    # apt install -yqq unzip && \
     rm -rf /var/lib/apt/lists/*
 
 RUN python3 -m pip install awscli
