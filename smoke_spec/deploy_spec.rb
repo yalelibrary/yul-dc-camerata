@@ -53,8 +53,8 @@ RSpec.describe "The cluster at #{ENV['CLUSTER_NAME']}", type: :feature do
     yco_fulltext_parent_oid = '11492783'
     yco_fulltext_child_oid = '11494521'
   when 'yul-dc-demo'
-    public_fulltext_parent_oid = '2005512'
-    public_fulltext_child_oid = '1030368'
+    public_fulltext_parent_oid = '16747985'
+    public_fulltext_child_oid = '16748377'
     # yco_fulltext_parent_oid = '2043304'
     # yco_fulltext_child_oid = '1191792'
   else
@@ -168,7 +168,7 @@ RSpec.describe "The cluster at #{ENV['CLUSTER_NAME']}", type: :feature do
           expect(JSON.parse(response.body)['type']).to eq 'Annotation'
         end
         # no yco fulltext in prod or demo
-        if ENV['CLUSTER_NAME'] != 'yul-dc-prod' || ENV['CLUSTER_NAME'] != 'yul-dc-demo'
+        if ENV['CLUSTER_NAME'] == 'yul-dc-uat' || ENV['CLUSTER_NAME'] == 'yul-dc-test'
           it 'serves an annotation for YCO image' do
             uri = "#{blacklight_url}/annotation/oid/#{yco_fulltext_parent_oid}/canvas/#{yco_fulltext_child_oid}/fulltext?oid=#{yco_fulltext_parent_oid}&child_oid=#{yco_fulltext_child_oid}"
             response = HTTP.get(uri, ssl_context: ssl_context)
