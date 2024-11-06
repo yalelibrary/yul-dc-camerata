@@ -5,7 +5,6 @@ require 'http'
 require 'json'
 require 'openssl'
 require 'selenium/webdriver'
-#
 
 ENV['RAILS_ENV'] ||= 'test'
 
