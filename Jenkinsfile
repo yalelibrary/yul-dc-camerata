@@ -145,12 +145,6 @@ pipeline {
             }
         }
         failure {
-            environment {
-                        VPC_ID="vpc-57bee630"
-                        SUBNET0="subnet-2dc03400"
-                        SUBNET1="subnet-71b55b4d"
-                        CLUSTER_NAME="${CLUSTER}"
-            }
             script {
                 echo 'revert deployment...'
                 DEPLOY_VERSION = "${currentBuild.previousSuccessfulBuild.buildVariables["DEPLOY_VERSION"]}"        
