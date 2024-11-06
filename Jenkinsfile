@@ -145,10 +145,21 @@ pipeline {
             }
         }
         failure {
+            environment {
+                        VPC_ID="vpc-57bee630"
+                        SUBNET0="subnet-2dc03400"
+                        SUBNET1="subnet-71b55b4d"
+                        CLUSTER_NAME="${CLUSTER}"
+            }
             script {
                 echo 'revert deployment...'
                 DEPLOY_VERSION = "${currentBuild.previousSuccessfulBuild.buildVariables["DEPLOY_VERSION"]}"        
-                sh "cam deploy-${APP} ${CLUSTER}"
+                sh """
+                    aws configure set default.region us-east-1
+                    aws configure set aws_access_key_id ${AWS_ACCESS_KEY_ID}
+                    aws configure set aws_secret_access_key ${AWS_SECRET_ACCESS_KEY}
+                    cam deploy-${APP} ${CLUSTER}"
+                """
                 if ( APP == 'mgmt' ) {
                     sh "cam deploy-worker ${CLUSTER}"
                     sh "WORKER_COUNT=1 cam deploy-intensive-worker ${CLUSTER}"
