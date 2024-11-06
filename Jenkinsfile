@@ -112,6 +112,17 @@ pipeline {
                     steps {
                         sh "CLUSTER_NAME=${CLUSTER} cam smoke"
                     }
+                    failure {
+                        script {
+                            echo 'revert deployment...'
+                            DEPLOY_VERSION = "${currentBuild.previousSuccessfulBuild.buildVariables["DEPLOY_VERSION"]}"        
+                            sh "cam deploy-${APP} ${CLUSTER}"
+                            if ( APP == 'mgmt' ) {
+                                sh "cam deploy-worker ${CLUSTER}"
+                                sh "WORKER_COUNT=1 cam deploy-intensive-worker ${CLUSTER}"
+                            }
+                        }
+                    }
                 }
                 stage('Update SSM') {
                     when {
@@ -142,22 +153,6 @@ pipeline {
         always {
             script {
             currentBuild.description = "${CLUSTER}:${APP}:${DEPLOY_VERSION}"
-            }
-        }
-        failure {
-            script {
-                echo 'revert deployment...'
-                DEPLOY_VERSION = "${currentBuild.previousSuccessfulBuild.buildVariables["DEPLOY_VERSION"]}"        
-                sh """
-                    aws configure set default.region us-east-1
-                    aws configure set aws_access_key_id ${AWS_ACCESS_KEY_ID}
-                    aws configure set aws_secret_access_key ${AWS_SECRET_ACCESS_KEY}
-                    cam deploy-${APP} ${CLUSTER}"
-                """
-                if ( APP == 'mgmt' ) {
-                    sh "cam deploy-worker ${CLUSTER}"
-                    sh "WORKER_COUNT=1 cam deploy-intensive-worker ${CLUSTER}"
-                }
             }
         }
     }
