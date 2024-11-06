@@ -112,17 +112,6 @@ pipeline {
                     steps {
                         sh "CLUSTER_NAME=${CLUSTER} cam smoke"
                     }
-                    failure {
-                        script {
-                            echo 'revert deployment...'
-                            DEPLOY_VERSION = "${currentBuild.previousSuccessfulBuild.buildVariables["DEPLOY_VERSION"]}"        
-                            sh "cam deploy-${APP} ${CLUSTER}"
-                            if ( APP == 'mgmt' ) {
-                                sh "cam deploy-worker ${CLUSTER}"
-                                sh "WORKER_COUNT=1 cam deploy-intensive-worker ${CLUSTER}"
-                            }
-                        }
-                    }
                 }
                 stage('Update SSM') {
                     when {
@@ -146,6 +135,20 @@ pipeline {
                         }
                     }
                 }
+            }
+            post {
+                failure {
+                    script {
+                        echo 'revert deployment...'
+                        DEPLOY_VERSION = "${currentBuild.previousSuccessfulBuild.buildVariables["DEPLOY_VERSION"]}"        
+                        sh "cam deploy-${APP} ${CLUSTER}"
+                        if ( APP == 'mgmt' ) {
+                            sh "cam deploy-worker ${CLUSTER}"
+                            sh "WORKER_COUNT=1 cam deploy-intensive-worker ${CLUSTER}"
+                        }
+                    }
+                }
+
             }
         }
     }
