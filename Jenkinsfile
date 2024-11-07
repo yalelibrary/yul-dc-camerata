@@ -134,16 +134,16 @@ pipeline {
                         echo 'updating ssm...'
                         script {
                             if ( BLACKLIGHT_VERSION != '' ) {
-                                sh "cam push_version blacklight ${BLACKLIGHT_VERSION}"
+                                sh "CLUSTER_NAME=${CLUSTER} cam push_version blacklight ${BLACKLIGHT_VERSION}"
                             }
                             if ( IIIF_IMAGE_VERSION != '' ) {
-                                sh "cam push_version iiif_image ${IIIF_IMAGE_VERSION}"
+                                sh "CLUSTER_NAME=${CLUSTER} cam push_version iiif_image ${IIIF_IMAGE_VERSION}"
                             }
                             if ( IIIF_MANIFEST_VERSION != '' ) {
-                                sh "cam push_version iiif_manifest ${IIIF_MANIFEST_VERSION}"
+                                sh "CLUSTER_NAME=${CLUSTER} cam push_version iiif_manifest ${IIIF_MANIFEST_VERSION}"
                             }
                             if ( MANAGEMENT_VERSION != '' ) {
-                                sh "cam push_version management ${MANAGEMENT_VERSION}"
+                                sh "CLUSTER_NAME=${CLUSTER} cam push_version management ${MANAGEMENT_VERSION}"
                             }
                         }
                     }
