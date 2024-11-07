@@ -41,7 +41,7 @@ pipeline {
         }
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/yalelibrary/yul-dc-camerata'
+                git branch: '2917_AddSmokeTests', url: 'https://github.com/yalelibrary/yul-dc-camerata'
             }
         }
         stage('Deployment') {
@@ -112,6 +112,19 @@ pipeline {
                     steps {
                         sh "CLUSTER_NAME=${CLUSTER} cam smoke"
                     }
+                    post {
+                        failure {
+                            script {
+                                echo 'revert deployment...'
+                                DEPLOY_VERSION = "${currentBuild.previousSuccessfulBuild.buildVariables["DEPLOY_VERSION"]}"        
+                                sh "cam deploy-${APP} ${CLUSTER}"
+                                if ( APP == 'mgmt' ) {
+                                    sh "cam deploy-worker ${CLUSTER}"
+                                    sh "WORKER_COUNT=1 cam deploy-intensive-worker ${CLUSTER}"
+                                }
+                            }
+                        }
+                    }
                 }
                 stage('Update SSM') {
                     when {
@@ -135,20 +148,6 @@ pipeline {
                         }
                     }
                 }
-            }
-            post {
-                failure {
-                    script {
-                        echo 'revert deployment...'
-                        DEPLOY_VERSION = "${currentBuild.previousSuccessfulBuild.buildVariables["DEPLOY_VERSION"]}"        
-                        sh "cam deploy-${APP} ${CLUSTER}"
-                        if ( APP == 'mgmt' ) {
-                            sh "cam deploy-worker ${CLUSTER}"
-                            sh "WORKER_COUNT=1 cam deploy-intensive-worker ${CLUSTER}"
-                        }
-                    }
-                }
-
             }
         }
     }

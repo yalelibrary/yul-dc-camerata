@@ -35,6 +35,12 @@ then
   # comman seperate like so pdf,ptiff,otherjob
   export WORKER_QUEUES=pdf,intensive_solr_index
 
+    INT_WKR_TG_ARN=`aws elbv2 describe-target-groups \
+    --names tg-${CLUSTER_NAME}-intensive-worker \
+    --query "(TargetGroups[?TargetGroupName=='tg-${CLUSTER_NAME}-intensive-worker'])[0].TargetGroupArn" \
+      | grep -Eo "arn:aws:[^\"]+"`
+
+  # Launch the service and register containers with the loadbalancer
   ecs-cli compose  \
     --region $AWS_DEFAULT_REGION \
     --project-name ${CLUSTER_NAME}-intensive-worker \
@@ -45,5 +51,6 @@ then
     $2 \
     $discovery $log \
     --force-deployment \
+    --target-groups targetGroupArn=$INT_WKR_TG_ARN,containerName=intensive-worker \
     --cluster ${CLUSTER_NAME}
 fi
