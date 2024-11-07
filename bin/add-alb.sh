@@ -134,30 +134,6 @@ then
     --health-check-path /management \
       | grep -Eo -m 1 'arn:aws:elasticloadbalancing[^\"]*'`
 
-#  # Create a target group to associate the MANAGEMENT WORKER listener to clusters
-  MGMT_WKR_TG_ARN=`aws elbv2 create-target-group \
-    --name tg-${1}-worker \
-    --target-type ip \
-    --protocol HTTP \
-    --port 3001 \
-    --vpc-id $VPC_ID \
-    --health-check-interval-seconds 90 \
-    --health-check-timeout-seconds 75 \
-    --health-check-path /management \
-      | grep -Eo -m 1 'arn:aws:elasticloadbalancing[^\"]*'`
-
-#  # Create a target group to associate the MANAGEMENT INTENSIVE WORKER listener to clusters
-  INT_WKR_TG_ARN=`aws elbv2 create-target-group \
-    --name tg-${1}-intensive-worker \
-    --target-type ip \
-    --protocol HTTP \
-    --port 3001 \
-    --vpc-id $VPC_ID \
-    --health-check-interval-seconds 90 \
-    --health-check-timeout-seconds 75 \
-    --health-check-path /management \
-      | grep -Eo -m 1 'arn:aws:elasticloadbalancing[^\"]*'`
-
   # Create an HTTP listener on port 80 that redirects all traffice to HTTPS (port 443)
   HTTP_LISTENER_ARN=`aws elbv2 create-listener \
       --load-balancer-arn $ALB_ARN \
@@ -204,8 +180,6 @@ then
   echo "  Image Target:      $IMG_TG_ARN"
   echo "  Manifest Target:   $MFST_TG_ARN"
   echo "  Management Target:   $MGMT_TG_ARN"
-  echo "  Management Worker Target:   $MGMT_WKR_TG_ARN"
-  echo "  Management Intensive Worker Target:   $INT_WKR_TG_ARN"
   # echo "  Certificate:       $CERT_ARN"
   echo "  HTTP Listener:     $HTTP_LISTENER_ARN"
   echo "  HTTPS Listener:    $HTTPS_LISTENER_ARN"
