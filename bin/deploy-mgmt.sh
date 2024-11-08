@@ -50,5 +50,5 @@ then
     --timeout 10 \
     --target-groups targetGroupArn=$MGMT_TG_ARN,containerName=management,containerPort=3001 \
     --cluster ${CLUSTER_NAME} \
-    --tags Application=DigitalCollection
+#    --tags Application=DigitalCollection
 fi
