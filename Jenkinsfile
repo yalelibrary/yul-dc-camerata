@@ -112,9 +112,9 @@ pipeline {
                     steps {
                         script {
                             // Save the build params to a file
-                            sh "echo '${params}' > build.params"
+                            sh "echo '${params}' > build_params.txt"
                             // Archive the build params
-                            archiveArtifacts artifacts: 'build.params', fingerprint: true
+                            archiveArtifacts artifacts: 'build_params.txt', fingerprint: true
                         }
                     }
                 }
@@ -151,10 +151,19 @@ pipeline {
                                         priorAppVersion="${MANAGEMENT_VERSION}"
                                     }
                                 }
+                                // recursively get past successful builds
+                                passedBuilds = []
+                                def lastSuccessfullBuild(build) {
+                                    if(build != null && build.result != 'FAILURE') {
+                                        //Recurse now to handle in chronological order
+                                        lastSuccessfullBuild(build.getPreviousBuild());
+                                        //Add the build to the array
+                                        passedBuilds.add(build);
+                                    }
+                                }
+                                lastSuccessfullBuild(currentBuild.getPreviousBuild());
+                                lastSuccessfulDeployVersion = passedBuilds.find{it.APP == params.APP}.params.find{it.name == "${priorAppVersion}"}
                                 echo "deploy version before redefine ${DEPLOY_VERSION}"
-                                echo "params ${params}"
-                                echo "currentBuild.previousSuccessfulBuild.parameters ${currentBuild.previousSuccessfulBuild.parameters}"
-                                def lastSuccessfulDeployVersion = currentBuild.previousSuccessfulBuild.parameters.find{it.name == "${priorAppVersion}"}?.value
                                 DEPLOY_VERSION = "${lastSuccessfulDeployVersion}"      
                                 echo "deploy version after redefine ${DEPLOY_VERSION}"
                                 echo "revert deployment...of ${APP} on ${CLUSTER} to version ${DEPLOY_VERSION}"
