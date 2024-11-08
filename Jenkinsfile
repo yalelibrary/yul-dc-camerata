@@ -133,7 +133,7 @@ pipeline {
                             script {
                                 // recursively get past successful builds
                                 passedBuilds = []
-                                def lastSuccessfullBuild(build) {
+                                def lastSuccessfullBuild = { build ->
                                     if(build != null && build.result != 'FAILURE') {
                                         //Recurse now to handle in chronological order
                                         lastSuccessfullBuild(build.getPreviousBuild());
