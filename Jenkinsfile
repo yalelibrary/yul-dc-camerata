@@ -131,6 +131,17 @@ pipeline {
                     post {
                         failure {
                             script {
+                                // recursively get past successful builds
+                                passedBuilds = []
+                                def lastSuccessfullBuild(build) {
+                                    if(build != null && build.result != 'FAILURE') {
+                                        //Recurse now to handle in chronological order
+                                        lastSuccessfullBuild(build.getPreviousBuild());
+                                        //Add the build to the array
+                                        passedBuilds.add(build);
+                                    }
+                                }
+                                lastSuccessfullBuild(currentBuild.getPreviousBuild());
                                 def priorAppVersion = 'notFound'
                                 if ( params.DEPLOY == 'management' ) {
                                     APP='mgmt'
@@ -151,17 +162,7 @@ pipeline {
                                         priorAppVersion="${MANAGEMENT_VERSION}"
                                     }
                                 }
-                                // recursively get past successful builds
-                                passedBuilds = []
-                                def lastSuccessfullBuild(build) {
-                                    if(build != null && build.result != 'FAILURE') {
-                                        //Recurse now to handle in chronological order
-                                        lastSuccessfullBuild(build.getPreviousBuild());
-                                        //Add the build to the array
-                                        passedBuilds.add(build);
-                                    }
-                                }
-                                lastSuccessfullBuild(currentBuild.getPreviousBuild());
+                                // "${currentBuild.previousBuild.buildVariables["MY_PARAM_COPY"]}"
                                 lastSuccessfulDeployVersion = passedBuilds.find{it.APP == params.APP}.params.find{it.name == "${priorAppVersion}"}
                                 echo "deploy version before redefine ${DEPLOY_VERSION}"
                                 DEPLOY_VERSION = "${lastSuccessfulDeployVersion}"      
