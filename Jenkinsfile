@@ -163,7 +163,7 @@ pipeline {
                                     }
                                 }
                                 // "${currentBuild.previousBuild.buildVariables["MY_PARAM_COPY"]}"
-                                lastSuccessfulDeployVersion = passedBuilds.find{it.APP == params.APP}.buildVariables["${priorAppVersion}"}]
+                                lastSuccessfulDeployVersion = passedBuilds.find{it.APP == params.APP}.buildVariables["${priorAppVersion}"]
                                 echo "deploy version before redefine ${DEPLOY_VERSION}"
                                 DEPLOY_VERSION = "${lastSuccessfulDeployVersion}"      
                                 echo "deploy version after redefine ${DEPLOY_VERSION}"
