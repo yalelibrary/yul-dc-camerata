@@ -44,6 +44,16 @@ pipeline {
                 git branch: '2917_AddSmokeTests', url: 'https://github.com/yalelibrary/yul-dc-camerata'
             }
         }
+        stage('Save build params') {
+            steps {
+                script {
+                    // Save the build params to a file
+                    sh 'echo "Build params" > build.params'
+                    // Archive the build params
+                    archiveArtifacts artifacts: 'build.params', fingerprint: true
+                }
+            }
+        }
         stage('Deployment') {
             agent {
                 dockerfile {
@@ -143,6 +153,7 @@ pipeline {
                                 }
                                 echo "deploy version before redefine ${DEPLOY_VERSION}"
                                 echo "params ${params}"
+                                echo "last successful build params ${Jenkins.instance.getItem("${env.JOB_NAME}").lastSuccessfulBuild.params}"
                                 def lastSuccessfulDeployVersion = Jenkins.instance.getItem("${env.JOB_NAME}").lastSuccessfulBuild.actions.find{ it instanceof ParametersAction }?.parameters.find{it.name == "${priorAppVersion}"}?.value
                                 DEPLOY_VERSION = "${lastSuccessfulDeployVersion}"      
                                 echo "deploy version after redefine ${DEPLOY_VERSION}"
