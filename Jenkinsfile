@@ -121,18 +121,32 @@ pipeline {
                     post {
                         failure {
                             script {
+                                def priorAppVersion = 'notFound'
+                                if ( params.DEPLOY == 'management' ) {
+                                    APP='mgmt'
+                                    priorAppVersion="${MANAGEMENT_VERSION}"
+                                }
+                                else if ( params.DEPLOY == 'manifest' ) {
+                                    APP='mft'
+                                    priorAppVersion="${IIIF_MANIFEST_VERSION}"
+                                } else {
+                                    APP=params.DEPLOY
+                                    if ( params.DEPLOY == 'blacklight' ) {
+                                        priorAppVersion="${BLACKLIGHT_VERSION}"
+                                    }
+                                    else if ( params.DEPLOY == 'images' ) {
+                                        priorAppVersion="${IIIF_IMAGE_VERSION}"
+                                    }
+                                    else if ( params.DEPLOY == 'intensive-workers' ) {
+                                        priorAppVersion="${MANAGEMENT_VERSION}"
+                                    }
+                                }
                                 echo "deploy version before redefine ${DEPLOY_VERSION}"
-                                echo "revert deployment...of ${APP} on ${CLUSTER} to version ${DEPLOY_VERSION}"
                                 echo "params ${params}"
-                                echo "params.deploy_version ${params.deploy_version}"
-                                echo "params.iiif_manifest_version ${params.iiif_manifest_version}"
-                                echo "currentBuild.previousSuccessfulBuild ${currentBuild.previousSuccessfulBuild}"
-                                echo "currentBuild.previousSuccessfulBuild.params ${currentBuild.previousSuccessfulBuild.params}"
-                                echo "currentBuild.previousSuccessfulBuild.params.deploy_version ${currentBuild.previousSuccessfulBuild.params.deploy_version}"
-                                echo "currentBuild.previousSuccessfulBuild.params.iiif_manifest_version ${currentBuild.previousSuccessfulBuild.params.iiif_manifest_version}"
-                                echo "example function to find prior deploy version ${lastSuccessfulDeployVersion}"
-                                DEPLOY_VERSION = "${lastSuccessfulDeployVersion}"        
+                                def lastSuccessfulDeployVersion = Jenkins.instance.getItem("${env.JOB_NAME}").lastSuccessfulBuild.actions.find{ it instanceof ParametersAction }?.parameters.find{it.name == "${priorAppVersion}"}?.value
+                                DEPLOY_VERSION = "${lastSuccessfulDeployVersion}"      
                                 echo "deploy version after redefine ${DEPLOY_VERSION}"
+                                echo "revert deployment...of ${APP} on ${CLUSTER} to version ${DEPLOY_VERSION}"
                                 sh "cam deploy-${APP} ${CLUSTER}"
                                 if ( APP == 'mgmt' ) {
                                     sh "cam deploy-worker ${CLUSTER}"
