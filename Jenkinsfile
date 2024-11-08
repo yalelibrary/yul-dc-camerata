@@ -121,8 +121,13 @@ pipeline {
                     post {
                         failure {
                             script {
-                                echo 'revert deployment...'
                                 DEPLOY_VERSION = "${currentBuild.previousSuccessfulBuild.buildVariables["DEPLOY_VERSION"]}"        
+                                echo "revert deployment...of ${APP} on ${CLUSTER} to version ${DEPLOY_VERSION}"
+                                echo "deploy version ${DEPLOY_VERSION}"
+                                echo "currentBuild ${currentBuild}"
+                                echo "currentBuild.previousSuccessfulBuild ${currentBuild.previousSuccessfulBuild}"
+                                echo "currentBuild.previousSuccessfulBuild.buildVariables ${currentBuild.previousSuccessfulBuild.buildVariables}"
+                                echo "currentBuild.previousSuccessfulBuild.buildVariables['DEPLOY_VERSION'] ${currentBuild.previousSuccessfulBuild.buildVariables["DEPLOY_VERSION"]}"
                                 sh "cam deploy-${APP} ${CLUSTER}"
                                 if ( APP == 'mgmt' ) {
                                     sh "cam deploy-worker ${CLUSTER}"
