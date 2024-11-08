@@ -153,7 +153,6 @@ pipeline {
                                 }
                                 echo "deploy version before redefine ${DEPLOY_VERSION}"
                                 echo "params ${params}"
-                                echo "last successful build params ${currentBuild.previousSuccessfulBuild.params}"
                                 def lastSuccessfulDeployVersion = currentBuild.previousSuccessfulBuild.actions.find{ it instanceof ParametersAction }?.parameters.find{it.name == "${priorAppVersion}"}?.value
                                 DEPLOY_VERSION = "${lastSuccessfulDeployVersion}"      
                                 echo "deploy version after redefine ${DEPLOY_VERSION}"
