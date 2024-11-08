@@ -128,6 +128,10 @@ pipeline {
                                 echo "currentBuild.previousSuccessfulBuild ${currentBuild.previousSuccessfulBuild}"
                                 echo "currentBuild.previousSuccessfulBuild.buildVariables ${currentBuild.previousSuccessfulBuild.buildVariables}"
                                 echo "currentBuild.previousSuccessfulBuild.buildVariables['DEPLOY_VERSION'] ${currentBuild.previousSuccessfulBuild.buildVariables["DEPLOY_VERSION"]}"
+                                echo "currentBuild.previousBuild() ${currentBuild.previousBuild()}"
+
+                                def cls = currentBuild.getPreviousBuild().getRawBuild().actions.find{ it instanceof ParametersAction }?.parameters.find{it.name == 'DEPLOY_VERSION'}?.value
+                                echo "example function to find prior deploy version ${cls}"
                                 sh "cam deploy-${APP} ${CLUSTER}"
                                 if ( APP == 'mgmt' ) {
                                     sh "cam deploy-worker ${CLUSTER}"
