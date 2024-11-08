@@ -153,7 +153,7 @@ pipeline {
                                 }
                                 echo "deploy version before redefine ${DEPLOY_VERSION}"
                                 echo "params ${params}"
-                                def lastSuccessfulDeployVersion = currentBuild.previousSuccessfulBuild.actions.find{ it instanceof ParametersAction }?.parameters.find{it.name == "${priorAppVersion}"}?.value
+                                def lastSuccessfulDeployVersion = currentBuild.previousSuccessfulBuild.parameters.find{it.name == "${priorAppVersion}"}?.value
                                 DEPLOY_VERSION = "${lastSuccessfulDeployVersion}"      
                                 echo "deploy version after redefine ${DEPLOY_VERSION}"
                                 echo "revert deployment...of ${APP} on ${CLUSTER} to version ${DEPLOY_VERSION}"
