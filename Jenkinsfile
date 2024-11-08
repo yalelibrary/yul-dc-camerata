@@ -142,6 +142,10 @@ pipeline {
                                     }
                                 }
                                 lastSuccessfullBuild(currentBuild.getPreviousBuild());
+                                // Save the builds to a file
+                                sh "echo '${passedBuilds}' > builds"
+                                // Archive the builds
+                                archiveArtifacts artifacts: 'builds', fingerprint: true
                                 def priorAppVersion = 'notFound'
                                 if ( params.DEPLOY == 'management' ) {
                                     APP='mgmt'
@@ -163,7 +167,7 @@ pipeline {
                                     }
                                 }
                                 // "${currentBuild.previousBuild.buildVariables["MY_PARAM_COPY"]}"
-                                lastSuccessfulDeployVersion = passedBuilds.find{it.APP == params.APP}.buildVariables["${priorAppVersion}"]
+                                lastSuccessfulDeployVersion = currentBuild.previousBuild.buildVariables["${priorAppVersion}"]
                                 echo "deploy version before redefine ${DEPLOY_VERSION}"
                                 DEPLOY_VERSION = "${lastSuccessfulDeployVersion}"      
                                 echo "deploy version after redefine ${DEPLOY_VERSION}"
