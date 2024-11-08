@@ -112,7 +112,7 @@ pipeline {
                     steps {
                         script {
                             // Save the build params to a file
-                            sh 'echo "Build params" > build.params'
+                            sh "echo '${params}' > build.params"
                             // Archive the build params
                             archiveArtifacts artifacts: 'build.params', fingerprint: true
                         }
@@ -153,6 +153,7 @@ pipeline {
                                 }
                                 echo "deploy version before redefine ${DEPLOY_VERSION}"
                                 echo "params ${params}"
+                                echo "currentBuild.previousSuccessfulBuild.parameters ${currentBuild.previousSuccessfulBuild.parameters}"
                                 def lastSuccessfulDeployVersion = currentBuild.previousSuccessfulBuild.parameters.find{it.name == "${priorAppVersion}"}?.value
                                 DEPLOY_VERSION = "${lastSuccessfulDeployVersion}"      
                                 echo "deploy version after redefine ${DEPLOY_VERSION}"
