@@ -121,15 +121,15 @@ pipeline {
                     post {
                         failure {
                             script {
+                                echo "deploy version before redefine ${DEPLOY_VERSION}"
                                 DEPLOY_VERSION = "${currentBuild.previousSuccessfulBuild.buildVariables["DEPLOY_VERSION"]}"        
                                 echo "revert deployment...of ${APP} on ${CLUSTER} to version ${DEPLOY_VERSION}"
-                                echo "deploy version ${DEPLOY_VERSION}"
+                                echo "deploy version after redefine ${DEPLOY_VERSION}"
                                 echo "currentBuild ${currentBuild}"
                                 echo "currentBuild.previousSuccessfulBuild ${currentBuild.previousSuccessfulBuild}"
                                 echo "currentBuild.previousSuccessfulBuild.buildVariables ${currentBuild.previousSuccessfulBuild.buildVariables}"
                                 echo "currentBuild.previousSuccessfulBuild.buildVariables['DEPLOY_VERSION'] ${currentBuild.previousSuccessfulBuild.buildVariables["DEPLOY_VERSION"]}"
                                 echo "currentBuild.previousBuild() ${currentBuild.previousBuild()}"
-
                                 def cls = currentBuild.getPreviousBuild().getRawBuild().actions.find{ it instanceof ParametersAction }?.parameters.find{it.name == 'DEPLOY_VERSION'}?.value
                                 echo "example function to find prior deploy version ${cls}"
                                 sh "cam deploy-${APP} ${CLUSTER}"
