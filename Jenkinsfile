@@ -123,12 +123,13 @@ pipeline {
                             script {
                                 echo "deploy version before redefine ${DEPLOY_VERSION}"
                                 echo "revert deployment...of ${APP} on ${CLUSTER} to version ${DEPLOY_VERSION}"
-                                echo "currentBuild ${currentBuild}"
+                                echo "params ${params}"
+                                echo "params.deploy_version ${params.deploy_version}"
+                                echo "params.iiif_manifest_version ${params.iiif_manifest_version}"
                                 echo "currentBuild.previousSuccessfulBuild ${currentBuild.previousSuccessfulBuild}"
-                                echo "currentBuild.previousSuccessfulBuild.buildVariables ${currentBuild.previousSuccessfulBuild.buildVariables}"
-                                echo "currentBuild.previousSuccessfulBuild.buildVariables['DEPLOY_VERSION'] ${currentBuild.previousSuccessfulBuild.buildVariables["DEPLOY_VERSION"]}"
-                                echo "currentBuild.lastSuccessfulBuildParams ${currentBuild.previousSuccessfulBuild.actions.find{ it instanceof ParametersAction }?.parameters}"
-                                def lastSuccessfulDeployVersion = Jenkins.instance.getItem("${env.JOB_NAME}").lastSuccessfulBuild.actions.find{ it instanceof ParametersAction }?.parameters.find{it.name == 'DEPLOY_VERSION'}?.value
+                                echo "currentBuild.previousSuccessfulBuild.params ${currentBuild.previousSuccessfulBuild.params}"
+                                echo "currentBuild.previousSuccessfulBuild.params.deploy_version ${currentBuild.previousSuccessfulBuild.params.deploy_version}"
+                                echo "currentBuild.previousSuccessfulBuild.params.iiif_manifest_version ${currentBuild.previousSuccessfulBuild.params.iiif_manifest_version}"
                                 echo "example function to find prior deploy version ${lastSuccessfulDeployVersion}"
                                 DEPLOY_VERSION = "${lastSuccessfulDeployVersion}"        
                                 echo "deploy version after redefine ${DEPLOY_VERSION}"
