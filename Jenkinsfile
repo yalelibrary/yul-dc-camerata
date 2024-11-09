@@ -146,28 +146,28 @@ pipeline {
                                 sh "echo '${passedBuilds}' > builds"
                                 // Archive the builds
                                 archiveArtifacts artifacts: 'builds', fingerprint: true
-                                def priorAppVersion = 'notFound'
+                                def priorAppVariable = 'notFound'
                                 if ( params.DEPLOY == 'management' ) {
                                     APP='mgmt'
-                                    priorAppVersion="${MANAGEMENT_VERSION}"
+                                    priorAppVariable='MANAGEMENT_VERSION'
                                 }
                                 else if ( params.DEPLOY == 'manifest' ) {
                                     APP='mft'
-                                    priorAppVersion="${IIIF_MANIFEST_VERSION}"
+                                    priorAppVariable='IIIF_MANIFEST_VERSION'
                                 } else {
                                     APP=params.DEPLOY
                                     if ( params.DEPLOY == 'blacklight' ) {
-                                        priorAppVersion="${BLACKLIGHT_VERSION}"
+                                        priorAppVariable='BLACKLIGHT_VERSION'
                                     }
                                     else if ( params.DEPLOY == 'images' ) {
-                                        priorAppVersion="${IIIF_IMAGE_VERSION}"
+                                        priorAppVariable='IIIF_IMAGE_VERSION'
                                     }
                                     else if ( params.DEPLOY == 'intensive-workers' ) {
-                                        priorAppVersion="${MANAGEMENT_VERSION}"
+                                        priorAppVariable='MANAGEMENT_VERSION'
                                     }
                                 }
                                 // "${currentBuild.previousBuild.buildVariables["MY_PARAM_COPY"]}"
-                                lastSuccessfulDeployVersion = currentBuild.previousBuild.buildVariables["${priorAppVersion}"]
+                                lastSuccessfulDeployVersion = currentBuild.previousBuild.buildVariables["${priorAppVariable}"]
                                 echo "deploy version before redefine ${DEPLOY_VERSION}"
                                 DEPLOY_VERSION = "${lastSuccessfulDeployVersion}"      
                                 echo "deploy version after redefine ${DEPLOY_VERSION}"
