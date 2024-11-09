@@ -6,210 +6,213 @@ pipeline {
         AWS_DEFAULT_REGION = "us-east-1"
         HOME = "${WORKSPACE}"
     }
-    stages {
-        stage('Setup parameters') {
-            steps {
-                script {
-                    END_OF_JOB_NAME="${JOB_NAME.substring(JOB_NAME.lastIndexOf('/') + 1, JOB_NAME.length())}"
-                    if (END_OF_JOB_NAME == 'Prod-Deploy') {
-                        properties([
-                            parameters([
-                                string( name: 'BLACKLIGHT_VERSION', description: 'Add Blacklight Version, default value will be pulled from AWS SSM'),
-                                string( name: 'IIIF_IMAGE_VERSION', description: 'Add IIIF Image Version, default value will be pulled from AWS SSM'),
-                                string( name: 'IIIF_MANIFEST_VERSION', description: 'Add IIIF Manifest Version, default value will be pulled from AWS SSM'),
-                                string( name: 'MANAGEMENT_VERSION', description: 'Add Management Version, default value will be pulled from AWS SSM'),
-                                choice( name: 'DEPLOY', choices: ['blacklight','images','intensive-workers','management','manifest']),
-                                choice( name: 'CLUSTER', choices: ['yul-dc-prod']),
-                                booleanParam( name: 'UPDATE_SSM', defaultValue: true)
-                            ])
-                        ])
-                    } else {
-                        properties([
-                            parameters([
-                                string( name: 'BLACKLIGHT_VERSION', description: 'Add Blacklight Version, default value will be pulled from AWS SSM'),
-                                string( name: 'IIIF_IMAGE_VERSION', description: 'Add IIIF Image Version, default value will be pulled from AWS SSM'),
-                                string( name: 'IIIF_MANIFEST_VERSION', description: 'Add IIIF Manifest Version, default value will be pulled from AWS SSM'),
-                                string( name: 'MANAGEMENT_VERSION', description: 'Add Management Version, default value will be pulled from AWS SSM'),
-                                choice( name: 'DEPLOY', choices: ['blacklight','images','intensive-workers','management','manifest']),
-                                choice( name: 'CLUSTER', choices: ['yul-dc-test','yul-dc-uat','yul-dc-demo']),
-                                booleanParam( name: 'UPDATE_SSM', defaultValue: true)
-                            ])
-                        ])
-                    }
-                }
+    node {
+        // recursively get past successful builds
+        passedBuilds = []
+        // Save the builds to a file
+        sh "echo '${passedBuilds}' > builds"
+        // Archive the builds
+        archiveArtifacts artifacts: 'builds', fingerprint: true
+        def lastSuccessfullBuild = { build ->
+            if(build != null && build.result != 'FAILURE') {
+                //Recurse now to handle in chronological order
+                lastSuccessfullBuild(build.getPreviousBuild());
+                //Add the build to the array
+                passedBuilds.add(build);
             }
         }
-        stage('Checkout') {
-            steps {
-                git branch: '2917_AddSmokeTests', url: 'https://github.com/yalelibrary/yul-dc-camerata'
-            }
-        }
-        stage('Deployment') {
-            agent {
-                dockerfile {
-                    label 'docker'
-                    filename 'jenkins.dockerfile'
-                    reuseNode true
-                }
-            }
-            stages {
-                stage('Setup AWS') {
-                    steps {
-                        sh """
-                            aws configure set default.region us-east-1
-                            aws configure set aws_access_key_id ${AWS_ACCESS_KEY_ID}
-                            aws configure set aws_secret_access_key ${AWS_SECRET_ACCESS_KEY}
-                        """
-                    }
-                }
-                stage('Deployment') {
-                    environment {
-                        VPC_ID="vpc-57bee630"
-                        SUBNET0="subnet-2dc03400"
-                        SUBNET1="subnet-71b55b4d"
-                        CLUSTER_NAME="${CLUSTER}"
-                    }
-                    steps {
-                        script {
-                            if ( params.DEPLOY == 'management' ) {
-                                APP='mgmt'
-                                DEPLOY_VERSION="${MANAGEMENT_VERSION}"
-                            }
-                            else if ( params.DEPLOY == 'manifest' ) {
-                                APP='mft'
-                                DEPLOY_VERSION="${IIIF_MANIFEST_VERSION}"
-                            } else {
-                                APP=params.DEPLOY
-                                if ( params.DEPLOY == 'blacklight' ) {
-                                    DEPLOY_VERSION="${BLACKLIGHT_VERSION}"
-                                }
-                                else if ( params.DEPLOY == 'images' ) {
-                                    DEPLOY_VERSION="${IIIF_IMAGE_VERSION}"
-                                }
-                                else if ( params.DEPLOY == 'intensive-workers' ) {
-                                    DEPLOY_VERSION="${MANAGEMENT_VERSION}"
-                                }
-                            }
-                            if ("${DEPLOY_VERSION}" == null || "${DEPLOY_VERSION}" == '') {
-                                currentBuild.result = 'ABORTED'
-                                DEPLOY_VERSION="NOT DEPLOYED!! No version"
-                                error("Please enter a value for the version you want to deploy")
-                            } else if ( "${DEPLOY_VERSION}".indexOf(" ") > -1 ) {
-                                currentBuild.result = 'ABORTED'
-                                DEPLOY_VERSION="INVALAD VERSION [${DEPLOY_VERSION}]"
-                                error("The version includes a space")
-                            } else {
-                                sh "cam deploy-${APP} ${CLUSTER}"
-                                if ( APP == 'mgmt' ) {
-                                    sh "cam deploy-worker ${CLUSTER}"
-                                    sh "WORKER_COUNT=1 cam deploy-intensive-worker ${CLUSTER}"
-                                }
-                            }
+        lastSuccessfullBuild(currentBuild.getPreviousBuild());
+        stages {
+            stage('Setup parameters') {
+                steps {
+                    script {
+                        END_OF_JOB_NAME="${JOB_NAME.substring(JOB_NAME.lastIndexOf('/') + 1, JOB_NAME.length())}"
+                        if (END_OF_JOB_NAME == 'Prod-Deploy') {
+                            properties([
+                                parameters([
+                                    string( name: 'BLACKLIGHT_VERSION', description: 'Add Blacklight Version, default value will be pulled from AWS SSM'),
+                                    string( name: 'IIIF_IMAGE_VERSION', description: 'Add IIIF Image Version, default value will be pulled from AWS SSM'),
+                                    string( name: 'IIIF_MANIFEST_VERSION', description: 'Add IIIF Manifest Version, default value will be pulled from AWS SSM'),
+                                    string( name: 'MANAGEMENT_VERSION', description: 'Add Management Version, default value will be pulled from AWS SSM'),
+                                    choice( name: 'DEPLOY', choices: ['blacklight','images','intensive-workers','management','manifest']),
+                                    choice( name: 'CLUSTER', choices: ['yul-dc-prod']),
+                                    booleanParam( name: 'UPDATE_SSM', defaultValue: true)
+                                ])
+                            ])
+                        } else {
+                            properties([
+                                parameters([
+                                    string( name: 'BLACKLIGHT_VERSION', description: 'Add Blacklight Version, default value will be pulled from AWS SSM'),
+                                    string( name: 'IIIF_IMAGE_VERSION', description: 'Add IIIF Image Version, default value will be pulled from AWS SSM'),
+                                    string( name: 'IIIF_MANIFEST_VERSION', description: 'Add IIIF Manifest Version, default value will be pulled from AWS SSM'),
+                                    string( name: 'MANAGEMENT_VERSION', description: 'Add Management Version, default value will be pulled from AWS SSM'),
+                                    choice( name: 'DEPLOY', choices: ['blacklight','images','intensive-workers','management','manifest']),
+                                    choice( name: 'CLUSTER', choices: ['yul-dc-test','yul-dc-uat','yul-dc-demo']),
+                                    booleanParam( name: 'UPDATE_SSM', defaultValue: true)
+                                ])
+                            ])
                         }
                     }
                 }
-                stage('Save build params') {
-                    steps {
-                        script {
-                            // Save the build params to a file
-                            sh "echo '${params}' > build_params.txt"
-                            // Archive the build params
-                            archiveArtifacts artifacts: 'build_params.txt', fingerprint: true
-                        }
+            }
+            stage('Checkout') {
+                steps {
+                    git branch: '2917_AddSmokeTests', url: 'https://github.com/yalelibrary/yul-dc-camerata'
+                }
+            }
+            stage('Deployment') {
+                agent {
+                    dockerfile {
+                        label 'docker'
+                        filename 'jenkins.dockerfile'
+                        reuseNode true
                     }
                 }
-                stage('Smoke Tests') {
-                    environment {
-                        VPC_ID="vpc-57bee630"
-                        SUBNET0="subnet-2dc03400"
-                        SUBNET1="subnet-71b55b4d"
-                        CLUSTER_NAME="${CLUSTER}"
+                stages {
+                    stage('Setup AWS') {
+                        steps {
+                            sh """
+                                aws configure set default.region us-east-1
+                                aws configure set aws_access_key_id ${AWS_ACCESS_KEY_ID}
+                                aws configure set aws_secret_access_key ${AWS_SECRET_ACCESS_KEY}
+                            """
+                        }
                     }
-                    steps {
-                        sh "CLUSTER_NAME=${CLUSTER} cam smoke"
-                    }
-                    post {
-                        failure {
+                    stage('Deployment') {
+                        environment {
+                            VPC_ID="vpc-57bee630"
+                            SUBNET0="subnet-2dc03400"
+                            SUBNET1="subnet-71b55b4d"
+                            CLUSTER_NAME="${CLUSTER}"
+                        }
+                        steps {
                             script {
-                                // recursively get past successful builds
-                                passedBuilds = []
-                                def lastSuccessfullBuild = { build ->
-                                    if(build != null && build.result != 'FAILURE') {
-                                        //Recurse now to handle in chronological order
-                                        lastSuccessfullBuild(build.getPreviousBuild());
-                                        //Add the build to the array
-                                        passedBuilds.add(build);
-                                    }
-                                }
-                                lastSuccessfullBuild(currentBuild.getPreviousBuild());
-                                // Save the builds to a file
-                                sh "echo '${passedBuilds}' > builds"
-                                // Archive the builds
-                                archiveArtifacts artifacts: 'builds', fingerprint: true
-                                def priorAppVariable = 'notFound'
                                 if ( params.DEPLOY == 'management' ) {
                                     APP='mgmt'
-                                    priorAppVariable='MANAGEMENT_VERSION'
+                                    DEPLOY_VERSION="${MANAGEMENT_VERSION}"
                                 }
                                 else if ( params.DEPLOY == 'manifest' ) {
                                     APP='mft'
-                                    priorAppVariable='IIIF_MANIFEST_VERSION'
+                                    DEPLOY_VERSION="${IIIF_MANIFEST_VERSION}"
                                 } else {
                                     APP=params.DEPLOY
                                     if ( params.DEPLOY == 'blacklight' ) {
-                                        priorAppVariable='BLACKLIGHT_VERSION'
+                                        DEPLOY_VERSION="${BLACKLIGHT_VERSION}"
                                     }
                                     else if ( params.DEPLOY == 'images' ) {
-                                        priorAppVariable='IIIF_IMAGE_VERSION'
+                                        DEPLOY_VERSION="${IIIF_IMAGE_VERSION}"
                                     }
                                     else if ( params.DEPLOY == 'intensive-workers' ) {
-                                        priorAppVariable='MANAGEMENT_VERSION'
+                                        DEPLOY_VERSION="${MANAGEMENT_VERSION}"
                                     }
                                 }
-                                // "${currentBuild.previousBuild.buildVariables["MY_PARAM_COPY"]}"
-                                lastSuccessfulDeployVersion = currentBuild.previousBuild.buildVariables["${priorAppVariable}"]
-                                echo "deploy version before redefine ${DEPLOY_VERSION}"
-                                DEPLOY_VERSION = "${lastSuccessfulDeployVersion}"      
-                                echo "deploy version after redefine ${DEPLOY_VERSION}"
-                                echo "revert deployment...of ${APP} on ${CLUSTER} to version ${DEPLOY_VERSION}"
-                                sh "cam deploy-${APP} ${CLUSTER}"
-                                if ( APP == 'mgmt' ) {
-                                    sh "cam deploy-worker ${CLUSTER}"
-                                    sh "WORKER_COUNT=1 cam deploy-intensive-worker ${CLUSTER}"
+                                if ("${DEPLOY_VERSION}" == null || "${DEPLOY_VERSION}" == '') {
+                                    currentBuild.result = 'ABORTED'
+                                    DEPLOY_VERSION="NOT DEPLOYED!! No version"
+                                    error("Please enter a value for the version you want to deploy")
+                                } else if ( "${DEPLOY_VERSION}".indexOf(" ") > -1 ) {
+                                    currentBuild.result = 'ABORTED'
+                                    DEPLOY_VERSION="INVALAD VERSION [${DEPLOY_VERSION}]"
+                                    error("The version includes a space")
+                                } else {
+                                    sh "cam deploy-${APP} ${CLUSTER}"
+                                    if ( APP == 'mgmt' ) {
+                                        sh "cam deploy-worker ${CLUSTER}"
+                                        sh "WORKER_COUNT=1 cam deploy-intensive-worker ${CLUSTER}"
+                                    }
                                 }
                             }
                         }
                     }
-                }
-                stage('Update SSM') {
-                    when {
-                        environment name: 'UPDATE_SSM', value: 'true'
+                    stage('Save build params') {
+                        steps {
+                            script {
+                                // Save the build params to a file
+                                sh "echo '${params}' > build_params.txt"
+                                // Archive the build params
+                                archiveArtifacts artifacts: 'build_params.txt', fingerprint: true
+                            }
+                        }
                     }
-                    steps {
-                        echo 'updating ssm...'
-                        script {
-                            if ( BLACKLIGHT_VERSION != '' ) {
-                                sh "CLUSTER_NAME=${CLUSTER} cam push_version blacklight ${BLACKLIGHT_VERSION}"
+                    stage('Smoke Tests') {
+                        environment {
+                            VPC_ID="vpc-57bee630"
+                            SUBNET0="subnet-2dc03400"
+                            SUBNET1="subnet-71b55b4d"
+                            CLUSTER_NAME="${CLUSTER}"
+                        }
+                        steps {
+                            sh "CLUSTER_NAME=${CLUSTER} cam smoke"
+                        }
+                        post {
+                            failure {
+                                script {
+                                    def priorAppVariable = 'notFound'
+                                    if ( params.DEPLOY == 'management' ) {
+                                        APP='mgmt'
+                                        priorAppVariable='MANAGEMENT_VERSION'
+                                    }
+                                    else if ( params.DEPLOY == 'manifest' ) {
+                                        APP='mft'
+                                        priorAppVariable='IIIF_MANIFEST_VERSION'
+                                    } else {
+                                        APP=params.DEPLOY
+                                        if ( params.DEPLOY == 'blacklight' ) {
+                                            priorAppVariable='BLACKLIGHT_VERSION'
+                                        }
+                                        else if ( params.DEPLOY == 'images' ) {
+                                            priorAppVariable='IIIF_IMAGE_VERSION'
+                                        }
+                                        else if ( params.DEPLOY == 'intensive-workers' ) {
+                                            priorAppVariable='MANAGEMENT_VERSION'
+                                        }
+                                    }
+                                    // lastSuccess
+                                    // "${currentBuild.previousBuild.buildVariables["MY_PARAM_COPY"]}"
+                                    lastSuccessfulDeployVersion = currentBuild.previousBuild.buildVariables["${priorAppVariable}"]
+                                    echo "deploy version before redefine ${DEPLOY_VERSION}"
+                                    DEPLOY_VERSION = "${lastSuccessfulDeployVersion}"      
+                                    echo "deploy version after redefine ${DEPLOY_VERSION}"
+                                    echo "revert deployment...of ${APP} on ${CLUSTER} to version ${DEPLOY_VERSION}"
+                                    sh "cam deploy-${APP} ${CLUSTER}"
+                                    if ( APP == 'mgmt' ) {
+                                        sh "cam deploy-worker ${CLUSTER}"
+                                        sh "WORKER_COUNT=1 cam deploy-intensive-worker ${CLUSTER}"
+                                    }
+                                }
                             }
-                            if ( IIIF_IMAGE_VERSION != '' ) {
-                                sh "CLUSTER_NAME=${CLUSTER} cam push_version iiif_image ${IIIF_IMAGE_VERSION}"
-                            }
-                            if ( IIIF_MANIFEST_VERSION != '' ) {
-                                sh "CLUSTER_NAME=${CLUSTER} cam push_version iiif_manifest ${IIIF_MANIFEST_VERSION}"
-                            }
-                            if ( MANAGEMENT_VERSION != '' ) {
-                                sh "CLUSTER_NAME=${CLUSTER} cam push_version management ${MANAGEMENT_VERSION}"
+                        }
+                    }
+                    stage('Update SSM') {
+                        when {
+                            environment name: 'UPDATE_SSM', value: 'true'
+                        }
+                        steps {
+                            echo 'updating ssm...'
+                            script {
+                                if ( BLACKLIGHT_VERSION != '' ) {
+                                    sh "CLUSTER_NAME=${CLUSTER} cam push_version blacklight ${BLACKLIGHT_VERSION}"
+                                }
+                                if ( IIIF_IMAGE_VERSION != '' ) {
+                                    sh "CLUSTER_NAME=${CLUSTER} cam push_version iiif_image ${IIIF_IMAGE_VERSION}"
+                                }
+                                if ( IIIF_MANIFEST_VERSION != '' ) {
+                                    sh "CLUSTER_NAME=${CLUSTER} cam push_version iiif_manifest ${IIIF_MANIFEST_VERSION}"
+                                }
+                                if ( MANAGEMENT_VERSION != '' ) {
+                                    sh "CLUSTER_NAME=${CLUSTER} cam push_version management ${MANAGEMENT_VERSION}"
+                                }
                             }
                         }
                     }
                 }
             }
         }
-    }
-    post {
-        always {
-            script {
-            currentBuild.description = "${CLUSTER}:${APP}:${DEPLOY_VERSION}"
+        post {
+            always {
+                script {
+                currentBuild.description = "${CLUSTER}:${APP}:${DEPLOY_VERSION}"
+                }
             }
         }
     }
