@@ -1,27 +1,27 @@
-pipeline {
-    agent { label 'docker' }
-    environment {
-        AWS = credentials('aws-ci-keys')
-        AWS_PROFILE = "default"
-        AWS_DEFAULT_REGION = "us-east-1"
-        HOME = "${WORKSPACE}"
-    }
-    node {
-        // recursively get past successful builds
-        passedBuilds = []
-        // Save the builds to a file
-        sh "echo '${passedBuilds}' > builds"
-        // Archive the builds
-        archiveArtifacts artifacts: 'builds', fingerprint: true
-        def lastSuccessfullBuild = { build ->
-            if(build != null && build.result != 'FAILURE') {
-                //Recurse now to handle in chronological order
-                lastSuccessfullBuild(build.getPreviousBuild());
-                //Add the build to the array
-                passedBuilds.add(build);
-            }
+node {
+    // recursively get past successful builds
+    passedBuilds = []
+    // Save the builds to a file
+    sh "echo '${passedBuilds}' > builds"
+    // Archive the builds
+    archiveArtifacts artifacts: 'builds', fingerprint: true
+    def lastSuccessfullBuild = { build ->
+        if(build != null && build.result != 'FAILURE') {
+            //Recurse now to handle in chronological order
+            lastSuccessfullBuild(build.getPreviousBuild());
+            //Add the build to the array
+            passedBuilds.add(build);
         }
-        lastSuccessfullBuild(currentBuild.getPreviousBuild());
+    }
+    lastSuccessfullBuild(currentBuild.getPreviousBuild());
+    pipeline {
+        agent { label 'docker' }
+        environment {
+            AWS = credentials('aws-ci-keys')
+            AWS_PROFILE = "default"
+            AWS_DEFAULT_REGION = "us-east-1"
+            HOME = "${WORKSPACE}"
+        }
         stages {
             stage('Setup parameters') {
                 steps {
