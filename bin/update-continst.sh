@@ -117,7 +117,7 @@ CLUSTER_NAME=$1
 
   if [ $CLUSTER_NAME == "yul-dc-test" ]
   then
-    FLEXCLONE_SUFFIX="_test_11212022"
+    FLEXCLONE_SUFFIX="_test_10_18_2024"
     GOOBI_HOT="wcsfs00.its.yale.internal:/NFS_SFS_std_sngl_003/Goobi_Deposits-CC1741-BRBLDSU"
     GOOBI_NON_BRBL="wcsfs00.its.yale.internal:/NFS_SFS_std_sngl_007/yul_goobi_non_BRBL_tst-CC1702-LIBITS"
 
@@ -126,7 +126,7 @@ CLUSTER_NAME=$1
     mount -t nfs -orw,nolock,rsize=32768,wsize=32768,intr,noatime,nfsvers=3 \$GOOBI_HOT/dcs /brbl-dsu/dcs
    elif [ $CLUSTER_NAME == "yul-dc-demo" ]
    then
-    FLEXCLONE_SUFFIX="_test_11212022"
+    FLEXCLONE_SUFFIX="_test_10_18_2024"
     GOOBI_HOT="wcsfs00.its.yale.internal:/NFS_SFS_std_mult_000/Goobi_Deposits_UAT-CC1741-BRBLDSU"
     GOOBI_NON_BRBL="wcsfs00.its.yale.internal:/NFS_SFS_std_sngl_007/yul_goobi_non_BRBL_uat-CC1702-LIBITS"
 

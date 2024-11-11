@@ -141,6 +141,36 @@ aws iam get-user --profile yale
 
 If you use rbenv, you must run the following command after installing camerata: `rbenv rehash`
 
+## Running Smoke Tests
+Smoke tests are run before every deployment in every environment.  To run the tests locally both the Management and Blacklight apps must be running locally as well, although this is not recommended.  The smoke tests are specifically for deployed environments.
+
+To set up running smoke tests in your terminal:
+
+```
+docker build . -f jenkins.dockerfile
+```
+Once built use the sha to run the container.  At the end of the build look for `writing image sha256:d01508e3c1a7c7738807fb076e9b595d87552b2ce8451a919869b84e1da166632`. The sha will be different each time.
+```
+docker run -it d01508e3c1a7c7738807fb076e9b595d87552b2ce8451a919869b84e1da166632 bash
+```
+Then you will be in a bash shell inside the container and you can run all the smoke tests or individual ones from there.  To set which cluster to test and to set up environment variables needed for camerata to run the tests you may need to export a few variables.
+
+```
+export CLUSTER_NAME=yul-dc-test AWS_PROFILE=yale AWS_DEFAULT_REGION=us-east-1
+```
+
+
+To run all smoke tests:
+
+```bash
+cam smoke
+```
+
+To run tests individually:
+```bash
+rspec smoke_spec/deploy_spec.rb:56
+```
+
 ## Why not in the Gemfile
 
 The reason we don't add camerata to the Gemfile is that we need camerata to start the docker containers, but we do not otherwise need to bundle our application locally. The bundle can live with in the container. Requiring camerata to be in the bundle means requiring that a full dev environment both inside and outside the container, which is a requirement we are trying to avoid.
