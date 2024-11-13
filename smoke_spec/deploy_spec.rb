@@ -165,7 +165,7 @@ RSpec.describe "The cluster at #{ENV['CLUSTER_NAME']}", type: :feature do
           uri = "#{blacklight_url}/annotation/oid/#{public_fulltext_parent_oid}/canvas/#{public_fulltext_child_oid}/fulltext?oid=#{public_fulltext_parent_oid}&child_oid=#{public_fulltext_child_oid}"
           response = HTTP.get(uri, ssl_context: ssl_context)
           expect(response.code).to eq(200)
-          expect(JSON.parse(response.body)['type']).to eq 'Annotational'
+          expect(JSON.parse(response.body)['type']).to eq 'Annotation'
         end
         # no yco fulltext in prod or demo
         if ENV['CLUSTER_NAME'] == 'yul-dc-uat' || ENV['CLUSTER_NAME'] == 'yul-dc-test'

@@ -45,7 +45,7 @@ pipeline {
         }
         stage('Checkout') {
             steps {
-                git branch: '2917_MoveSmokeTests', url: 'https://github.com/yalelibrary/yul-dc-camerata'
+                git branch: 'main', url: 'https://github.com/yalelibrary/yul-dc-camerata'
             }
         }
         stage('Deployment') {
@@ -66,7 +66,7 @@ pipeline {
                         """
                     }
                 }
-                stage('Deployment') {
+                stage('Deploy') {
                     steps {
                         script {
                             if ( params.DEPLOY == 'management' ) {
