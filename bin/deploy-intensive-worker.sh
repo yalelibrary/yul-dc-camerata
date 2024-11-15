@@ -35,6 +35,7 @@ then
   # comman seperate like so pdf,ptiff,otherjob
   export WORKER_QUEUES=pdf,intensive_solr_index
 
+  # Launch the service and register containers with the loadbalancer
   ecs-cli compose  \
     --region $AWS_DEFAULT_REGION \
     --project-name ${CLUSTER_NAME}-intensive-worker \

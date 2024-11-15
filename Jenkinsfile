@@ -5,6 +5,10 @@ pipeline {
         AWS_PROFILE = "default"
         AWS_DEFAULT_REGION = "us-east-1"
         HOME = "${WORKSPACE}"
+        VPC_ID="vpc-57bee630"
+        SUBNET0="subnet-2dc03400"
+        SUBNET1="subnet-71b55b4d"
+        CLUSTER_NAME="${CLUSTER}"
     }
     stages {
         stage('Setup parameters') {
@@ -62,13 +66,7 @@ pipeline {
                         """
                     }
                 }
-                stage('Deployment') {
-                    environment {
-                        VPC_ID="vpc-57bee630"
-                        SUBNET0="subnet-2dc03400"
-                        SUBNET1="subnet-71b55b4d"
-                        CLUSTER_NAME="${CLUSTER}"
-                    }
+                stage('Deploy') {
                     steps {
                         script {
                             if ( params.DEPLOY == 'management' ) {
@@ -108,24 +106,56 @@ pipeline {
                         }
                     }
                 }
-                stage('Update SSM') {
-                    when {
-                        environment name: 'UPDATE_SSM', value: 'true'
-                    }
+                stage('Smoke Tests') {
                     steps {
-                        echo 'updating ssm...'
-                        script {
-                            if ( BLACKLIGHT_VERSION != '' ) {
-                                sh "cam push_version blacklight ${BLACKLIGHT_VERSION}"
+                        sh "CLUSTER_NAME=${CLUSTER} cam smoke"
+                    }
+                    post {
+                        success {
+                            script {
+                                echo 'updating ssm...'
+                                if ( BLACKLIGHT_VERSION != '' ) {
+                                    sh "CLUSTER_NAME=${CLUSTER} cam push_version blacklight ${BLACKLIGHT_VERSION}"
+                                }
+                                if ( IIIF_IMAGE_VERSION != '' ) {
+                                    sh "CLUSTER_NAME=${CLUSTER} cam push_version iiif_image ${IIIF_IMAGE_VERSION}"
+                                }
+                                if ( IIIF_MANIFEST_VERSION != '' ) {
+                                    sh "CLUSTER_NAME=${CLUSTER} cam push_version iiif_manifest ${IIIF_MANIFEST_VERSION}"
+                                }
+                                if ( MANAGEMENT_VERSION != '' ) {
+                                    sh "CLUSTER_NAME=${CLUSTER} cam push_version management ${MANAGEMENT_VERSION}"
+                                }
                             }
-                            if ( IIIF_IMAGE_VERSION != '' ) {
-                                sh "cam push_version iiif_image ${IIIF_IMAGE_VERSION}"
-                            }
-                            if ( IIIF_MANIFEST_VERSION != '' ) {
-                                sh "cam push_version iiif_manifest ${IIIF_MANIFEST_VERSION}"
-                            }
-                            if ( MANAGEMENT_VERSION != '' ) {
-                                sh "cam push_version management ${MANAGEMENT_VERSION}"
+                        }
+                        failure {
+                            script {
+                                switch (params.DEPLOY) {
+                                    case 'blacklight': 
+                                        lastSuccessVersion=sh(returnStdout: true, script: "cam env_get /${CLUSTER}/BLACKLIGHT_VERSION")
+                                        break
+                                    case 'management':
+                                        lastSuccessVersion=sh(returnStdout: true, script: "cam env_get /${CLUSTER}/MANAGEMENT_VERSION")
+                                        break
+                                    case 'manifest':
+                                        lastSuccessVersion=sh(returnStdout: true, script: "cam env_get /${CLUSTER}/IIIF_MANIFEST_VERSION")
+                                        break
+                                    case 'images':
+                                        lastSuccessVersion=sh(returnStdout: true, script: "cam env_get /${CLUSTER}/IIIF_IMAGE_VERSION")
+                                        break
+                                    case 'intensive-workers':
+                                        lastSuccessVersion=sh(returnStdout: true, script: "cam env_get /${CLUSTER}/MANAGEMENT_VERSION")
+                                        break
+                                }
+                                echo "deploy version before redefine ${DEPLOY_VERSION}"
+                                DEPLOY_VERSION = "${lastSuccessVersion}"      
+                                echo "deploy version after redefine ${DEPLOY_VERSION}"
+                                echo "revert deployment...of ${APP} on ${CLUSTER} to version ${DEPLOY_VERSION}"
+                                sh "cam deploy-${APP} ${CLUSTER}"
+                                if ( APP == 'mgmt' ) {
+                                    sh "cam deploy-worker ${CLUSTER}"
+                                    sh "WORKER_COUNT=1 cam deploy-intensive-worker ${CLUSTER}"
+                                }
                             }
                         }
                     }
@@ -134,10 +164,10 @@ pipeline {
         }
     }
     post {
-      always {
-        script {
-          currentBuild.description = "${CLUSTER}:${APP}:${DEPLOY_VERSION}"
+        always {
+            script {
+            currentBuild.description = "${CLUSTER}:${APP}:${DEPLOY_VERSION}"
+            }
         }
-      }
     }
 }

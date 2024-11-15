@@ -7,14 +7,13 @@ end
 Capybara.register_driver :chrome_headless do |app|
   client = Selenium::WebDriver::Remote::Http::Default.new
   client.read_timeout = 120
-  capabilities = Selenium::WebDriver::Remote::Capabilities.chrome(accept_insecure_certs: true)
-  options = ::Selenium::WebDriver::Chrome::Options.new
-  options.add_argument('--headless')
-  options.add_argument('--no-sandbox')
-  options.add_argument('--disable-dev-shm-usage')
-  options.add_argument('--window-size=1400,1400')
+  options = Selenium::WebDriver::Chrome::Options.new(args: %w[disable-gpu no-sandbox headless whitelisted-ips window-size=1400,1400])
+  options.add_argument(
+    "--enable-features=NetworkService,NetworkServiceInProcess"
+  )
+  options.add_argument('--profile-directory=Default')
 
-  Capybara::Selenium::Driver.new(app, browser: :chrome, options: options, http_client: client, desired_capabilities: capabilities)
+  Capybara::Selenium::Driver.new(app, browser: :chrome, options: options, http_client: client)
 end
 
 Capybara.javascript_driver = :chrome_headless
