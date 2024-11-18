@@ -46,6 +46,6 @@ then
     $2 \
     $discovery $log \
     --force-deployment \
-    --cluster ${CLUSTER_NAME} \
+    --cluster ${CLUSTER_NAME}
 #    --tags Application=DigitalCollection
 fi
