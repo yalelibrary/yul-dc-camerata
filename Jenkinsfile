@@ -148,7 +148,7 @@ pipeline {
                                         break
                                 }
                                 echo "deploy version before redefine ${DEPLOY_VERSION}"
-                                DEPLOY_VERSION = "${lastSuccessVersion}"      
+                                DEPLOY_VERSION="${lastSuccessVersion}"      
                                 echo "deploy version after redefine ${DEPLOY_VERSION}"
                                 echo "revert deployment...of ${APP} on ${CLUSTER} to version ${DEPLOY_VERSION}"
                                 sh "cam deploy-${APP} ${CLUSTER}"
