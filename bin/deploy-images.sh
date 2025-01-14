@@ -39,7 +39,6 @@ then
   ecs-cli compose  \
     --region $AWS_DEFAULT_REGION \
     --project-name ${CLUSTER_NAME}-images\
-    --ecs-params ${CLUSTER_NAME}-iiif-images-params.yml \
     service up \
     $2 \
     --launch-type FARGATE \
