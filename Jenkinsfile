@@ -45,7 +45,7 @@ pipeline {
         }
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/yalelibrary/yul-dc-camerata'
+                git branch: '2979_FixSmokeTestRevert', url: 'https://github.com/yalelibrary/yul-dc-camerata'
             }
         }
         stage('Deployment') {
