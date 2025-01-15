@@ -1,10 +1,10 @@
 pipeline {
     agent { label 'docker' }
     environment {
-        AWS = credentials('aws-ci-keys')
-        AWS_PROFILE = "default"
-        AWS_DEFAULT_REGION = "us-east-1"
-        HOME = "${WORKSPACE}"
+        AWS=credentials('aws-ci-keys')
+        AWS_PROFILE="default"
+        AWS_DEFAULT_REGION="us-east-1"
+        HOME="${WORKSPACE}"
         VPC_ID="vpc-57bee630"
         SUBNET0="subnet-2dc03400"
         SUBNET1="subnet-71b55b4d"
@@ -18,10 +18,10 @@ pipeline {
                     if (END_OF_JOB_NAME == 'Prod-Deploy') {
                         properties([
                             parameters([
-                                string( name: 'BLACKLIGHT_VERSION', description: 'Add Blacklight Version, default value will be pulled from AWS SSM'),
-                                string( name: 'IIIF_IMAGE_VERSION', description: 'Add IIIF Image Version, default value will be pulled from AWS SSM'),
-                                string( name: 'IIIF_MANIFEST_VERSION', description: 'Add IIIF Manifest Version, default value will be pulled from AWS SSM'),
-                                string( name: 'MANAGEMENT_VERSION', description: 'Add Management Version, default value will be pulled from AWS SSM'),
+                                string( name: 'BLACKLIGHT_VERSION_INPUT', description: 'Add Blacklight Version, default value will be pulled from AWS SSM'),
+                                string( name: 'IIIF_IMAGE_VERSION_INPUT', description: 'Add IIIF Image Version, default value will be pulled from AWS SSM'),
+                                string( name: 'IIIF_MANIFEST_VERSION_INPUT', description: 'Add IIIF Manifest Version, default value will be pulled from AWS SSM'),
+                                string( name: 'MANAGEMENT_VERSION_INPUT', description: 'Add Management Version, default value will be pulled from AWS SSM'),
                                 choice( name: 'DEPLOY', choices: ['blacklight','images','intensive-workers','management','manifest']),
                                 choice( name: 'CLUSTER', choices: ['yul-dc-prod']),
                                 booleanParam( name: 'UPDATE_SSM', defaultValue: true)
@@ -30,10 +30,10 @@ pipeline {
                     } else {
                         properties([
                             parameters([
-                                string( name: 'BLACKLIGHT_VERSION', description: 'Add Blacklight Version, default value will be pulled from AWS SSM'),
-                                string( name: 'IIIF_IMAGE_VERSION', description: 'Add IIIF Image Version, default value will be pulled from AWS SSM'),
-                                string( name: 'IIIF_MANIFEST_VERSION', description: 'Add IIIF Manifest Version, default value will be pulled from AWS SSM'),
-                                string( name: 'MANAGEMENT_VERSION', description: 'Add Management Version, default value will be pulled from AWS SSM'),
+                                string( name: 'BLACKLIGHT_VERSION_INPUT', description: 'Add Blacklight Version, default value will be pulled from AWS SSM'),
+                                string( name: 'IIIF_IMAGE_VERSION_INPUT', description: 'Add IIIF Image Version, default value will be pulled from AWS SSM'),
+                                string( name: 'IIIF_MANIFEST_VERSION_INPUT', description: 'Add IIIF Manifest Version, default value will be pulled from AWS SSM'),
+                                string( name: 'MANAGEMENT_VERSION_INPUT', description: 'Add Management Version, default value will be pulled from AWS SSM'),
                                 choice( name: 'DEPLOY', choices: ['blacklight','images','intensive-workers','management','manifest']),
                                 choice( name: 'CLUSTER', choices: ['yul-dc-test','yul-dc-uat','yul-dc-demo']),
                                 booleanParam( name: 'UPDATE_SSM', defaultValue: true)
@@ -45,7 +45,7 @@ pipeline {
         }
         stage('Checkout') {
             steps {
-                git branch: '2979_FixSmokeTestRevert', url: 'https://github.com/yalelibrary/yul-dc-camerata'
+                git branch: 'main', url: 'https://github.com/yalelibrary/yul-dc-camerata'
             }
         }
         stage('Deployment') {
@@ -71,21 +71,21 @@ pipeline {
                         script {
                             if ( params.DEPLOY == 'management' ) {
                                 APP='mgmt'
-                                DEPLOY_VERSION="${MANAGEMENT_VERSION}"
+                                DEPLOY_VERSION="${MANAGEMENT_VERSION_INPUT}"
                             }
                             else if ( params.DEPLOY == 'manifest' ) {
                                 APP='mft'
-                                DEPLOY_VERSION="${IIIF_MANIFEST_VERSION}"
+                                DEPLOY_VERSION="${IIIF_MANIFEST_VERSION_INPUT}"
                             } else {
                                 APP=params.DEPLOY
                                 if ( params.DEPLOY == 'blacklight' ) {
-                                    DEPLOY_VERSION="${BLACKLIGHT_VERSION}"
+                                    DEPLOY_VERSION="${BLACKLIGHT_VERSION_INPUT}"
                                 }
                                 else if ( params.DEPLOY == 'images' ) {
-                                    DEPLOY_VERSION="${IIIF_IMAGE_VERSION}"
+                                    DEPLOY_VERSION="${IIIF_IMAGE_VERSION_INPUT}"
                                 }
                                 else if ( params.DEPLOY == 'intensive-workers' ) {
-                                    DEPLOY_VERSION="${MANAGEMENT_VERSION}"
+                                    DEPLOY_VERSION="${MANAGEMENT_VERSION_INPUT}"
                                 }
                             }
                             if ("${DEPLOY_VERSION}" == null || "${DEPLOY_VERSION}" == '') {
@@ -114,17 +114,17 @@ pipeline {
                         success {
                             script {
                                 echo 'updating ssm...'
-                                if ( BLACKLIGHT_VERSION != '' ) {
-                                    sh "CLUSTER_NAME=${CLUSTER} cam push_version blacklight ${BLACKLIGHT_VERSION}"
+                                if ( BLACKLIGHT_VERSION_INPUT != '' ) {
+                                    sh "CLUSTER_NAME=${CLUSTER} cam push_version blacklight ${BLACKLIGHT_VERSION_INPUT}"
                                 }
-                                if ( IIIF_IMAGE_VERSION != '' ) {
-                                    sh "CLUSTER_NAME=${CLUSTER} cam push_version iiif_image ${IIIF_IMAGE_VERSION}"
+                                if ( IIIF_IMAGE_VERSION_INPUT != '' ) {
+                                    sh "CLUSTER_NAME=${CLUSTER} cam push_version iiif_image ${IIIF_IMAGE_VERSION_INPUT}"
                                 }
-                                if ( IIIF_MANIFEST_VERSION != '' ) {
-                                    sh "CLUSTER_NAME=${CLUSTER} cam push_version iiif_manifest ${IIIF_MANIFEST_VERSION}"
+                                if ( IIIF_MANIFEST_VERSION_INPUT != '' ) {
+                                    sh "CLUSTER_NAME=${CLUSTER} cam push_version iiif_manifest ${IIIF_MANIFEST_VERSION_INPUT}"
                                 }
-                                if ( MANAGEMENT_VERSION != '' ) {
-                                    sh "CLUSTER_NAME=${CLUSTER} cam push_version management ${MANAGEMENT_VERSION}"
+                                if ( MANAGEMENT_VERSION_INPUT != '' ) {
+                                    sh "CLUSTER_NAME=${CLUSTER} cam push_version management ${MANAGEMENT_VERSION_INPUT}"
                                 }
                             }
                         }
@@ -147,11 +147,14 @@ pipeline {
                                         lastSuccessVersion=sh(returnStdout: true, script: "cam env_get /${CLUSTER}/MANAGEMENT_VERSION")
                                         break
                                 }
-                                echo "deploy version before redefine ${DEPLOY_VERSION}"
-                                DEPLOY_VERSION="${lastSuccessVersion}"      
-                                echo "deploy version after redefine ${DEPLOY_VERSION}"
-                                echo "revert deployment...of ${APP} on ${CLUSTER} to version ${DEPLOY_VERSION}"
-                                sh "cam deploy-${APP} ${CLUSTER}"
+                                sh """
+                                    echo "deploy version before redefine \${DEPLOY_VERSION}"
+                                    export DEPLOY_VERSION="${lastSuccessVersion}"      
+                                    export APP="${APP}"      
+                                    echo "deploy version after redefine \${DEPLOY_VERSION}"
+                                    echo "revert deployment...of \${APP} on \${CLUSTER} to version \${DEPLOY_VERSION}"
+                                    cam deploy-${APP} ${CLUSTER}
+                                """
                                 if ( APP == 'mgmt' ) {
                                     sh "cam deploy-worker ${CLUSTER}"
                                     sh "WORKER_COUNT=1 cam deploy-intensive-worker ${CLUSTER}"
