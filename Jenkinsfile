@@ -135,25 +135,34 @@ pipeline {
                         }
                         failure {
                             script {
+                                sh """
+                                    echo "deploy version before redefine \${DEPLOY_VERSION}"
+                                """
                                 switch (params.DEPLOY) {
                                     case 'blacklight': 
                                         BLACKLIGHT_VERSION=sh(returnStdout: true, script: "cam env_get /${CLUSTER}/BLACKLIGHT_VERSION")
+                                        DEPLOY_VERSION=BLACKLIGHT_VERSION
                                         break
                                     case 'management':
                                         MANAGEMENT_VERSION=sh(returnStdout: true, script: "cam env_get /${CLUSTER}/MANAGEMENT_VERSION")
+                                        DEPLOY_VERSION=MANAGEMENT_VERSION
                                         break
                                     case 'manifest':
                                         IIIF_MANIFEST_VERSION=sh(returnStdout: true, script: "cam env_get /${CLUSTER}/IIIF_MANIFEST_VERSION")
+                                        DEPLOY_VERSION=IIIF_MANIFEST_VERSION
                                         break
                                     case 'images':
                                         IIIF_IMAGE_VERSION=sh(returnStdout: true, script: "cam env_get /${CLUSTER}/IIIF_IMAGE_VERSION")
+                                        DEPLOY_VERSION=IIIF_IMAGE_VERSION
                                         break
                                     case 'intensive-workers':
                                         MANAGEMENT_VERSION=sh(returnStdout: true, script: "cam env_get /${CLUSTER}/MANAGEMENT_VERSION")
+                                        DEPLOY_VERSION=MANAGEMENT_VERSION
                                         break
                                 }
                                 sh """
-                                    echo "deploy version before redefine \${DEPLOY_VERSION}"
+                                    echo "deploy version after redefine \${DEPLOY_VERSION}"
+                                    echo "revert deployment...of \${APP} on \${CLUSTER} to version \${DEPLOY_VERSION}"
                                     cam deploy-${APP} ${CLUSTER}
                                 """
                                 if ( APP == 'mgmt' ) {
