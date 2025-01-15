@@ -9,7 +9,6 @@ pipeline {
         SUBNET0="subnet-2dc03400"
         SUBNET1="subnet-71b55b4d"
         CLUSTER_NAME="${CLUSTER}"
-        DEPLOY_VERSION=""
     }
     stages {
         stage('Setup parameters') {
@@ -73,20 +72,25 @@ pipeline {
                             if ( params.DEPLOY == 'management' ) {
                                 APP='mgmt'
                                 DEPLOY_VERSION="${MANAGEMENT_VERSION_INPUT}"
+                                MANAGEMENT_VERSION="${MANAGEMENT_VERSION_INPUT}"
                             }
                             else if ( params.DEPLOY == 'manifest' ) {
                                 APP='mft'
                                 DEPLOY_VERSION="${IIIF_MANIFEST_VERSION_INPUT}"
+                                IIIF_MANIFEST_VERSION="${IIIF_MANIFEST_VERSION_INPUT}"
                             } else {
                                 APP=params.DEPLOY
                                 if ( params.DEPLOY == 'blacklight' ) {
                                     DEPLOY_VERSION="${BLACKLIGHT_VERSION_INPUT}"
+                                    BLACKLIGHT_VERSION="${BLACKLIGHT_VERSION_INPUT}"
                                 }
                                 else if ( params.DEPLOY == 'images' ) {
                                     DEPLOY_VERSION="${IIIF_IMAGE_VERSION_INPUT}"
+                                    IIIF_IMAGE_VERSION="${IIIF_IMAGE_VERSION_INPUT}"
                                 }
                                 else if ( params.DEPLOY == 'intensive-workers' ) {
                                     DEPLOY_VERSION="${MANAGEMENT_VERSION_INPUT}"
+                                    MANAGEMENT_VERSION="${MANAGEMENT_VERSION_INPUT}"
                                 }
                             }
                             if ("${DEPLOY_VERSION}" == null || "${DEPLOY_VERSION}" == '') {
@@ -133,27 +137,23 @@ pipeline {
                             script {
                                 switch (params.DEPLOY) {
                                     case 'blacklight': 
-                                        lastSuccessVersion=sh(returnStdout: true, script: "cam env_get /${CLUSTER}/BLACKLIGHT_VERSION")
+                                        BLACKLIGHT_VERSION=sh(returnStdout: true, script: "cam env_get /${CLUSTER}/BLACKLIGHT_VERSION")
                                         break
                                     case 'management':
-                                        lastSuccessVersion=sh(returnStdout: true, script: "cam env_get /${CLUSTER}/MANAGEMENT_VERSION")
+                                        MANAGEMENT_VERSION=sh(returnStdout: true, script: "cam env_get /${CLUSTER}/MANAGEMENT_VERSION")
                                         break
                                     case 'manifest':
-                                        lastSuccessVersion=sh(returnStdout: true, script: "cam env_get /${CLUSTER}/IIIF_MANIFEST_VERSION")
+                                        IIIF_MANIFEST_VERSION=sh(returnStdout: true, script: "cam env_get /${CLUSTER}/IIIF_MANIFEST_VERSION")
                                         break
                                     case 'images':
-                                        lastSuccessVersion=sh(returnStdout: true, script: "cam env_get /${CLUSTER}/IIIF_IMAGE_VERSION")
+                                        IIIF_IMAGE_VERSION=sh(returnStdout: true, script: "cam env_get /${CLUSTER}/IIIF_IMAGE_VERSION")
                                         break
                                     case 'intensive-workers':
-                                        lastSuccessVersion=sh(returnStdout: true, script: "cam env_get /${CLUSTER}/MANAGEMENT_VERSION")
+                                        MANAGEMENT_VERSION=sh(returnStdout: true, script: "cam env_get /${CLUSTER}/MANAGEMENT_VERSION")
                                         break
                                 }
                                 sh """
                                     echo "deploy version before redefine \${DEPLOY_VERSION}"
-                                    export DEPLOY_VERSION="${lastSuccessVersion}"      
-                                    export APP="${APP}"      
-                                    echo "deploy version after redefine \${DEPLOY_VERSION}"
-                                    echo "revert deployment...of \${APP} on \${CLUSTER} to version \${DEPLOY_VERSION}"
                                     cam deploy-${APP} ${CLUSTER}
                                 """
                                 if ( APP == 'mgmt' ) {
