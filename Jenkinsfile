@@ -9,6 +9,7 @@ pipeline {
         SUBNET0="subnet-2dc03400"
         SUBNET1="subnet-71b55b4d"
         CLUSTER_NAME="${CLUSTER}"
+        DEPLOY_VERSION=""
     }
     stages {
         stage('Setup parameters') {
