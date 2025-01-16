@@ -45,7 +45,7 @@ pipeline {
         }
         stage('Checkout') {
             steps {
-                git branch: '2979_FixSmokeTestRevert', url: 'https://github.com/yalelibrary/yul-dc-camerata'
+                git branch: 'main', url: 'https://github.com/yalelibrary/yul-dc-camerata'
             }
         }
         stage('Deployment') {
@@ -102,11 +102,57 @@ pipeline {
                                 DEPLOY_VERSION="INVALAD VERSION [${DEPLOY_VERSION}]"
                                 error("The version includes a space")
                             } else {
-                                sh "cam deploy-${APP} ${CLUSTER}"
-                                if ( APP == 'mgmt' ) {
-                                    sh "cam deploy-worker ${CLUSTER}"
-                                    sh "WORKER_COUNT=1 cam deploy-intensive-worker ${CLUSTER}"
-                                }
+                                switch (params.DEPLOY) {
+                                    case 'blacklight':
+                                        sh """
+                                            export BLACKLIGHT_VERSION="${BLACKLIGHT_VERSION}"
+                                            export DEPLOY_VERSION="${DEPLOY_VERSION}"
+                                            export APP="${APP}"      
+                                            echo "deployment...of \${APP} on \${CLUSTER} to version \${DEPLOY_VERSION}"
+                                            cam deploy-${APP} ${CLUSTER}
+                                        """
+                                    case 'management':
+                                        sh """
+                                            export MANAGEMENT_VERSION="${MANAGEMENT_VERSION}"
+                                            export DEPLOY_VERSION="${DEPLOY_VERSION}"
+                                            export APP="${APP}"
+                                            echo "deployment...of \${APP} on \${CLUSTER} to version \${DEPLOY_VERSION}"
+                                            cam deploy-${APP} ${CLUSTER}
+                                            cam deploy-worker ${CLUSTER}
+                                            WORKER_COUNT=1 cam deploy-intensive-worker ${CLUSTER}
+                                        """
+                                        break
+                                    case 'manifest':
+                                        sh """
+                                            export IIIF_MANIFEST_VERSION="${IIIF_MANIFEST_VERSION}"
+                                            export DEPLOY_VERSION="${DEPLOY_VERSION}"
+                                            export APP="${APP}"
+                                            echo "deployment...of \${APP} on \${CLUSTER} to version \${DEPLOY_VERSION}"
+                                            cam deploy-${APP} ${CLUSTER}
+                                        """
+                                        break
+                                    case 'images':
+                                        sh """
+                                            export IIIF_IMAGE_VERSION="${IIIF_IMAGE_VERSION}"
+                                            export DEPLOY_VERSION="${DEPLOY_VERSION}"
+                                            export APP="${APP}"
+                                            echo "deployment...of \${APP} on \${CLUSTER} to version \${DEPLOY_VERSION}"
+                                            cam deploy-${APP} ${CLUSTER}
+                                        """
+                                        break
+                                    case 'intensive-workers':
+                                        MANAGEMENT_VERSION=sh(returnStdout: true, script: "cam env_get /${CLUSTER}/MANAGEMENT_VERSION")
+                                        DEPLOY_VERSION=MANAGEMENT_VERSION
+                                        sh """
+                                            export MANAGEMENT_VERSION="${MANAGEMENT_VERSION}"
+                                            export DEPLOY_VERSION="${DEPLOY_VERSION}"
+                                            export APP="${APP}"
+                                            echo "deployment...of \${APP} on \${CLUSTER} to version \${DEPLOY_VERSION}"
+                                            WORKER_COUNT=1 cam deploy-intensive-worker ${CLUSTER}
+                                        """
+                                        break
+
+                                }    
                             }
                         }
                     }
@@ -136,38 +182,72 @@ pipeline {
                         failure {
                             script {
                                 sh """
+                                    export DEPLOY_VERSION="${DEPLOY_VERSION}"
                                     echo "deploy version before redefine \${DEPLOY_VERSION}"
                                 """
                                 switch (params.DEPLOY) {
                                     case 'blacklight': 
                                         BLACKLIGHT_VERSION=sh(returnStdout: true, script: "cam env_get /${CLUSTER}/BLACKLIGHT_VERSION")
                                         DEPLOY_VERSION=BLACKLIGHT_VERSION
+                                        sh """
+                                            export BLACKLIGHT_VERSION="${BLACKLIGHT_VERSION}"
+                                            export DEPLOY_VERSION="${DEPLOY_VERSION}"
+                                            export APP="${APP}"
+                                            echo "deploy version after redefine \${DEPLOY_VERSION}"
+                                            echo "revert deployment...of \${APP} on \${CLUSTER} to version \${DEPLOY_VERSION}"
+                                            cam deploy-${APP} ${CLUSTER}
+                                        """
                                         break
                                     case 'management':
                                         MANAGEMENT_VERSION=sh(returnStdout: true, script: "cam env_get /${CLUSTER}/MANAGEMENT_VERSION")
                                         DEPLOY_VERSION=MANAGEMENT_VERSION
+                                        sh """
+                                            export MANAGEMENT_VERSION="${MANAGEMENT_VERSION}"
+                                            export DEPLOY_VERSION="${DEPLOY_VERSION}"
+                                            export APP="${APP}"
+                                            echo "deploy version after redefine \${DEPLOY_VERSION}"
+                                            echo "revert deployment...of \${APP} on \${CLUSTER} to version \${DEPLOY_VERSION}"
+                                            cam deploy-${APP} ${CLUSTER}
+                                            cam deploy-worker ${CLUSTER}
+                                            WORKER_COUNT=1 cam deploy-intensive-worker ${CLUSTER}
+                                        """
                                         break
                                     case 'manifest':
                                         IIIF_MANIFEST_VERSION=sh(returnStdout: true, script: "cam env_get /${CLUSTER}/IIIF_MANIFEST_VERSION")
                                         DEPLOY_VERSION=IIIF_MANIFEST_VERSION
+                                        sh """
+                                            export IIIF_MANIFEST_VERSION="${IIIF_MANIFEST_VERSION}"
+                                            export DEPLOY_VERSION="${DEPLOY_VERSION}"
+                                            export APP="${APP}"
+                                            echo "deploy version after redefine \${DEPLOY_VERSION}"
+                                            echo "revert deployment...of \${APP} on \${CLUSTER} to version \${DEPLOY_VERSION}"
+                                            cam deploy-${APP} ${CLUSTER}
+                                        """
                                         break
                                     case 'images':
                                         IIIF_IMAGE_VERSION=sh(returnStdout: true, script: "cam env_get /${CLUSTER}/IIIF_IMAGE_VERSION")
                                         DEPLOY_VERSION=IIIF_IMAGE_VERSION
+                                        sh """
+                                            export IIIF_IMAGE_VERSION="${IIIF_IMAGE_VERSION}"
+                                            export DEPLOY_VERSION="${DEPLOY_VERSION}"
+                                            export APP="${APP}"
+                                            echo "deploy version after redefine \${DEPLOY_VERSION}"
+                                            echo "revert deployment...of \${APP} on \${CLUSTER} to version \${DEPLOY_VERSION}"
+                                            cam deploy-${APP} ${CLUSTER}
+                                        """
                                         break
                                     case 'intensive-workers':
                                         MANAGEMENT_VERSION=sh(returnStdout: true, script: "cam env_get /${CLUSTER}/MANAGEMENT_VERSION")
                                         DEPLOY_VERSION=MANAGEMENT_VERSION
+                                        sh """
+                                            export MANAGEMENT_VERSION="${MANAGEMENT_VERSION}"
+                                            export DEPLOY_VERSION="${DEPLOY_VERSION}"
+                                            export APP="${APP}"
+                                            echo "deploy version after redefine \${DEPLOY_VERSION}"
+                                            echo "revert deployment...of \${APP} on \${CLUSTER} to version \${DEPLOY_VERSION}"
+                                            WORKER_COUNT=1 cam deploy-intensive-worker ${CLUSTER}
+                                        """
                                         break
-                                }
-                                sh """
-                                    echo "deploy version after redefine \${DEPLOY_VERSION}"
-                                    echo "revert deployment...of \${APP} on \${CLUSTER} to version \${DEPLOY_VERSION}"
-                                    cam deploy-${APP} ${CLUSTER}
-                                """
-                                if ( APP == 'mgmt' ) {
-                                    sh "cam deploy-worker ${CLUSTER}"
-                                    sh "WORKER_COUNT=1 cam deploy-intensive-worker ${CLUSTER}"
                                 }
                             }
                         }
