@@ -141,8 +141,6 @@ pipeline {
                                         """
                                         break
                                     case 'intensive-workers':
-                                        MANAGEMENT_VERSION=sh(returnStdout: true, script: "cam env_get /${CLUSTER}/MANAGEMENT_VERSION")
-                                        DEPLOY_VERSION=MANAGEMENT_VERSION
                                         sh """
                                             export MANAGEMENT_VERSION="${MANAGEMENT_VERSION}"
                                             export DEPLOY_VERSION="${DEPLOY_VERSION}"
