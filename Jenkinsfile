@@ -45,7 +45,7 @@ pipeline {
         }
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/yalelibrary/yul-dc-camerata'
+                git branch: '2979_FixSmokeTestRevert', url: 'https://github.com/yalelibrary/yul-dc-camerata'
             }
         }
         stage('Deployment') {
@@ -141,6 +141,8 @@ pipeline {
                                         """
                                         break
                                     case 'intensive-workers':
+                                        MANAGEMENT_VERSION=sh(returnStdout: true, script: "cam env_get /${CLUSTER}/MANAGEMENT_VERSION")
+                                        DEPLOY_VERSION=MANAGEMENT_VERSION
                                         sh """
                                             export MANAGEMENT_VERSION="${MANAGEMENT_VERSION}"
                                             export DEPLOY_VERSION="${DEPLOY_VERSION}"
@@ -185,7 +187,7 @@ pipeline {
                                 """
                                 switch (params.DEPLOY) {
                                     case 'blacklight': 
-                                        BLACKLIGHT_VERSION=sh(returnStdout: true, script: "cam env_get /${CLUSTER}/BLACKLIGHT_VERSION")
+                                        BLACKLIGHT_VERSION=sh(returnStdout: true, script: "cam env_get /${CLUSTER}/BLACKLIGHT_VERSION").trim()
                                         DEPLOY_VERSION=BLACKLIGHT_VERSION
                                         sh """
                                             export BLACKLIGHT_VERSION="${BLACKLIGHT_VERSION}"
@@ -197,7 +199,7 @@ pipeline {
                                         """
                                         break
                                     case 'management':
-                                        MANAGEMENT_VERSION=sh(returnStdout: true, script: "cam env_get /${CLUSTER}/MANAGEMENT_VERSION")
+                                        MANAGEMENT_VERSION=sh(returnStdout: true, script: "cam env_get /${CLUSTER}/MANAGEMENT_VERSION").trim()
                                         DEPLOY_VERSION=MANAGEMENT_VERSION
                                         sh """
                                             export MANAGEMENT_VERSION="${MANAGEMENT_VERSION}"
@@ -211,7 +213,7 @@ pipeline {
                                         """
                                         break
                                     case 'manifest':
-                                        IIIF_MANIFEST_VERSION=sh(returnStdout: true, script: "cam env_get /${CLUSTER}/IIIF_MANIFEST_VERSION")
+                                        IIIF_MANIFEST_VERSION=sh(returnStdout: true, script: "cam env_get /${CLUSTER}/IIIF_MANIFEST_VERSION").trim()
                                         DEPLOY_VERSION=IIIF_MANIFEST_VERSION
                                         sh """
                                             export IIIF_MANIFEST_VERSION="${IIIF_MANIFEST_VERSION}"
@@ -223,7 +225,7 @@ pipeline {
                                         """
                                         break
                                     case 'images':
-                                        IIIF_IMAGE_VERSION=sh(returnStdout: true, script: "cam env_get /${CLUSTER}/IIIF_IMAGE_VERSION")
+                                        IIIF_IMAGE_VERSION=sh(returnStdout: true, script: "cam env_get /${CLUSTER}/IIIF_IMAGE_VERSION").trim()
                                         DEPLOY_VERSION=IIIF_IMAGE_VERSION
                                         sh """
                                             export IIIF_IMAGE_VERSION="${IIIF_IMAGE_VERSION}"
@@ -235,7 +237,7 @@ pipeline {
                                         """
                                         break
                                     case 'intensive-workers':
-                                        MANAGEMENT_VERSION=sh(returnStdout: true, script: "cam env_get /${CLUSTER}/MANAGEMENT_VERSION")
+                                        MANAGEMENT_VERSION=sh(returnStdout: true, script: "cam env_get /${CLUSTER}/MANAGEMENT_VERSION").trim()
                                         DEPLOY_VERSION=MANAGEMENT_VERSION
                                         sh """
                                             export MANAGEMENT_VERSION="${MANAGEMENT_VERSION}"
