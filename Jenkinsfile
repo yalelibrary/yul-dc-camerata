@@ -111,6 +111,7 @@ pipeline {
                                             echo "deployment...of \${APP} on \${CLUSTER} to version \${DEPLOY_VERSION}"
                                             cam deploy-${APP} ${CLUSTER}
                                         """
+                                        break
                                     case 'management':
                                         sh """
                                             export MANAGEMENT_VERSION="${MANAGEMENT_VERSION}"
@@ -141,8 +142,6 @@ pipeline {
                                         """
                                         break
                                     case 'intensive-workers':
-                                        MANAGEMENT_VERSION=sh(returnStdout: true, script: "cam env_get /${CLUSTER}/MANAGEMENT_VERSION")
-                                        DEPLOY_VERSION=MANAGEMENT_VERSION
                                         sh """
                                             export MANAGEMENT_VERSION="${MANAGEMENT_VERSION}"
                                             export DEPLOY_VERSION="${DEPLOY_VERSION}"
