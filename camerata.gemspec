@@ -28,6 +28,8 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
+# https://github.com/rails/rails/pull/54264
+  spec.add_dependency 'concurrent-ruby', '< 1.3.5'
   spec.add_runtime_dependency "capybara", "~> 3.33.0"
   spec.add_runtime_dependency "http", "~> 4.4.1"
   spec.add_runtime_dependency "rspec", "~> 3.0"
