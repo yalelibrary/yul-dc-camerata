@@ -23,6 +23,7 @@ module Camerata
         SSO_SECRET
         SSO_JWKS
         SSO_ISS
+        SOLR_URL
       ]
     end
     # rubocop:enable Metrics/MethodLength
