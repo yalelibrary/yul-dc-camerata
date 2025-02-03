@@ -21,7 +21,7 @@ services:
       OWP_AUTH_TOKEN: ${OWP_AUTH_TOKEN}
       SAMPLE_BUCKET:
       SOLR_CORE: blacklight-core
-      SOLR_URL: http://solr:8983/solr/blacklight-core
+      SOLR_URL: ${SOLR_URL}
       SSO_HOST: ${SSO_HOST}
       SSO_ID: ${SSO_ID}
       SSO_ISS: ${SSO_ISS}
