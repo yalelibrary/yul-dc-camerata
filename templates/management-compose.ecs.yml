@@ -31,7 +31,7 @@ services:
       OCR_DOWNLOAD_BUCKET:
       OWP_AUTH_TOKEN: ${OWP_AUTH_TOKEN}
       SAMPLE_BUCKET:
-      SOLR_BASE_URL: http://${CLUSTER_NAME}-solr.${CLUSTER_NAME}:8983/solr
+      SOLR_URL: ${SOLR_URL}
       POSTGRES_HOST: ${CLUSTER_NAME}-psql.${CLUSTER_NAME}
     command: bash -c "echo $$(date -u +%FT%TZ) > DEPLOYED_AT && sleep 30 && /sbin/my_init" # server
     logging:

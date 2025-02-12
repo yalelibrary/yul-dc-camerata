@@ -433,7 +433,7 @@ module Camerata
 IIIF_IMAGE_BASE_URL: ${IIIF_IMAGE_BASE_URL:-http://localhost:8182/iiif}
       IIIF_MANIFESTS_BASE_URL: ${IIIF_MANIFESTS_BASE_URL:-http://localhost/manifests/}
       PDF_BASE_URL: ${PDF_BASE_URL:-http://localhost/pdfs/}
-      SOLR_BASE_URL: http://solr:8983/solr
+      SOLR_URL: ${SOLR_URL:-http://solr:8983/solr}
       BLACKLIGHT_BASE_URL: ${BLACKLIGHT_BASE_URL:-http://localhost:3000}
       END
     end
