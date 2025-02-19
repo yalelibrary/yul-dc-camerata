@@ -27,6 +27,8 @@ services:
       ACCESS_DOWNLOAD_BUCKET:
       OCR_DOWNLOAD_BUCKET:
       SAMPLE_BUCKET: yul-development-samples
+      SOLR_BASE_URL: ${SOLR_BASE_URL}
+      SOLR_URL_WITH_CORE: ${SOLR_URL_WITH_CORE}
       SOLR_CORE: blacklight-core
       VPN:
       MC_USER:
