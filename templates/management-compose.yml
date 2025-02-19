@@ -28,6 +28,8 @@ services:
       OCR_DOWNLOAD_BUCKET:
       OWP_AUTH_TOKEN: ${OWP_AUTH_TOKEN}
       SAMPLE_BUCKET: yul-development-samples
+      SOLR_BASE_URL: ${SOLR_BASE_URL}
+      SOLR_URL_WITH_CORE: ${SOLR_URL_WITH_CORE}
       SOLR_CORE: blacklight-core
       VPN:
       MC_USER:

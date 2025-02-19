@@ -28,7 +28,8 @@ services:
       ACCESS_DOWNLOAD_BUCKET:
       OCR_DOWNLOAD_BUCKET:
       SAMPLE_BUCKET:
-      SOLR_URL: ${SOLR_URL}
+      SOLR_BASE_URL: ${SOLR_BASE_URL}
+      SOLR_URL_WITH_CORE: ${SOLR_URL_WITH_CORE}
       POSTGRES_HOST: ${CLUSTER_NAME}-psql.${CLUSTER_NAME}
     logging:
       driver: awslogs
