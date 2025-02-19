@@ -30,7 +30,8 @@ services:
       OWP_AUTH_TOKEN: ${OWP_AUTH_TOKEN}
       SAMPLE_BUCKET:
       WORKER_SLEEP_DELAY: 15
-      SOLR_BASE_URL: http://${CLUSTER_NAME}-solr.${CLUSTER_NAME}:8983/solr
+      SOLR_BASE_URL: ${SOLR_BASE_URL}
+      SOLR_URL_WITH_CORE: ${SOLR_URL_WITH_CORE}
       POSTGRES_HOST: ${CLUSTER_NAME}-psql.${CLUSTER_NAME}
     volumes:
       - /brbl-dsu:/brbl-dsu

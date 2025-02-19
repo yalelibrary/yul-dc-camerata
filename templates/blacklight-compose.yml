@@ -21,7 +21,8 @@ services:
       OWP_AUTH_TOKEN: ${OWP_AUTH_TOKEN}
       SAMPLE_BUCKET:
       SOLR_CORE: blacklight-core
-      SOLR_URL: ${SOLR_URL}
+      SOLR_BASE_URL: ${SOLR_BASE_URL}
+      SOLR_URL_WITH_CORE: ${SOLR_URL_WITH_CORE}
       SSO_HOST: ${SSO_HOST}
       SSO_ID: ${SSO_ID}
       SSO_ISS: ${SSO_ISS}
