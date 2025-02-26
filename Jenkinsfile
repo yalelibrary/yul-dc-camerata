@@ -131,9 +131,11 @@ pipeline {
                         failure {
                             script {
                                 switch (params.DEPLOY) {
-                                    case 'blacklight': 
+                                <!--
+				    case 'blacklight': 
                                         lastSuccessVersion=sh(returnStdout: true, script: "cam env_get /${CLUSTER}/BLACKLIGHT_VERSION")
                                         break
+				-->
                                     case 'management':
                                         lastSuccessVersion=sh(returnStdout: true, script: "cam env_get /${CLUSTER}/MANAGEMENT_VERSION")
                                         break
