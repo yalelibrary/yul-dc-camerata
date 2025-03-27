@@ -3,8 +3,6 @@ services:
   iiif_image:
     build: .
     environment:
-      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
-      AWS_SECRET_KEY: ${AWS_SECRET_ACCESS_KEY}
       CLUSTER_NAME: "local"
       CANTALOUPE_VERSION: 5.0.6
       S3CACHE_BUCKET_NAME: yul-dc-dev-image-samples/cantaloupe/cache #NO TRAILING SLASH!
