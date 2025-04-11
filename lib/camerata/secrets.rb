@@ -23,6 +23,7 @@ module Camerata
         SSO_SECRET
         SSO_JWKS
         SSO_ISS
+        SOLR_URL
         SOLR_BASE_URL
         SOLR_URL_WITH_CORE
       ]
