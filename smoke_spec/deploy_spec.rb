@@ -40,34 +40,49 @@ RSpec.describe "The cluster at #{ENV['CLUSTER_NAME']}", type: :feature do
   when 'yul-dc-prod'
     public_fulltext_parent_oid = '12479735'
     public_fulltext_child_oid = '14997136'
+    owp_fulltext_parent_oid = '11785488'
+    owp_fulltext_child_oid = '12137988'
+    owp_parent_oid = '12481032'
+    owp_child_oid = '15212076'
     # yco_fulltext_parent_oid = '2043304'
     # yco_fulltext_child_oid = '1191792'
   when 'yul-dc-uat'
     public_fulltext_parent_oid = '16735206'
     public_fulltext_child_oid = '16735207'
+    owp_fulltext_parent_oid = '11785488'
+    owp_fulltext_child_oid = '12137988'
+    owp_parent_oid = '12481032'
+    owp_child_oid = '15212076'
     # yco_fulltext_parent_oid = '900048109'
     # yco_fulltext_child_oid = '900048120'
   when 'yul-dc-test'
     public_fulltext_parent_oid = '800047436'
     public_fulltext_child_oid = '800047438'
+    owp_fulltext_parent_oid = '800048301'
+    owp_fulltext_child_oid = '800048302'
+    owp_parent_oid = '800049872'
+    owp_child_oid = '800049874'
     yco_fulltext_parent_oid = '11492783'
     yco_fulltext_child_oid = '11494521'
   when 'yul-dc-demo'
     public_fulltext_parent_oid = '16747985'
     public_fulltext_child_oid = '16748377'
+    owp_fulltext_parent_oid = '11690527'
+    owp_fulltext_child_oid = '11690817'
+    owp_parent_oid = '15238597'
+    owp_child_oid = '15239177'
     # yco_fulltext_parent_oid = '2043304'
     # yco_fulltext_child_oid = '1191792'
   else
     public_fulltext_parent_oid = '800047436'
     public_fulltext_child_oid = '800047438'
+    owp_fulltext_parent_oid = '11785488'
+    owp_fulltext_child_oid = '12137988'
+    owp_parent_oid = '800049872'
+    owp_child_oid = '800049874'
     yco_fulltext_parent_oid = '11492783'
     yco_fulltext_child_oid = '11494521'
   end
-  # enable OWP tests and update ids when OWP objects are present in production
-  # let(:owp_parent_oid) { '20433333304' }
-  # let(:owp_child_oid) { '1191333333792' }
-  # let(:owp_fulltext_parent_oid) { '204366666304' }
-  # let(:owp_fulltext_child_oid) { '11917989889882' }
 
   describe "The blacklight site at #{blacklight_url}" do
     let(:uri) { "#{blacklight_url}/catalog" }
@@ -117,10 +132,10 @@ RSpec.describe "The cluster at #{ENV['CLUSTER_NAME']}", type: :feature do
             expect(JSON.parse(response.body)['items'].length).to eq(1),
               'sequence contains one canvas'
           end
-          xit 'except for OWP items and will not have link' do
+          it 'except for OWP items and will not have link' do
             uri = "#{blacklight_url}/manifests/#{owp_parent_oid}\.json"
             response = HTTP.get("#{blacklight_url}/catalog/#{owp_parent_oid}")
-            expect(response.body).not_to have_content('Manifest')
+            expect(response.body).to have_css('.nav-link.not-found.iiif-logo')
             response = HTTP.get(uri, ssl_context: ssl_context)
             expect(JSON.parse(response.body)).to eq({ 'error' => 'unauthorized' }),
               'no manifest or manifest link'
@@ -152,11 +167,11 @@ RSpec.describe "The cluster at #{ENV['CLUSTER_NAME']}", type: :feature do
             expect(response.mime_type).to eq 'image/jpeg'
             expect(response['Content-Disposition']).to eq("inline; filename=\"1191792.jpg\"")
           end
-          xit 'does not serve a jpg for OWP image' do
+          it 'does not serve a jpg for OWP image' do
             uri = "#{iiif_image_url}/iiif/2/#{owp_child_oid}/full/!200,200/0/default.jpg"
             response = HTTP.get(uri, ssl_context: ssl_context)
-            expect(response.code).to eq(404)
-            expect(response.mime_type).to eq 'text/plain'
+            expect(response.code).to eq(401)
+            expect(response.mime_type).to eq 'text/html'
           end
         end
       end
@@ -176,7 +191,7 @@ RSpec.describe "The cluster at #{ENV['CLUSTER_NAME']}", type: :feature do
             expect(JSON.parse(response.body)['type']).to eq 'Annotation'
           end
         end
-        xit 'does not serve an annotation for OWP image' do
+        it 'does not serve an annotation for OWP image' do
           uri = "#{blacklight_url}/annotation/oid/#{owp_fulltext_parent_oid}/canvas/#{owp_fulltext_child_oid}/fulltext?oid=#{owp_fulltext_parent_oid}&child_oid=#{owp_fulltext_child_oid}"
           response = HTTP.get(uri, ssl_context: ssl_context)
           expect(response.code).to eq(401), 'has unauthorized response'
@@ -202,13 +217,13 @@ RSpec.describe "The cluster at #{ENV['CLUSTER_NAME']}", type: :feature do
           expect(response.mime_type).to eq('image/tiff').or eq('text/html')
           expect(response.code).to eq(303).or eq(200)
         end
-        xit 'for OWP image' do
+        it 'for OWP image' do
           action_uri = "#{blacklight_url}/download/tiff/#{owp_child_oid}/staged"
           retrieval_uri = "#{blacklight_url}/download/tiff/#{owp_child_oid}"
           response = HTTP.get(action_uri, ssl_context: ssl_context)
           expect(response.code).to eq(401), 'has unauthorized response'
           response = HTTP.get(retrieval_uri, ssl_context: ssl_context)
-          expect(response.mime_type).to eq 'text/plain', 'does not serve a tiff'
+          expect(response.code).to eq(401), 'does not serve a tiff'
         end
       end
       describe 'pdfs' do
@@ -222,7 +237,7 @@ RSpec.describe "The cluster at #{ENV['CLUSTER_NAME']}", type: :feature do
           expect(response.code).to eq(200)
           expect(response.mime_type).to eq 'application/pdf'
         end
-        xit 'does not serve a pdf for OWP image' do
+        it 'does not serve a pdf for OWP image' do
           response = HTTP.get("#{blacklight_url}/pdfs/#{owp_parent_oid}.pdf", ssl_context: ssl_context)
           expect(response.code).to eq(401), 'has unauthorized response'
           expect(response.mime_type).to eq 'application/json'
@@ -232,16 +247,17 @@ RSpec.describe "The cluster at #{ENV['CLUSTER_NAME']}", type: :feature do
         let(:request_uri) { "#{blacklight_url}/catalog/#{owp_parent_oid}/request_form" }
         let(:terms_uri) { "#{blacklight_url}/catalog/#{owp_parent_oid}/terms_and_conditions" }
         let(:confirmation_uri) { "#{blacklight_url}/catalog/#{owp_parent_oid}/request_confirmation" }
-        xit 'will not be accessible' do
+        it 'will not be accessible' do
           response = HTTP.get(request_uri, ssl_context: ssl_context)
-          expect(response.code).to eq(401), 'has unauthorized response'
-          expect(JSON.parse(response.body)).to eq({ 'error' => 'unauthorized' }), 'request form'
+          expect(response.code).to eq(302), 'request form redirect has found response'
+          expect(response.headers["Location"]).to eq("#{blacklight_url}/catalog/#{owp_parent_oid}"), 'request form redirects to parent object page'
+          expect(response.body.include?("uv")).to eq(false), 'request form does not display UV for object'
           response = HTTP.get(terms_uri, ssl_context: ssl_context)
-          expect(response.code).to eq(401), 'has unauthorized response'
-          expect(JSON.parse(response.body)).to eq({ 'error' => 'unauthorized' }), 'terms and conditions'
+          expect(response.code).to eq(404), 'terms api has not found response'
           response = HTTP.get(confirmation_uri, ssl_context: ssl_context)
-          expect(response.code).to eq(401), 'has unauthorized response'
-          expect(JSON.parse(response.body)).to eq({ 'error' => 'unauthorized' }), 'request confirmation'
+          expect(response.code).to eq(302), 'request confirmation redirect has found response'
+          expect(response.headers["Location"]).to eq("#{blacklight_url}/catalog/#{owp_parent_oid}"), 'request confirmation redirects to parent object page'
+          expect(response.body.include?("uv")).to eq(false), 'request confirmation does not display UV for object'
         end
       end
     end
@@ -273,19 +289,18 @@ RSpec.describe "The cluster at #{ENV['CLUSTER_NAME']}", type: :feature do
           response = HTTP.get("#{management_url}/api/download/stage/child/#{yco_child_oid}")
           expect(response.code).to eq 403
         end
-        xit 'will restrict access to OWP' do
-          response = HTTP.get("#{management_url}/api/download/stage/child/9999999")
-          expect(response.body.include?('error')).to eq(true), '/api/download/stage/child/:child_oid'
+        it 'will restrict access to OWP' do
+          response = HTTP.get("#{management_url}/api/download/stage/child/#{owp_child_oid}")
+          expect(response.body.to_json.include?('403 Forbidden')).to eq(true), '/api/download/stage/child/:child_oid'
           permission_requests_url = "#{management_url}/api/permission_requests"
-          request = JSON.parse({})
-          response = HTTP.post(permission_requests_url, ssl_context: ssl_context, params: JSON.pretty_generate(request))
+          response = HTTP.post(permission_requests_url, ssl_context: ssl_context)
           expect(response.code).to eq(403), '/api/permission_requests'
           response = HTTP.get("#{management_url}/api/permission_sets/444444-8888-2849239023")
-          expect(response.body.include?('error')).to eq(true), '/api/permission_sets/:sub'
+          expect(response.body.to_json.include?('403 Forbidden')).to eq(true), '/api/permission_sets/:sub'
           agreement_term_url = "#{management_url}/agreement_term"
-          request = JSON.parse({})
-          response = HTTP.post(agreement_term_url, ssl_context: ssl_context, params: JSON.pretty_generate(request))
-          expect(response.code).to eq(403), '/api/permission_requests'
+          response = HTTP.post(agreement_term_url, ssl_context: ssl_context)
+          expect(response.code).to eq(403).or eq(401)
+          expect(response.code).not_to eq(200), '/agreement_term'
         end
         it 'will restrict access to users' do
           response = HTTP.get("#{management_url}/api/user/13")
