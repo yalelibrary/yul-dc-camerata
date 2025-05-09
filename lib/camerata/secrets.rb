@@ -13,6 +13,7 @@ module Camerata
         MC_PW
         PRESERVICA_CREDENTIALS
         RAILS_MASTER_KEY
+        CANTALOUPE_VERSION
         DYNATRACE_TOKEN
         DEPLOY_KEY_ID
         DEPLOY_ACCESS_KEY
