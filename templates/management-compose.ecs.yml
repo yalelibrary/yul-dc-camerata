@@ -8,7 +8,7 @@ services:
       DYNATRACE_TOKEN: ${DYNATRACE_TOKEN}
       AWS_DEFAULT_REGION: us-east-1
       AWS_SECRET_ACCESS_KEY: ${DEPLOY_ACCESS_KEY}
-      ACCESS_MASTER_MOUNT: "/data" # The path to the mounted drive, or "s3"
+      ACCESS_MAIN_MOUNT: "/data" # The path to the mounted drive, or "s3"
       GOOBI_MOUNT:
       GOOBI_SCAN_DIRECTORIES:
       INGEST_ERROR_EMAIL:
@@ -20,7 +20,7 @@ services:
       MC_USER: ${MC_USER}
       MC_PW: ${MC_PW}
       METADATA_CLOUD_HOST:
-      RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
+      RAILS_MAIN_KEY: ${RAILS_MAIN_KEY}
       HONEYBADGER_API_KEY_MANAGEMENT: ${HONEYBADGER_API_KEY_MANAGEMENT}
       POSTGRES_DB: management_yul_production
       PASSENGER_APP_ENV: ${RAILS_ENV:-production}

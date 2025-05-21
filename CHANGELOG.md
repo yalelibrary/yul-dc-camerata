@@ -92,7 +92,7 @@
 - Prep for release 1.9.1 [\#75](https://github.com/yalelibrary/yul-dc-camerata/pull/75) ([fnibbit](https://github.com/fnibbit))
 - Add badge for circleci to README [\#74](https://github.com/yalelibrary/yul-dc-camerata/pull/74) ([orangewolf](https://github.com/orangewolf))
 - Move CircleCI to be DockerCompose Based To Mimic Local Smoke Test Runs [\#73](https://github.com/yalelibrary/yul-dc-camerata/pull/73) ([orangewolf](https://github.com/orangewolf))
-- Add a deployment check for the RAILS\_MASTER\_KEY [\#72](https://github.com/yalelibrary/yul-dc-camerata/pull/72) ([mark-dce](https://github.com/mark-dce))
+- Add a deployment check for the RAILS\_MAIN\_KEY [\#72](https://github.com/yalelibrary/yul-dc-camerata/pull/72) ([mark-dce](https://github.com/mark-dce))
 - Improve password management for tests [\#71](https://github.com/yalelibrary/yul-dc-camerata/pull/71) ([JzGo](https://github.com/JzGo))
 - Bump rack from 2.2.2 to 2.2.3 [\#64](https://github.com/yalelibrary/yul-dc-camerata/pull/64) ([dependabot[bot]](https://github.com/apps/dependabot))
 
