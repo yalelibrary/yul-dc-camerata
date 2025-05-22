@@ -17,8 +17,8 @@ services:
       MC_USER: ${MC_USER}
       MC_PW: ${MC_PW}
       METADATA_CLOUD_HOST:
-      ACCESS_MAIN_MOUNT: "/data" # The path to the mounted drive, or "s3"
-      RAILS_MAIN_KEY: ${RAILS_MAIN_KEY}
+      ACCESS_PRIMARY_MOUNT: "/data" # The path to the mounted drive, or "S3"
+      RAILS_PRIMARY_KEY: ${RAILS_PRIMARY_KEY}
       HONEYBADGER_API_KEY_MANAGEMENT: ${HONEYBADGER_API_KEY_MANAGEMENT}
       POSTGRES_DB: management_yul_production
       PASSENGER_APP_ENV: ${RAILS_ENV:-production}

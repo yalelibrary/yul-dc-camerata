@@ -43,10 +43,10 @@ check_secrets() {
   fi
 }
 
-check_main_key() {
-  if [[ ${#RAILS_MAIN_KEY} != 32 ]]
+check_primary_key() {
+  if [[ ${#RAILS_PRIMARY_KEY} != 32 ]]
   then
-    echo "ERROR: Please ensure you have a valid 16-byte (32 hex characters) RAILS_MAIN_KEY set."
+    echo "ERROR: Please ensure you have a valid 16-byte (32 hex characters) RAILS_PRIMARY_KEY set."
     errors="true"
   fi
 }

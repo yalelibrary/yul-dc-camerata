@@ -6,7 +6,7 @@ services:
     image: yalelibraryit/dc-management:main
     <%- end -%>
     environment:
-      ACCESS_MAIN_MOUNT: "s3" # The path to the mounted drive, or "S3"
+      ACCESS_PRIMARY_MOUNT: "s3" # The path to the mounted drive, or "S3"
       BLACKLIGHT_BASE_URL: "http://localhost:3000"
       CLUSTER_NAME: "local"
       GOOBI_MOUNT: "data"
@@ -16,7 +16,7 @@ services:
       PDF_BASE_URL: "http://localhost/pdfs/"
       PASSENGER_APP_ENV: ${PASSENGER_APP_ENV:-development}
       POSTGRES_MULTIPLE_DATABASES: management_yul_development
-      RAILS_MAIN_KEY: ${RAILS_MAIN_KEY}
+      RAILS_PRIMARY_KEY: ${RAILS_PRIMARY_KEY}
       SAMPLE_BUCKET: yul-dc-development-samples # manifests
       S3_SOURCE_BUCKET_NAME: yul-dc-dev-image-samples # image and ptiffs
       S3_DOWNLOAD_BUCKET_NAME: yul-dc-download-test # downloadable originals
