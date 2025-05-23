@@ -6,7 +6,7 @@ services:
     image: yalelibraryit/dc-management:main
     <%- end -%>
     environment:
-      ACCESS_MASTER_MOUNT: "s3" # The path to the mounted drive, or "S3"
+      ACCESS_PRIMARY_MOUNT: "s3" # The path to the mounted drive, or "S3"
       BLACKLIGHT_BASE_URL: "http://localhost:3000"
       CLUSTER_NAME: "local"
       GOOBI_MOUNT: "data"
