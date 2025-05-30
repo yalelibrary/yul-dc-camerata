@@ -43,7 +43,7 @@ check_secrets() {
   fi
 }
 
-check_master_key() {
+check_primary_key() {
   if [[ ${#RAILS_MASTER_KEY} != 32 ]]
   then
     echo "ERROR: Please ensure you have a valid 16-byte (32 hex characters) RAILS_MASTER_KEY set."
