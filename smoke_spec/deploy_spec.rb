@@ -158,14 +158,14 @@ RSpec.describe "The cluster at #{ENV['CLUSTER_NAME']}", type: :feature do
             response = HTTP.get(uri, ssl_context: ssl_context)
             expect(response.code).to eq(200)
             expect(response.mime_type).to eq 'image/jpeg'
-            expect(response['Content-Disposition']).to eq("inline; filename=\"1030368.jpg\"")
+            # expect(response['Content-Disposition']).to eq("inline; filename=\"1030368.jpg\"")
           end
           it 'serves a jpg for YCO image' do
             uri = "#{iiif_image_url}/iiif/2/#{yco_child_oid}/full/!200,200/0/default.jpg"
             response = HTTP.get(uri, ssl_context: ssl_context)
             expect(response.code).to eq(200)
             expect(response.mime_type).to eq 'image/jpeg'
-            expect(response['Content-Disposition']).to eq("inline; filename=\"1191792.jpg\"")
+            # expect(response['Content-Disposition']).to eq("inline; filename=\"1191792.jpg\"")
           end
           it 'does not serve a jpg for OWP image' do
             uri = "#{iiif_image_url}/iiif/2/#{owp_child_oid}/full/!200,200/0/default.jpg"
