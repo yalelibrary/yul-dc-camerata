@@ -33,7 +33,7 @@ jobs:
           name: Set up aws
           command: |
             echo AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} >> .secrets
-            echo AWS_SECRET_KEY=${AWS_SECRET_KEY} >> .secrets
+            echo AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} >> .secrets
             mkdir -p ~/.aws
             echo ${AWS_PROFILE_VALUE} | base64 -d > ~/.aws/credentials
       - run:
