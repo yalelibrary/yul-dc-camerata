@@ -12,7 +12,6 @@ services:
     command: bash -c '/boot.sh'
     environment:
       SOLR_CORE: blacklight-core
-      DYNATRACE_TOKEN: ${DYNATRACE_TOKEN}
       SOLR_HEAP: ${SOLR_HEAP}
       CLUSTER_NAME: ${CLUSTER_NAME}
 volumes:
