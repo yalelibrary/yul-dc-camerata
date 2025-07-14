@@ -1,4 +1,3 @@
-version: '3'
 services:
   iiif_image:
     build: .

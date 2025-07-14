@@ -1,4 +1,3 @@
-version: '3'
 services:
   blacklight:
     image: yalelibraryit/dc-blacklight:${BLACKLIGHT_VERSION}

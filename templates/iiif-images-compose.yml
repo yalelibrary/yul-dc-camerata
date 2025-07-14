@@ -1,4 +1,3 @@
-version: '3'
 services:
   iiif_image:
     image: yalelibraryit/dc-iiif-cantaloupe:${IIIF_IMAGE_VERSION}
