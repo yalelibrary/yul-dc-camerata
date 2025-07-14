@@ -24,10 +24,10 @@ In the Camerata repo:
     - This will ensure that each build will be tagged with the **new** version number
 - Open `base/Dockerfile` in your editor
 - Make your changes
-- Run `docker-compose build` to build the image
+- Run `docker compose build` to build the image
 - Confirm that the image builds
-- Run `docker-compose up` to start up the service
-- In another window run `docker-compose exec base bash` to connect to the running container and examine its contents
+- Run `docker compose up` to start up the service
+- In another window run `docker compose exec base bash` to connect to the running container and examine its contents
 
 **Push Image**
 
@@ -49,10 +49,6 @@ For each **downstream image** that will require the update from base:
     - Run `cam up <service-name>`
     - Check to see that the service comes up and behaves as expected
 - Commit your changes and make a **PR**
-
-## Dynatrace	
-
-We've integrated Dynatrace OneAgent for monitoring our Docker container environments. The Dynatrace dashboard can be reached here https://nhd42358.live.dynatrace.com. 
 
 ```bash	
 docker-compose build	
