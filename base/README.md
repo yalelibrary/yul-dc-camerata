@@ -32,7 +32,7 @@ In the Camerata repo:
 **Push Image**
 
 Once you have a Dockerfile that is the correct recipe for your image:
-- Run `docker-compose push`
+- Run `docker compose push`
 - Commit your changes and make a **PR**
 - Run `rake install`
     - This will set you up to test the build with the downstream services
