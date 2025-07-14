@@ -51,5 +51,5 @@ For each **downstream image** that will require the update from base:
 - Commit your changes and make a **PR**
 
 ```bash	
-docker-compose build	
+docker compose build	
 ```
