@@ -153,7 +153,7 @@ then
       --load-balancer-arn $ALB_ARN \
       --protocol HTTPS \
       --port 443 \
-      --ssl-policy "ELBSecurityPolicy-TLS-1-1-2017-01" \
+      --ssl-policy "ELBSecurityPolicy-TLS13-1-2-Res-2021-06" \
       --certificates CertificateArn=$CERT_ARN \
       --default-actions "Type=forward,TargetGroupArn=${BL_TG_ARN}" \
         | grep -Eo -m 1 'arn:aws:elasticloadbalancing[^\"]*'`
