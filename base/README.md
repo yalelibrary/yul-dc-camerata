@@ -24,15 +24,15 @@ In the Camerata repo:
     - This will ensure that each build will be tagged with the **new** version number
 - Open `base/Dockerfile` in your editor
 - Make your changes
-- Run `docker compose build` to build the image
+- Run `docker-compose build` to build the image
 - Confirm that the image builds
-- Run `docker compose up` to start up the service
-- In another window run `docker compose exec base bash` to connect to the running container and examine its contents
+- Run `docker-compose up` to start up the service
+- In another window run `docker-compose exec base bash` to connect to the running container and examine its contents
 
 **Push Image**
 
 Once you have a Dockerfile that is the correct recipe for your image:
-- Run `docker compose push`
+- Run `docker-compose push`
 - Commit your changes and make a **PR**
 - Run `rake install`
     - This will set you up to test the build with the downstream services
@@ -50,6 +50,10 @@ For each **downstream image** that will require the update from base:
     - Check to see that the service comes up and behaves as expected
 - Commit your changes and make a **PR**
 
+## Dynatrace	
+
+We've integrated Dynatrace OneAgent for monitoring our Docker container environments. The Dynatrace dashboard can be reached here https://nhd42358.live.dynatrace.com. 
+
 ```bash	
-docker compose build	
+docker-compose build	
 ```

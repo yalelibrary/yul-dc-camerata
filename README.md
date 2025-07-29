@@ -49,13 +49,18 @@ ENV['AWS_PROFILE'] = 'your_profile'
 ENV['CLUSTER_NAME'] = 'yul-test'
 ```
 
+## Dynatrace
+
+We've integrated Dynatrace OneAgent for monitoring our Docker container environments.
+  - Instructions on configuring OneAgent can be found [here](https://github.com/yalelibrary/yul-dc-camerata/tree/main/base)
+
 ## General Use
 
 Once camerata is installed on your system, interactions happen through the camerata command-line tool or through its alias `cam`. The camerata tool can be used to bring the development stack up and down locally, interact with the docker containers, deploy, run the smoke tests and otherwise do development tasks common to the various applications in the yul-dc application stack.
 
 All builtin commands can be listed with `cam help` and individual usage information is available with `cam help COMMAND`. Please note that deployment commands (found in the `./bin` directory) are passed through and are therefore not listed by the help command. See the usage for those below.
 
-To start the application stack, run `cam up` in the directory you are working in. Example: If you are working in the Blacklight repo, run `cam up` inside the yul-dc-blacklight directory. This is the equivalent of running `docker compose up blacklight`. This starts all of the applications as they are all dependencies of yul-blacklight. Camerata is smart. If you start `cam up` from a blacklight code check out it will mount that code for local development (changes to the outside code will affect the inside container). If you start the `cam up` from the management application you will get the management code mounted for local development and the blacklight code will run as it is in the downloaded image. You can also start the two applications both mounted for development by starting the blacklight application with `cam up blacklight --without management`, and the management application as normal (`cam up management`); each from their respective code checkouts.
+To start the application stack, run `cam up` in the directory you are working in. Example: If you are working in the Blacklight repo, run `cam up` inside the yul-dc-blacklight directory. This is the equivalent of running `docker-compose up blacklight`. This starts all of the applications as they are all dependencies of yul-blacklight. Camerata is smart. If you start `cam up` from a blacklight code check out it will mount that code for local development (changes to the outside code will affect the inside container). If you start the `cam up` from the management application you will get the management code mounted for local development and the blacklight code will run as it is in the downloaded image. You can also start the two applications both mounted for development by starting the blacklight application with `cam up blacklight --without management`, and the management application as normal (`cam up management`); each from their respective code checkouts.
 
 - Access the blacklight app at `http://localhost:3000`
 
@@ -79,8 +84,8 @@ The base docker image, used for our two Ruby on Rails applications (Management a
 
 ```bash
 cd base
-docker compose build
-docker compose push
+docker-compose build
+docker-compose push
 ```
 
 Then you'll need to prep cam for use locally.
