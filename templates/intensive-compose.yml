@@ -1,4 +1,3 @@
-version: '3'
 services:
   management:
     image: yalelibraryit/dc-management:${MANAGEMENT_VERSION}

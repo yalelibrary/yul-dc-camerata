@@ -1,4 +1,3 @@
-version: '3'
 services:
   db:
     command: /bin/bash -c '/boot.sh'

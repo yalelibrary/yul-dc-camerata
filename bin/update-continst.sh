@@ -102,13 +102,6 @@ CLUSTER_NAME=$1
   USERDATA=$(echo "#!/bin/bash
   echo ECS_CLUSTER=$CLUSTER_NAME >> /etc/ecs/ecs.config && yum update -y
 
-  # Install Dynatrace OneAgent client
-  yum install -y wget
-  wget -O Dynatrace-OneAgent-Linux-1.201.129.sh \
-    \"https://nhd42358.live.dynatrace.com/api/v1/deployment/installer/agent/unix/default/latest?arch=x86&flavor=default\" \
-    --header=\"Authorization: Api-Token ${DYNATRACE_TOKEN}\"
-  /bin/sh Dynatrace-OneAgent-Linux-1.201.129.sh --set-app-log-content-access=true --set-infra-only=true --set-host-group=DC --set-host-name=${CLUSTER_NAME}-worker
-
   # NFS mount Goobi Hot Folders
   mkdir -p /brbl-dsu/jss_export
   mkdir -p /brbl-dsu/dcs
