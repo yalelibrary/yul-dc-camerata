@@ -1,3 +1,4 @@
+version: '3'
 services:
   management_worker:
     <%- if in_management? -%>
