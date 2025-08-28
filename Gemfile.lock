@@ -8,7 +8,7 @@ PATH
       http (~> 4.4.1)
       rspec (~> 3.0)
       selenium-webdriver (~> 3.142)
-      thor (~> 1.0.1)
+      thor (~> 1.4.0)
 
 GEM
   remote: https://rubygems.org/
@@ -174,7 +174,7 @@ GEM
     selenium-webdriver (3.142.7)
       childprocess (>= 0.5, < 4.0)
       rubyzip (>= 1.2.2)
-    thor (1.0.1)
+    thor (1.4.0)
     timers (4.3.5)
     traces (0.10.0)
     tzinfo (2.0.6)
