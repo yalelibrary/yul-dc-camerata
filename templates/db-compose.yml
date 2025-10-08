@@ -3,10 +3,10 @@ services:
   db:
     image: yalelibraryit/dc-postgres:${POSTGRES_VERSION}
     environment:
-      POSTGRES_HOST: db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-      POSTGRES_MULTIPLE_DATABASES: blacklight_yul_development,management_yul_development,iiif_manifest_yul_development
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_MULTIPLE_DATABASES: ${POSTGRES_MULTIPLE_DATABASES}
       POSTGRES_VERSION:
     ports:
       - "5432:5432"
