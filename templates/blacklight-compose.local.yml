@@ -16,7 +16,7 @@ services:
       PDF_BASE_URL: "http://localhost/pdfs/"
       MANAGEMENT_HOST: "http://localhost:3001/management"
       PASSENGER_APP_ENV: development
-      POSTGRES_DB: blacklight_yul_development
+      POSTGRES_DB: ${POSTGRES_DB}
       SOLR_BASE_URL: ${SOLR_BASE_URL}
       SOLR_URL_WITH_CORE: ${SOLR_URL_WITH_CORE}
       SAMPLE_BUCKET: yul-dc-development-samples # manifests

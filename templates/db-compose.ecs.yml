@@ -3,8 +3,8 @@ services:
   db:
     command: /bin/bash -c '/boot.sh'
     environment:
-      POSTGRES_MULTIPLE_DATABASES: ${POSTGRES_MULTIPLE_DATABASES}
       CLUSTER_NAME: ${CLUSTER_NAME}
+      POSTGRES_MULTIPLE_DATABASES: ${POSTGRES_MULTIPLE_DATABASES}
     logging:
       driver: awslogs
       options:
