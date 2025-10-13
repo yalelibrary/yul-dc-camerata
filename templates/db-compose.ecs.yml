@@ -4,7 +4,6 @@ services:
     command: /bin/bash -c '/boot.sh'
     environment:
       CLUSTER_NAME: ${CLUSTER_NAME}
-      POSTGRES_MULTIPLE_DATABASES: ${POSTGRES_MULTIPLE_DATABASES}
     logging:
       driver: awslogs
       options:

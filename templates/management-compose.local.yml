@@ -18,7 +18,6 @@ services:
       OWP_AUTH_TOKEN: ${OWP_AUTH_TOKEN}
       PASSENGER_APP_ENV: ${PASSENGER_APP_ENV:-development}
       PDF_BASE_URL: "http://localhost/pdfs/"
-      POSTGRES_MULTIPLE_DATABASES: ${POSTGRES_MULTIPLE_DATABASES}
       S3_SOURCE_BUCKET_NAME: yul-dc-dev-image-samples # image and ptiffs
       S3_DOWNLOAD_BUCKET_NAME: yul-dc-download-test # downloadable originals
       SAMPLE_BUCKET: yul-dc-development-samples # manifests

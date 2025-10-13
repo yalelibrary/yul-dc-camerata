@@ -18,7 +18,6 @@ services:
       MANAGEMENT_HOST: http://${CLUSTER_NAME}-mgmt.${CLUSTER_NAME}:3001/management
       NGINX_RESOLVER: 10.5.68.2
       PASSENGER_APP_ENV: ${RAILS_ENV:-production}
-      POSTGRES_HOST: ${POSTGRES_HOST}
       OWP_AUTH_TOKEN: ${OWP_AUTH_TOKEN}
       RAILS_ENV: ${RAILS_ENV:-production}
       RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}

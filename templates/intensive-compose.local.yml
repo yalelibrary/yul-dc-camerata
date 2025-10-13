@@ -15,7 +15,6 @@ services:
       IIIF_MANIFESTS_BASE_URL: "http://localhost/manifests/"
       PDF_BASE_URL: "http://localhost/pdfs/"
       PASSENGER_APP_ENV: ${PASSENGER_APP_ENV:-development}
-      POSTGRES_MULTIPLE_DATABASES: ${POSTGRES_MULTIPLE_DATABASES}
       RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
       SOLR_BASE_URL: ${SOLR_BASE_URL}
       SOLR_URL_WITH_CORE: ${SOLR_URL_WITH_CORE}
