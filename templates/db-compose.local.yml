@@ -2,7 +2,6 @@ version: '3'
 services:
   db:
     environment:
-      POSTGRES_MULTIPLE_DATABASES: blacklight_yul_development,management_yul_development,iiif_manifest_yul_development
     volumes:
       - "db:/var/lib/postgresql/data"
 volumes:

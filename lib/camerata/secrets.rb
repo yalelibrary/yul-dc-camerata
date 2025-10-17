@@ -4,28 +4,33 @@ module Camerata
     # rubocop:disable Metrics/MethodLength
     def self.parameters
       %w[
+        CANTALOUPE_VERSION
+        DEPLOY_ACCESS_KEY
+        DEPLOY_KEY_ID
         HONEYBADGER_API_KEY_BLACKLIGHT
         HONEYBADGER_API_KEY_IMAGESERVER
         HONEYBADGER_API_KEY_MANAGEMENT
         HTTP_PASSWORD
         HTTP_USERNAME
-        MC_USER
         MC_PW
+        MC_USER
+        OWP_AUTH_TOKEN
+        POSTGRES_DB
+        POSTGRES_HOST
+        POSTGRES_MULTIPLE_DATABASES
+        POSTGRES_PASSWORD
+        POSTGRES_USER
         PRESERVICA_CREDENTIALS
         RAILS_MASTER_KEY
-        CANTALOUPE_VERSION
-        DEPLOY_KEY_ID
-        DEPLOY_ACCESS_KEY
-        OWP_AUTH_TOKEN
-        YALE_NETWORK_IPS
         SSO_ID
-        SSO_HOST
-        SSO_SECRET
-        SSO_JWKS
         SSO_ISS
-        SOLR_URL
+        SSO_HOST
+        SSO_JWKS
+        SSO_SECRET
         SOLR_BASE_URL
+        SOLR_URL
         SOLR_URL_WITH_CORE
+        YALE_NETWORK_IPS
       ]
     end
     # rubocop:enable Metrics/MethodLength

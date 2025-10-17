@@ -2,37 +2,40 @@ version: '3'
 services:
   management:
     environment:
+      ACCESS_DOWNLOAD_BUCKET:
+      ACCESS_PRIMARY_MOUNT: "/data" # The path to the mounted drive, or "s3"
       AWS_ACCESS_KEY_ID: ${DEPLOY_KEY_ID}
-      TYPE: "management"
-      CLUSTER_NAME: ${CLUSTER_NAME}
       AWS_DEFAULT_REGION: us-east-1
       AWS_SECRET_ACCESS_KEY: ${DEPLOY_ACCESS_KEY}
-      ACCESS_PRIMARY_MOUNT: "/data" # The path to the mounted drive, or "s3"
+      CLUSTER_NAME: ${CLUSTER_NAME}
       GOOBI_MOUNT:
       GOOBI_SCAN_DIRECTORIES:
-      INGEST_ERROR_EMAIL:
+      HONEYBADGER_API_KEY_MANAGEMENT: ${HONEYBADGER_API_KEY_MANAGEMENT}
       HTTP_USERNAME: ${HTTP_USERNAME}
       HTTP_PASSWORD: ${HTTP_PASSWORD}
       IIIF_IMAGE_BASE_URL:
       IIIF_MANIFESTS_BASE_URL:
-      PDF_BASE_URL:
+      INGEST_ERROR_EMAIL:
       MC_USER: ${MC_USER}
       MC_PW: ${MC_PW}
       METADATA_CLOUD_HOST:
-      RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
-      HONEYBADGER_API_KEY_MANAGEMENT: ${HONEYBADGER_API_KEY_MANAGEMENT}
-      POSTGRES_DB: management_yul_production
-      PASSENGER_APP_ENV: ${RAILS_ENV:-production}
-      RAILS_ENV: ${RAILS_ENV:-production}
-      S3_SOURCE_BUCKET_NAME:
-      S3_DOWNLOAD_BUCKET_NAME:
-      ACCESS_DOWNLOAD_BUCKET:
       OCR_DOWNLOAD_BUCKET:
       OWP_AUTH_TOKEN: ${OWP_AUTH_TOKEN}
+      PASSENGER_APP_ENV: ${RAILS_ENV:-production}
+      PDF_BASE_URL:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      POSTGRES_MULTIPLE_DATABASES: ${POSTGRES_MULTIPLE_DATABASES}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_USER: ${POSTGRES_USER}
+      RAILS_ENV: ${RAILS_ENV:-production}
+      RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
+      S3_SOURCE_BUCKET_NAME:
+      S3_DOWNLOAD_BUCKET_NAME:
+      TYPE: "management"
       SAMPLE_BUCKET:
       SOLR_BASE_URL: ${SOLR_BASE_URL}
       SOLR_URL_WITH_CORE: ${SOLR_URL_WITH_CORE}
-      POSTGRES_HOST: ${CLUSTER_NAME}-psql.${CLUSTER_NAME}
     command: bash -c "echo $$(date -u +%FT%TZ) > DEPLOYED_AT && sleep 30 && /sbin/my_init" # server
     logging:
       driver: awslogs

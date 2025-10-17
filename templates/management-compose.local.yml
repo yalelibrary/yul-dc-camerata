@@ -6,6 +6,7 @@ services:
     image: yalelibraryit/dc-management:main
     <%- end -%>
     environment:
+      ACCESS_DOWNLOAD_BUCKET: yul-dc-development-samples
       ACCESS_PRIMARY_MOUNT: "s3" # The path to the mounted drive, or "S3"
       BLACKLIGHT_BASE_URL: "http://localhost:3000"
       CLUSTER_NAME: "local"
@@ -13,15 +14,18 @@ services:
       GOOBI_SCAN_DIRECTORIES:
       IIIF_IMAGE_BASE_URL: "http://localhost:8182/iiif"
       IIIF_MANIFESTS_BASE_URL: "http://localhost/manifests/"
-      PDF_BASE_URL: "http://localhost/pdfs/"
-      PASSENGER_APP_ENV: ${PASSENGER_APP_ENV:-development}
-      POSTGRES_MULTIPLE_DATABASES: management_yul_development
-      SAMPLE_BUCKET: yul-dc-development-samples # manifests
-      S3_SOURCE_BUCKET_NAME: yul-dc-dev-image-samples # image and ptiffs
-      S3_DOWNLOAD_BUCKET_NAME: yul-dc-download-test # downloadable originals
-      ACCESS_DOWNLOAD_BUCKET: yul-dc-development-samples
       OCR_DOWNLOAD_BUCKET: yul-dc-development-samples
       OWP_AUTH_TOKEN: ${OWP_AUTH_TOKEN}
+      PASSENGER_APP_ENV: ${PASSENGER_APP_ENV:-development}
+      PDF_BASE_URL: "http://localhost/pdfs/"
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      POSTGRES_MULTIPLE_DATABASES: ${POSTGRES_MULTIPLE_DATABASES}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_USER: ${POSTGRES_USER}
+      S3_SOURCE_BUCKET_NAME: yul-dc-dev-image-samples # image and ptiffs
+      S3_DOWNLOAD_BUCKET_NAME: yul-dc-download-test # downloadable originals
+      SAMPLE_BUCKET: yul-dc-development-samples # manifests
       SOLR_BASE_URL: ${SOLR_BASE_URL}
       SOLR_URL_WITH_CORE: ${SOLR_URL_WITH_CORE}
       SOLR_TEST_CORE: blacklight-test
