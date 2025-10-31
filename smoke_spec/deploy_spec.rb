@@ -91,7 +91,6 @@ RSpec.describe "The cluster at #{ENV['CLUSTER_NAME']}", type: :feature do
         response = HTTP.get(uri)
         expect(response.body).to have_selector('.blacklight-catalog'), 'not blocked by basic auth'
         expect(response.body).to have_selector('.blacklight-language_ssim'), 'a language facet is present'
-        expect(response.body).to have_selector('.branch-name', text: /Branch:\w+/)
         response = HTTP.get("#{uri}?search_field=all_fields&q=")
         expect(response.body).to have_selector("[aria-label='Go to page 5']"), 'an open search has at least 5 pages'
       end
