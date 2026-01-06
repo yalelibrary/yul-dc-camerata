@@ -40,7 +40,7 @@ then
     --project-name ${CLUSTER_NAME}-worker \
     --ecs-params ${CLUSTER_NAME}-worker-params.yml \
     service up \
-    --deployment-min-healthy-percent 50 \
+    --deployment-min-healthy-percent 0 \
     --launch-type EC2 \
     $2 \
     $discovery $log \
