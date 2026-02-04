@@ -197,12 +197,12 @@ PLATFORMS
 
 DEPENDENCIES
   bixby (~> 5.0.2)
-  byebug
+  byebug (~> 11.1.3)
   camerata!
-  github_changelog_generator
-  rake
-  vcr
-  webmock
+  github_changelog_generator (~> 1.16.4)
+  rake (~> 13.0.6)
+  vcr (~> 6.1.0)
+  webmock (~> 3.18.1)
 
 BUNDLED WITH
    2.4.14
