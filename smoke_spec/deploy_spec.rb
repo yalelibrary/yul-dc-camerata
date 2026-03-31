@@ -124,16 +124,26 @@ RSpec.describe "The cluster at #{ENV['CLUSTER_NAME']}", type: :feature do
             expect(JSON.parse(response.body)['items'].length).to eq(2),
               'sequence contains two canvases'
           end
-          it 'for YCO item and links to the manifest' do
-            show_uri = "#{blacklight_url}/catalog/#{yco_parent_oid}"
-            response = HTTP.get(show_uri, ssl_context: ssl_context)
-            expect(response.body).to have_content('Manifest')
-            manifest_uri = "#{blacklight_url}/manifests/#{yco_parent_oid}\.json"
-            response = HTTP.get(manifest_uri, ssl_context: ssl_context)
-            expect(JSON.parse(response.body)['items'].length).to eq(1),
-            'sequence contains one canvas' if ENV['CLUSTER_NAME'] != 'yul-dc-demo'
-            expect(JSON.parse(response.body)['items'].length).to eq(2),
-              'sequence contains two canvases' if ENV['CLUSTER_NAME'] == 'yul-dc-demo'
+          if ENV['CLUSTER_NAME'] == 'yul-dc-demo'
+            it 'for YCO item and links to the manifest' do
+              show_uri = "#{blacklight_url}/catalog/#{yco_parent_oid}"
+              response = HTTP.get(show_uri, ssl_context: ssl_context)
+              expect(response.body).to have_content('Manifest')
+              manifest_uri = "#{blacklight_url}/manifests/#{yco_parent_oid}\.json"
+              response = HTTP.get(manifest_uri, ssl_context: ssl_context)
+              expect(JSON.parse(response.body)['items'].length).to eq(2),
+              'sequence contains two canvases'
+            end
+          else
+            it 'for YCO item and links to the manifest' do
+              show_uri = "#{blacklight_url}/catalog/#{yco_parent_oid}"
+              response = HTTP.get(show_uri, ssl_context: ssl_context)
+              expect(response.body).to have_content('Manifest')
+              manifest_uri = "#{blacklight_url}/manifests/#{yco_parent_oid}\.json"
+              response = HTTP.get(manifest_uri, ssl_context: ssl_context)
+              expect(JSON.parse(response.body)['items'].length).to eq(1),
+              'sequence contains one canvas'
+            end
           end
           it 'except for OWP items and will not have link' do
             uri = "#{blacklight_url}/manifests/#{owp_parent_oid}\.json"
