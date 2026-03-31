@@ -33,8 +33,6 @@ ssl_context.verify_mode = OpenSSL::SSL::VERIFY_NONE
 RSpec.describe "The cluster at #{ENV['CLUSTER_NAME']}", type: :feature do
   let(:public_parent_oid) { '2005512' }
   let(:public_child_oid) { '1030368' }
-  let(:yco_parent_oid) { '2043304' }
-  let(:yco_child_oid) { '1191792' }
 
   case ENV['CLUSTER_NAME']
   when 'yul-dc-prod'
@@ -44,6 +42,8 @@ RSpec.describe "The cluster at #{ENV['CLUSTER_NAME']}", type: :feature do
     owp_fulltext_child_oid = '12137988'
     owp_parent_oid = '12481032'
     owp_child_oid = '15212076'
+    yco_parent_oid = '33496098'
+    yco_child_oid = '33496099'
     # yco_fulltext_parent_oid = '2043304'
     # yco_fulltext_child_oid = '1191792'
   when 'yul-dc-uat'
@@ -55,6 +55,8 @@ RSpec.describe "The cluster at #{ENV['CLUSTER_NAME']}", type: :feature do
     owp_child_oid = '15212076'
     yco_fulltext_parent_oid = '900048109'
     yco_fulltext_child_oid = '900048120'
+    yco_parent_oid = '901735462'
+    yco_child_oid = '901735463'
   when 'yul-dc-test'
     public_fulltext_parent_oid = '800047436'
     public_fulltext_child_oid = '800047438'
@@ -64,13 +66,17 @@ RSpec.describe "The cluster at #{ENV['CLUSTER_NAME']}", type: :feature do
     owp_child_oid = '800049874'
     yco_fulltext_parent_oid = '11492783'
     yco_fulltext_child_oid = '11494521'
+    yco_parent_oid = '800052310'
+    yco_child_oid = '800052312'
   when 'yul-dc-demo'
     public_fulltext_parent_oid = '16747985'
     public_fulltext_child_oid = '16748377'
-    owp_fulltext_parent_oid = '11690527'
-    owp_fulltext_child_oid = '11690817'
-    owp_parent_oid = '15238597'
-    owp_child_oid = '15239177'
+    owp_fulltext_parent_oid = '30000169'
+    owp_fulltext_child_oid = '15454308'
+    owp_parent_oid = '30000170'
+    owp_child_oid = '15413102'
+    yco_parent_oid = '30000168'
+    yco_child_oid = '800052314'
     # yco_fulltext_parent_oid = '2043304'
     # yco_fulltext_child_oid = '1191792'
   else
@@ -82,6 +88,8 @@ RSpec.describe "The cluster at #{ENV['CLUSTER_NAME']}", type: :feature do
     owp_child_oid = '800049874'
     yco_fulltext_parent_oid = '11492783'
     yco_fulltext_child_oid = '11494521'
+    yco_parent_oid = '901735462'
+    yco_child_oid = '901735463'
   end
 
   describe "The blacklight site at #{blacklight_url}" do
@@ -122,14 +130,26 @@ RSpec.describe "The cluster at #{ENV['CLUSTER_NAME']}", type: :feature do
             expect(JSON.parse(response.body)['items'].length).to eq(2),
               'sequence contains two canvases'
           end
-          it 'for YCO item and links to the manifest' do
-            show_uri = "#{blacklight_url}/catalog/#{yco_parent_oid}"
-            response = HTTP.get(show_uri, ssl_context: ssl_context)
-            expect(response.body).to have_content('Manifest')
-            manifest_uri = "#{blacklight_url}/manifests/#{yco_parent_oid}\.json"
-            response = HTTP.get(manifest_uri, ssl_context: ssl_context)
-            expect(JSON.parse(response.body)['items'].length).to eq(1),
+          if ENV['CLUSTER_NAME'] == 'yul-dc-demo' || ENV['CLUSTER_NAME'] == 'yul-dc-prod'
+            it 'for YCO item and links to the manifest' do
+              show_uri = "#{blacklight_url}/catalog/#{yco_parent_oid}"
+              response = HTTP.get(show_uri, ssl_context: ssl_context)
+              expect(response.body).to have_content('Manifest')
+              manifest_uri = "#{blacklight_url}/manifests/#{yco_parent_oid}\.json"
+              response = HTTP.get(manifest_uri, ssl_context: ssl_context)
+              expect(JSON.parse(response.body)['items'].length).to eq(2),
+              'sequence contains two canvases'
+            end
+          else
+            it 'for YCO item and links to the manifest' do
+              show_uri = "#{blacklight_url}/catalog/#{yco_parent_oid}"
+              response = HTTP.get(show_uri, ssl_context: ssl_context)
+              expect(response.body).to have_content('Manifest')
+              manifest_uri = "#{blacklight_url}/manifests/#{yco_parent_oid}\.json"
+              response = HTTP.get(manifest_uri, ssl_context: ssl_context)
+              expect(JSON.parse(response.body)['items'].length).to eq(1),
               'sequence contains one canvas'
+            end
           end
           it 'except for OWP items and will not have link' do
             uri = "#{blacklight_url}/manifests/#{owp_parent_oid}\.json"
