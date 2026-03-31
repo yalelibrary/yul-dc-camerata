@@ -67,10 +67,12 @@ RSpec.describe "The cluster at #{ENV['CLUSTER_NAME']}", type: :feature do
   when 'yul-dc-demo'
     public_fulltext_parent_oid = '16747985'
     public_fulltext_child_oid = '16748377'
-    owp_fulltext_parent_oid = '11690527'
-    owp_fulltext_child_oid = '11690817'
-    owp_parent_oid = '15238597'
-    owp_child_oid = '15239177'
+    owp_fulltext_parent_oid = '30000169'
+    owp_fulltext_child_oid = '15454308'
+    owp_parent_oid = '30000170'
+    owp_child_oid = '15413102'
+    yco_parent_oid = '30000168'
+    yco_child_oid = '800052314'
     # yco_fulltext_parent_oid = '2043304'
     # yco_fulltext_child_oid = '1191792'
   else
@@ -129,7 +131,9 @@ RSpec.describe "The cluster at #{ENV['CLUSTER_NAME']}", type: :feature do
             manifest_uri = "#{blacklight_url}/manifests/#{yco_parent_oid}\.json"
             response = HTTP.get(manifest_uri, ssl_context: ssl_context)
             expect(JSON.parse(response.body)['items'].length).to eq(1),
-              'sequence contains one canvas'
+            'sequence contains one canvas' if ENV['CLUSTER_NAME'] != 'yul-dc-demo'
+            expect(JSON.parse(response.body)['items'].length).to eq(2),
+              'sequence contains two canvases' if ENV['CLUSTER_NAME'] == 'yul-dc-demo'
           end
           it 'except for OWP items and will not have link' do
             uri = "#{blacklight_url}/manifests/#{owp_parent_oid}\.json"
