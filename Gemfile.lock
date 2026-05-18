@@ -67,7 +67,7 @@ GEM
     diff-lcs (1.5.0)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
-    faraday (2.14.1)
+    faraday (2.14.2)
       faraday-net_http (>= 2.0, < 3.5)
       json
       logger
@@ -104,7 +104,7 @@ GEM
     i18n (1.14.5)
       concurrent-ruby (~> 1.0)
     io-event (1.2.2)
-    json (2.19.2)
+    json (2.19.5)
     logger (1.7.0)
     mini_mime (1.1.2)
     mini_portile2 (2.8.9)
