@@ -12,6 +12,9 @@ module Camerata
         HONEYBADGER_API_KEY_MANAGEMENT
         HTTP_PASSWORD
         HTTP_USERNAME
+        IIIF_IMAGE_KEYPASS
+        IIIF_IMAGE_KEYSTORE
+        IIIF_IMAGE_STOREPASS
         MC_PW
         MC_USER
         OWP_AUTH_TOKEN

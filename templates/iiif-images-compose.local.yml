@@ -11,5 +11,8 @@ services:
       S3_DOWNLOAD_BUCKET_NAME: yul-dc-download-test # downloadable originals
       ACCESS_DOWNLOAD_BUCKET: yul-dc-development-samples
       OCR_DOWNLOAD_BUCKET: yul-dc-development-samples
+      IIIF_IMAGE_KEYPASS: ${IIIF_IMAGE_KEYPASS}
+      IIIF_IMAGE_KEYSTORE: ${IIIF_IMAGE_KEYSTORE}
+      IIIF_IMAGE_STOREPASS: ${IIIF_IMAGE_STOREPASS}
       IIIF_IMAGE_VERSION:
       IIIF_JAVA_OPTS: ${IIIF_JAVA_OPTS:--Xmx2g}
