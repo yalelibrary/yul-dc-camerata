@@ -205,7 +205,7 @@ ECS_PARAMS
   cat <<ECS_PARAMS > ${1}-iiif-images-params.yml
 version: 1
 task_definition:
-  task_execution_role: ecsTaskExecutionRole
+  task_execution_role: yul-dcs-ecs-taskExecution-role-dmo
   ecs_network_mode: awsvpc
   task_size:
     mem_limit: 8192

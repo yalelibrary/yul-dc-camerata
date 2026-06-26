@@ -45,7 +45,8 @@ then
     --launch-type FARGATE \
     $discovery $log \
     --force-deployment \
-    --target-groups targetGroupArn=$IMG_TG_ARN,containerName=iiif_image,containerPort=8182 \
+    --target-groups targetGroupArn=$IMG_TG_ARN_8182,containerName=iiif_image,containerPort=8182 \
+    --target-groups targetGroupArn=$IMG_TG_ARN_8183,containerName=iiif_image,containerPort=8183 \
     --create-log-groups \
     --timeout 10 \
     --cluster ${CLUSTER_NAME} \
