@@ -173,7 +173,7 @@ ECS_PARAMS
 cat <<IMAGE_PARAMS > ${CLUSTER_NAME}-iiif-images-params.yml
 version: 1
 task_definition:
-  task_execution_role: yul-dcs-ecs-taskExecution-role-dmo
+  task_execution_role: $CLUSTER_NAME-ecs-taskExecution-role
   ecs_network_mode: awsvpc
   task_size:
     mem_limit: 4096
