@@ -175,6 +175,11 @@ version: 1
 task_definition:
   task_role_arn: $CLUSTER_NAME-ecs-task-role
   task_execution_role: $CLUSTER_NAME-ecs-taskExecution-role
+  services:
+    iiif_image:
+      secrets:
+        - value_from: arn:aws:secretsmanager:us-east-1:106281100175:secret:yul-dcs/demo/iiif_image_keystore:IIIF_IMAGE_KEYSTORE::
+          name: IIIF_IMAGE_KEYSTORE
   ecs_network_mode: awsvpc
   task_size:
     mem_limit: 4096
