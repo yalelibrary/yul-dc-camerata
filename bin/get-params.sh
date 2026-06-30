@@ -212,7 +212,7 @@ task_definition:
       secrets:
         - value_from: "arn:aws:secretsmanager:us-east-1:106281100175:secret:yul-dcs/demo/iiif_image_keystore:IIIF_IMAGE_KEYSTORE::"
           name: IIIF_IMAGE_KEYSTORE
-       - value_from: "arn:aws:secretsmanager:us-east-1:106281100175:secret:yul-dcs/demo/iiif_image_keystore:HTTPS_KEY_STORE_PASSWORD::"
+        - value_from: "arn:aws:secretsmanager:us-east-1:106281100175:secret:yul-dcs/demo/iiif_image_keystore:HTTPS_KEY_STORE_PASSWORD::"
           name: HTTPS_KEY_STORE_PASSWORD
   ecs_network_mode: awsvpc
   task_size:
