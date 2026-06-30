@@ -170,7 +170,6 @@ run_params:
       vpc: $VPC_ID
 ECS_PARAMS
 
-  create_access_point "iiif" "8183" "8183" "755"
 cat <<IMAGE_PARAMS > ${CLUSTER_NAME}-iiif-images-params.yml
 version: 1
 task_definition:
