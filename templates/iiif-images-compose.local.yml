@@ -17,4 +17,4 @@ services:
       IIIF_IMAGE_VERSION:
       IIIF_JAVA_OPTS: ${IIIF_JAVA_OPTS:--Xmx2g}
     volumes:
-      - .${HTTPS_KEY_STORE_PATH}:${HTTPS_KEY_STORE_PATH}:ro
+      - .${HTTPS_KEY_STORE_PATH:-/cantaloupe/certs/cantaloupe.p12}:${HTTPS_KEY_STORE_PATH:-/cantaloupe/certs/cantaloupe.p12}:ro
