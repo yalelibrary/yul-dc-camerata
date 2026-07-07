@@ -11,5 +11,10 @@ services:
       S3_DOWNLOAD_BUCKET_NAME: yul-dc-download-test # downloadable originals
       ACCESS_DOWNLOAD_BUCKET: yul-dc-development-samples
       OCR_DOWNLOAD_BUCKET: yul-dc-development-samples
+      HTTPS_KEY_PASSWORD: ${HTTPS_KEY_PASSWORD}
+      HTTPS_KEY_STORE_PASSWORD: ${HTTPS_KEY_STORE_PASSWORD}
+      HTTPS_KEY_STORE_PATH: ${HTTPS_KEY_STORE_PATH}
       IIIF_IMAGE_VERSION:
       IIIF_JAVA_OPTS: ${IIIF_JAVA_OPTS:--Xmx2g}
+    volumes:
+      - .${HTTPS_KEY_STORE_PATH:-/cantaloupe/certs/cantaloupe.p12}:${HTTPS_KEY_STORE_PATH:-/cantaloupe/certs/cantaloupe.p12}:ro

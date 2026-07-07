@@ -205,7 +205,15 @@ ECS_PARAMS
   cat <<ECS_PARAMS > ${1}-iiif-images-params.yml
 version: 1
 task_definition:
-  task_execution_role: ecsTaskExecutionRole
+  task_role_arn: $CLUSTER_NAME-ecs-task-role
+  task_execution_role: $CLUSTER_NAME-ecs-taskExecution-role
+  services:
+    iiif_image:
+      secrets:
+        - value_from: "arn:aws:secretsmanager:us-east-1:106281100175:secret:yul-dcs/$CLUSTER_NAME/iiif_image_keystore:IIIF_IMAGE_KEYSTORE::"
+          name: IIIF_IMAGE_KEYSTORE
+        - value_from: "arn:aws:secretsmanager:us-east-1:106281100175:secret:yul-dcs/$CLUSTER_NAME/iiif_image_keystore:HTTPS_KEY_STORE_PASSWORD::"
+          name: HTTPS_KEY_STORE_PASSWORD
   ecs_network_mode: awsvpc
   task_size:
     mem_limit: 8192

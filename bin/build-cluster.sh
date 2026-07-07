@@ -156,7 +156,8 @@ task_definition:
     mem_limit: 4096
     cpu_limit: 1024
 run_params:
-  network_configuration: awsvpc_configuration:
+  network_configuration:
+    awsvpc_configuration:
       subnets:
         - $SUBNET0
         - $SUBNET1
@@ -168,6 +169,38 @@ run_params:
       name: $CLUSTER_NAME
       vpc: $VPC_ID
 ECS_PARAMS
+
+cat <<IMAGE_PARAMS > ${CLUSTER_NAME}-iiif-images-params.yml
+version: 1
+task_definition:
+  task_role_arn: $CLUSTER_NAME-ecs-task-role
+  task_execution_role: $CLUSTER_NAME-ecs-taskExecution-role
+  services:
+    iiif_image:
+      secrets:
+        - value_from: "arn:aws:secretsmanager:us-east-1:106281100175:secret:yul-dcs/$CLUSTER_NAME/iiif_image_keystore:IIIF_IMAGE_KEYSTORE::"
+          name: IIIF_IMAGE_KEYSTORE
+        - value_from: "arn:aws:secretsmanager:us-east-1:106281100175:secret:yul-dcs/$CLUSTER_NAME/iiif_image_keystore:HTTPS_KEY_STORE_PASSWORD::"
+          name: HTTPS_KEY_STORE_PASSWORD
+  ecs_network_mode: awsvpc
+  task_size:
+    mem_limit: 4096
+    cpu_limit: 1024
+run_params:
+  network_configuration:
+    awsvpc_configuration:
+      subnets:
+        - $SUBNET0
+        - $SUBNET1
+      security_groups:
+        - $SG_ID
+      assign_public_ip: $PUBLIC_IPS
+  service_discovery:
+    private_dns_namespace:
+      name: $CLUSTER_NAME
+      vpc: $VPC_ID
+IMAGE_PARAMS
+
 cat <<WORKER_PARAMS > ${CLUSTER_NAME}-worker-params.yml
 version: 1
 task_definition:
