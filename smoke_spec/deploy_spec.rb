@@ -193,6 +193,22 @@ RSpec.describe "The cluster at #{ENV['CLUSTER_NAME']}", type: :feature do
             expect(response.mime_type).to eq 'text/html'
           end
         end
+        describe 'client-supplied X-Origin-URI header' do
+          it 'does not grant access to an OWP image when spoofed with a Public image URI' do
+            uri = "#{iiif_image_url}/iiif/2/#{owp_child_oid}/full/!200,200/0/default.jpg"
+            spoofed_origin_uri = "/iiif/2/#{public_child_oid}/full/!200,200/0/default.jpg"
+            response = HTTP.headers('X-Origin-URI' => spoofed_origin_uri)
+                           .get(uri, ssl_context: ssl_context)
+            expect(response.code).to eq(401), 'edge proxy replaces the spoofed header with the real request URI'
+          end
+          it 'does not interfere with a Public image request when malformed' do
+            uri = "#{iiif_image_url}/iiif/2/#{public_child_oid}/full/!200,200/0/default.jpg"
+            response = HTTP.headers('X-Origin-URI' => 'not-a-parseable-origin-uri')
+                           .get(uri, ssl_context: ssl_context)
+            expect(response.code).to eq(200), 'edge proxy discards the client header rather than forwarding it'
+            expect(response.mime_type).to eq 'image/jpeg'
+          end
+        end
       end
       describe 'annotations' do
         it 'serves an annotation for Public image' do
