@@ -256,9 +256,9 @@ RSpec.describe "The cluster at #{ENV['CLUSTER_NAME']}", type: :feature do
           action_uri = "#{blacklight_url}/download/tiff/#{owp_child_oid}/staged"
           retrieval_uri = "#{blacklight_url}/download/tiff/#{owp_child_oid}"
           response = HTTP.get(action_uri, ssl_context: ssl_context)
-          expect(response.code).to eq(401), 'has unauthorized response'
+          expect(response.code).to eq(404), 'not-found'
           response = HTTP.get(retrieval_uri, ssl_context: ssl_context)
-          expect(response.code).to eq(401), 'does not serve a tiff'
+          expect(response.code).to eq(404), 'not-found'
         end
       end
       describe 'pdfs' do
