@@ -1,4 +1,4 @@
-FROM phusion/passenger-ruby32:3.1.3
+FROM phusion/passenger-ruby32:3.1.6
 
 RUN apt-get update && \
   curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
