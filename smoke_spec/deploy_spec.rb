@@ -156,7 +156,8 @@ RSpec.describe "The cluster at #{ENV['CLUSTER_NAME']}", type: :feature do
             response = HTTP.get("#{blacklight_url}/catalog/#{owp_parent_oid}")
             expect(response.body).to have_css('.nav-link.not-found.iiif-logo')
             response = HTTP.get(uri, ssl_context: ssl_context)
-            expect(JSON.parse(response.body)).to eq({ 'error' => 'unauthorized' }),
+            expect(response.code).to eq(404), 'restricted item is indistinguishable from a missing one'
+            expect(JSON.parse(response.body)).to eq({ 'error' => 'not-found' }),
               'no manifest or manifest link'
           end
         end
@@ -189,7 +190,7 @@ RSpec.describe "The cluster at #{ENV['CLUSTER_NAME']}", type: :feature do
           it 'does not serve a jpg for OWP image' do
             uri = "#{iiif_image_url}/iiif/2/#{owp_child_oid}/full/!200,200/0/default.jpg"
             response = HTTP.get(uri, ssl_context: ssl_context)
-            expect(response.code).to eq(401)
+            expect(response.code).to eq(403), 'restricted image is indistinguishable from a missing one'
             expect(response.mime_type).to eq 'text/html'
           end
         end
@@ -199,7 +200,7 @@ RSpec.describe "The cluster at #{ENV['CLUSTER_NAME']}", type: :feature do
             spoofed_origin_uri = "/iiif/2/#{public_child_oid}/full/!200,200/0/default.jpg"
             response = HTTP.headers('X-Origin-URI' => spoofed_origin_uri)
                            .get(uri, ssl_context: ssl_context)
-            expect(response.code).to eq(401), 'edge proxy replaces the spoofed header with the real request URI'
+            expect(response.code).to eq(403), 'edge proxy replaces the spoofed header with the real request URI'
           end
           it 'does not interfere with a Public image request when malformed' do
             uri = "#{iiif_image_url}/iiif/2/#{public_child_oid}/full/!200,200/0/default.jpg"
@@ -229,8 +230,8 @@ RSpec.describe "The cluster at #{ENV['CLUSTER_NAME']}", type: :feature do
         it 'does not serve an annotation for OWP image' do
           uri = "#{blacklight_url}/annotation/oid/#{owp_fulltext_parent_oid}/canvas/#{owp_fulltext_child_oid}/fulltext?oid=#{owp_fulltext_parent_oid}&child_oid=#{owp_fulltext_child_oid}"
           response = HTTP.get(uri, ssl_context: ssl_context)
-          expect(response.code).to eq(401), 'has unauthorized response'
-          expect(JSON.parse(response.body)).to eq({ 'error' => 'unauthorized' })
+          expect(response.code).to eq(404), 'has not found response'
+          expect(JSON.parse(response.body)).to eq({ 'error' => 'not-found' })
         end
       end
       describe 'tiff download' do
@@ -274,7 +275,7 @@ RSpec.describe "The cluster at #{ENV['CLUSTER_NAME']}", type: :feature do
         end
         it 'does not serve a pdf for OWP image' do
           response = HTTP.get("#{blacklight_url}/pdfs/#{owp_parent_oid}.pdf", ssl_context: ssl_context)
-          expect(response.code).to eq(401), 'has unauthorized response'
+          expect(response.code).to eq(404), 'has not found response'
           expect(response.mime_type).to eq 'application/json'
         end
       end
