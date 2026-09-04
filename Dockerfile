@@ -1,7 +1,7 @@
 FROM ruby:3.2.0
 
 RUN apt-get update && apt upgrade -y && \
-    apt-get install -y --no-install-recommends \
+    apt-get install -y --no-install-recommends --fix-missing \
       jq \
       sqlite3 \
     && rm -rf /var/lib/apt/lists/*
