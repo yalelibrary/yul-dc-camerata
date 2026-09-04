@@ -3,7 +3,7 @@ FROM ruby:3.4.10
 RUN apt-get update && apt upgrade -y && \
     apt-get install -y --no-install-recommends \
       jq \
-      sqlite3 \
+      python3-pip \
     && rm -rf /var/lib/apt/lists/*
 
 RUN python3 -m pip install awscli
