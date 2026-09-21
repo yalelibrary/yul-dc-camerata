@@ -1,4 +1,4 @@
-FROM ruby:3.4.10
+FROM ruby:4.0.7
 
 RUN apt-get update && apt upgrade -y && \
     apt-get install -y --no-install-recommends \
