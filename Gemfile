@@ -7,7 +7,9 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 gemspec
 
 gem 'github_changelog_generator', '~> 1.16.4'
+gem 'ostruct', '~> 0.6.3'
 gem 'rake', '~> 13.0.6'
+gem 'tsort', '~> 0.2.0'
 
 group :development, :test do
   gem 'bixby', '~> 5.0.2'
