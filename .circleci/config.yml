@@ -22,7 +22,7 @@ jobs:
       - run:
           name: Bundler
           command: |
-            gem install bundler -v 4.0.13 && bundle || bundle install
+            gem install bundler -v 4.0.13 && bundle install
       - run:
           name: aws-cli
           command: |
