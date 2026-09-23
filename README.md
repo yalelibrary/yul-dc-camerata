@@ -137,7 +137,7 @@ aws iam get-user --profile yale
 If you use rbenv, you must run the following command after installing camerata: `rbenv rehash`
 
 ## Running Smoke Tests
-Smoke tests are run before every deployment in every environment.  To run the tests locally both the Management and Blacklight apps must be running locally as well, although this is not recommended.  The smoke tests are specifically for deployed environments.
+Smoke tests are run before every deployment in every environment.  To run the tests locally both the Management and Blacklight apps must be running locally as well, although this is not recommended.  The smoke tests are specifically for deployed environments.  To run the specs successfully locally one must be on VPN.
 
 To set up running smoke tests in your terminal:
 

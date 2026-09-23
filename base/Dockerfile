@@ -1,10 +1,11 @@
-FROM phusion/passenger-ruby32:3.1.6
+FROM phusion/passenger-ruby40:3.2.0
 
 RUN apt-get update && \
-  curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
-  curl -sL   https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - && \
-  echo "deb https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list && \
-  sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list' && \
+  mkdir -p /etc/apt/keyrings && \
+  curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor -o /etc/apt/keyrings/yarn.gpg && \
+  curl -sL https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor -o /etc/apt/keyrings/postgresql.gpg && \
+  echo "deb [signed-by=/etc/apt/keyrings/yarn.gpg] https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list && \
+  sh -c 'echo "deb [signed-by=/etc/apt/keyrings/postgresql.gpg] http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list' && \
   curl -sL https://deb.nodesource.com/setup_16.x | bash - > /dev/null && \
   DEBIAN_FRONTEND=noninteractive apt-get -qq install -y --no-install-recommends \
     build-essential \
