@@ -174,13 +174,24 @@ RSpec.describe "The cluster at #{ENV['CLUSTER_NAME']}", type: :feature do
         end
         describe 'default.jpg' do
           it 'serves a jpg for Public image' do
-            uri = "#{iiif_image_url}/iiif/2/#{public_child_oid}/full/!200,200/0/default.jpg"
-            started = Process.clock_gettime(Process::CLOCK_MONOTONIC)
-            response = HTTP.get(uri, ssl_context: ssl_context)
-            elapsed = Process.clock_gettime(Process::CLOCK_MONOTONIC) - started
-            puts "[smoke timing] #{Time.now.utc.strftime('%FT%TZ')} GET #{uri} -> #{response.code} in #{elapsed.round(2)}s"
-            expect(response.code).to eq(200)
-            expect(response.mime_type).to eq 'image/jpeg'
+            uat_uri = "#{iiif_image_url}/iiif/2/#{public_child_oid}/full/!200,200/0/default.jpg"
+            prod_uri = "https://collections.library.yale.edu/iiif/2/#{public_child_oid}/full/!200,200/0/default.jpg"
+
+            uat_started = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+            uat_response = HTTP.get(uat_uri, ssl_context: ssl_context)
+            uat_elapsed = Process.clock_gettime(Process::CLOCK_MONOTONIC) - uat_started
+
+            prod_started = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+            prod_response = HTTP.get(prod_uri, ssl_context: ssl_context)
+            prod_elapsed = Process.clock_gettime(Process::CLOCK_MONOTONIC) - prod_started
+
+            puts "[smoke timing] #{Time.now.utc.strftime('%FT%TZ')} GET #{uat_uri} -> #{uat_response.code} in #{uat_elapsed.round(2)}s"
+            puts "[smoke timing] #{Time.now.utc.strftime('%FT%TZ')} GET #{prod_uri} -> #{prod_response.code} in #{prod_elapsed.round(2)}s"
+            puts "[smoke response version and status] #{prod_uri} -> HTTP/#{prod_response.version} #{prod_response.status}"
+            prod_response.headers.each { |name, value| puts "[smoke header] #{name}: #{value}" }
+
+            expect(uat_response.code).to eq(200)
+            expect(uat_response.mime_type).to eq 'image/jpeg'
             # expect(response['Content-Disposition']).to eq("inline; filename=\"1030368.jpg\"")
           end
           it 'serves a jpg for YCO image' do
