@@ -185,10 +185,12 @@ RSpec.describe "The cluster at #{ENV['CLUSTER_NAME']}", type: :feature do
             prod_response = HTTP.get(prod_uri, ssl_context: ssl_context)
             prod_elapsed = Process.clock_gettime(Process::CLOCK_MONOTONIC) - prod_started
 
-            puts "[smoke timing] #{Time.now.utc.strftime('%FT%TZ')} GET #{uat_uri} -> #{uat_response.code} in #{uat_elapsed.round(2)}s"
-            puts "[smoke timing] #{Time.now.utc.strftime('%FT%TZ')} GET #{prod_uri} -> #{prod_response.code} in #{prod_elapsed.round(2)}s"
-            puts "[smoke response version and status] #{prod_uri} -> HTTP/#{prod_response.version} #{prod_response.status}"
-            prod_response.headers.each { |name, value| puts "[smoke header] #{name}: #{value}" }
+            puts "[smoke timing UAT] #{Time.now.utc.strftime('%FT%TZ')} GET #{uat_uri} -> #{uat_response.code} in #{uat_elapsed.round(2)}s"
+            puts "[smoke timing PROD] #{Time.now.utc.strftime('%FT%TZ')} GET #{prod_uri} -> #{prod_response.code} in #{prod_elapsed.round(2)}s"
+            puts "[smoke response version and status UAT] #{uat_uri} -> HTTP/#{uat_response.version} #{uat_response.status}"
+            uat_response.headers.each { |name, value| puts "[smoke header UAT] #{name}: #{value}" }
+            puts "[smoke response version and status PROD] #{prod_uri} -> HTTP/#{prod_response.version} #{prod_response.status}"
+            prod_response.headers.each { |name, value| puts "[smoke header PROD] #{name}: #{value}" }
 
             expect(uat_response.code).to eq(200)
             expect(uat_response.mime_type).to eq 'image/jpeg'
