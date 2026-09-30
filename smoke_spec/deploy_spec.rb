@@ -175,7 +175,10 @@ RSpec.describe "The cluster at #{ENV['CLUSTER_NAME']}", type: :feature do
         describe 'default.jpg' do
           it 'serves a jpg for Public image' do
             uri = "#{iiif_image_url}/iiif/2/#{public_child_oid}/full/!200,200/0/default.jpg"
+            started = Process.clock_gettime(Process::CLOCK_MONOTONIC)
             response = HTTP.get(uri, ssl_context: ssl_context)
+            elapsed = Process.clock_gettime(Process::CLOCK_MONOTONIC) - started
+            puts "[smoke timing] #{Time.now.utc.strftime('%FT%TZ')} GET #{uri} -> #{response.code} in #{elapsed.round(2)}s"
             expect(response.code).to eq(200)
             expect(response.mime_type).to eq 'image/jpeg'
             # expect(response['Content-Disposition']).to eq("inline; filename=\"1030368.jpg\"")
