@@ -156,6 +156,17 @@ pipeline {
                         }
                     }
                 }
+                stage('Wait for ECS Deployment'){
+                    steps {
+                       sh """
+                          set -e
+
+                         aws ecs wait services-stable \
+                          --cluster "${params.CLUSTER}" \
+                          --services "${params.CLUSTER}-${params.DEPLOY}"
+                      """
+                    }
+                }
                 stage('Smoke Tests') {
                     steps {
                         sh "CLUSTER_NAME=${CLUSTER} cam smoke"
