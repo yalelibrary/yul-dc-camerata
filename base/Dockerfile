@@ -13,7 +13,7 @@ RUN apt-get update && \
     nodejs \
     rsync \
     yarn \
-    postgresql-client-12 && \
+    postgresql-client-17 && \
     apt-get autoremove -y && \
     apt-get clean
 
