@@ -163,7 +163,7 @@ pipeline {
 
                          aws ecs wait services-stable \
                           --cluster "${params.CLUSTER}" \
-                          --services "${params.CLUSTER}-${params.DEPLOY}"
+                          --services "${params.CLUSTER}-${APP}"
                       """
                     }
                 }
