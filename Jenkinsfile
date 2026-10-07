@@ -158,13 +158,54 @@ pipeline {
                 }
                 stage('Wait for ECS Deployment'){
                     steps {
-                       sh """
-                          set -e
+                        script {
+                            if ( params.DEPLOY == 'management' ) {
+                                APP='mgmt'
+                            }
+                            else if ( params.DEPLOY == 'manifest' ) {
+                                APP='mft'
+                            } else {
+                                APP=params.DEPLOY
+                            }
+                            switch (params.DEPLOY) {
+                                case 'blacklight':
+                                case 'images':
+                                case 'manifest':
+                                    sh """
+                                        set -e
 
-                         aws ecs wait services-stable \
-                          --cluster "${params.CLUSTER}" \
-                          --services "${params.CLUSTER}-${params.DEPLOY}"
-                      """
+                                        aws ecs wait services-stable \
+                                        --cluster "${params.CLUSTER}" \
+                                        --services "${params.CLUSTER}-${APP}"
+                                    """
+                                    break
+                                case 'management':
+                                    sh """
+                                        set -e
+
+                                        aws ecs wait services-stable \
+                                        --cluster "${params.CLUSTER}" \
+                                        --services "${params.CLUSTER}-${APP}"
+
+                                        aws ecs wait services-stable \
+                                        --cluster "${params.CLUSTER}" \
+                                        --services "${params.CLUSTER}-worker"
+
+                                        aws ecs wait services-stable \
+                                        --cluster "${params.CLUSTER}" \
+                                        --services "${params.CLUSTER}-intensive-worker"
+                                    """
+                                    break
+                                case 'intensive-workers':
+                                    sh """
+                                        aws ecs wait services-stable \
+                                        --cluster "${params.CLUSTER}" \
+                                        --services "${params.CLUSTER}-intensive-worker"
+                                    """
+                                    break
+
+                            }    
+                        }
                     }
                 }
                 stage('Smoke Tests') {
