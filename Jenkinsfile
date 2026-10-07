@@ -162,6 +162,15 @@ pipeline {
                             switch (params.DEPLOY) {
                                 case 'blacklight':
                                 case 'images':
+                                case 'manifest':
+                                    sh """
+                                        set -e
+
+                                        aws ecs wait services-stable \
+                                        --cluster "${params.CLUSTER}" \
+                                        --services "${params.CLUSTER}-${APP}"
+                                    """
+                                    break
                                 case 'intensive-workers':
                                     sh """
                                         set -e
@@ -186,15 +195,6 @@ pipeline {
                                         aws ecs wait services-stable \
                                         --cluster "${params.CLUSTER}" \
                                         --services "${params.CLUSTER}-intensive-worker"
-                                    """
-                                    break
-                                case 'manifest':
-                                    sh """
-                                        set -e
-
-                                        aws ecs wait services-stable \
-                                        --cluster "${params.CLUSTER}" \
-                                        --services "${params.CLUSTER}-${APP}"
                                     """
                                     break
 
