@@ -159,24 +159,16 @@ pipeline {
                 stage('Wait for ECS Deployment'){
                     steps {
                         script {
-                            if ( params.DEPLOY == 'management' ) {
-                                APP='mgmt'
-                            }
-                            else if ( params.DEPLOY == 'manifest' ) {
-                                APP='mft'
-                            } else {
-                                APP=params.DEPLOY
-                            }
                             switch (params.DEPLOY) {
                                 case 'blacklight':
                                 case 'images':
-                                case 'manifest':
+                                case 'intensive-workers':
                                     sh """
                                         set -e
 
                                         aws ecs wait services-stable \
                                         --cluster "${params.CLUSTER}" \
-                                        --services "${params.CLUSTER}-${APP}"
+                                        --services "${params.CLUSTER}-intensive-worker"
                                     """
                                     break
                                 case 'management':
@@ -196,11 +188,13 @@ pipeline {
                                         --services "${params.CLUSTER}-intensive-worker"
                                     """
                                     break
-                                case 'intensive-workers':
+                                case 'manifest':
                                     sh """
+                                        set -e
+
                                         aws ecs wait services-stable \
                                         --cluster "${params.CLUSTER}" \
-                                        --services "${params.CLUSTER}-intensive-worker"
+                                        --services "${params.CLUSTER}-${APP}"
                                     """
                                     break
 
