@@ -24,7 +24,7 @@ In the Camerata repo:
     - This will ensure that each build will be tagged with the **new** version number
 - Open `base/Dockerfile` in your editor
 - Make your changes
-- Run `docker compose build` to build the image
+- Run `docker compose build --pull` to build the image with the most recently published tags from Docker Hub
 - Confirm that the image builds
 - Run `docker compose up` to start up the service
 - In another window run `docker compose exec base bash` to connect to the running container and examine its contents
