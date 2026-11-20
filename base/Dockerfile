@@ -1,5 +1,8 @@
 FROM phusion/passenger-ruby40:3.2.0
 
+RUN bash -lc "rvm install ruby-4.0.10 && rvm --default use ruby-4.0.10 && \
+    rvm remove ruby-4.0.6"
+
 RUN apt-get update && \
   mkdir -p /etc/apt/keyrings && \
   curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor -o /etc/apt/keyrings/yarn.gpg && \
